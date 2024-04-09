@@ -71,3 +71,17 @@ We are going to find that mapping markov-like progression of tokens in networks 
 
 A Wavelet power spectrum would give you something like that. A continuous wavelet transform gives you a time axis and a period axis. For any period, at any point in time, the power spectrum will tell you how much that period is contributing to the observed value at t.
 
+
+
+# Auto Readme 
+
+Wavelet Power Spectrum Generator
+
+This Python script utilizes natural language processing and wavelet transforms to analyze the structure of topics encoded into token sequences using GPT-2. It generates wavelet power spectra for each topic, saves the images, and produces side-by-side comparative images highlighting differences between successive topics.
+Features
+
+    GPT-2 Token Generation: Utilizes the GPT-2 model to convert topics into token sequences.
+    Wavelet Transform Analysis: Applies continuous wavelet transforms to the numerical representations of token sequences.
+    Comparative Visualization: Generates side-by-side comparisons of the wavelet power spectra for visual analysis.
+    Dynamic Configuration: Configurable topics through a JSON file.
+    Automated Logging and Output Management: Saves all outputs to a unique directory per run, along with detailed logs.  

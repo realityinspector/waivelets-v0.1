@@ -1,0 +1,8 @@
+Run ID: 20240409171551
+Topics: ['The future of artificial intelligence', 'Climate change and its impacts', 'The role of social media in society']
+Outputs:
+Generated outputs/20240409171551/power_spectrum_topic_1.png
+Generated outputs/20240409171551/power_spectrum_topic_2.png
+Generated outputs/20240409171551/power_spectrum_topic_3.png
+Generated comparison: outputs/20240409171551/comparison_1_2_3.png
+Generated difference: outputs/20240409171551/difference_1_2_3.png
