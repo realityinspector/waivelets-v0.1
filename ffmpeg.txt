@@ -1,0 +1,7 @@
+ffmpeg -r 30 -i power_spectrum_yeats_%d.png -c:v libx264 -y -s 2400x1600 Batch1step1.mp4  
+ffmpeg -y -r 3 -i Batch1step1.mp4 -r 9 Batch1step2.mp4
+ffmpeg -y -r 9 -i Batch1step2.mp4 -c:v libx264 -filter:v "minterpolate='fps=30:scd=fdiff:mc_mode=aobmc:me_mode=bidir:vsbmc=1:search_param=64',unsharp=lx=5:ly=5" -y -s 2400x1600 Batch1_3FEase.mp4
+
+ffmpeg -r 30 -i power_spectrum_oreilly_%d.png -c:v libx264 -y -s 2880x1920 Batch1step1.mp4  
+ffmpeg -y -r 3 -i Batch1step1.mp4 -r 9 Batch1step2.mp4
+ffmpeg -y -r 9 -i Batch1step2.mp4 -c:v libx264 -filter:v "minterpolate='fps=30:scd=fdiff:mc_mode=aobmc:me_mode=bidir:vsbmc=1:search_param=600',unsharp=lx=5:ly=5" -y -s 1024x768 Batch1_3FEase.mp4

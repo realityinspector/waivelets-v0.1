@@ -2,6 +2,8 @@
 
 ### Starting point: https://twitter.com/Caldwbr/status/1765892610751692863
 
+you might be interested in: https://replit.com/join/parirkhkoy-realityinspector 
+
 ### Chat 
 Replit has CHAT on the bottom left under "All". Dev dialog there. 
 
@@ -85,3 +87,21 @@ Features
     Comparative Visualization: Generates side-by-side comparisons of the wavelet power spectra for visual analysis.
     Dynamic Configuration: Configurable topics through a JSON file.
     Automated Logging and Output Management: Saves all outputs to a unique directory per run, along with detailed logs.  
+
+
+# Library
+
+## Text Embeddings Reveal (Almost) As Much As Text
+### Abstract
+How much private information do text embeddings reveal about the original text? We investigate the problem of embedding inversion, reconstructing the full text represented in dense text embeddings. We frame the problem as controlled generation: generating text that, when reembedded, is close to a fixed point in latent space. We find that although a naïve model conditioned on the embedding performs poorly, a multi-step method that iteratively corrects and re-embeds text is able to recover 92% of 32-token text inputs exactly. We train our model to decode text embeddings from two state-of-the-art embedding models, and also show that our model can recover important personal information (full names) from a dataset of clinical notes. 
+### Link
+- https://arxiv.org/pdf/2310.06816.pdf
+
+## Language Model Inversion
+### Abstract
+Language models produce a distribution over the next token; can we use this information to recover the prompt tokens? We consider the problem of language model inversion and show that next-token probabilities contain a surprising amount of information about the preceding text. Often we can recover the text in cases where it is hidden from the user, motivating a method for recovering unknown prompts given only the model's current distribution output. We consider a variety of model access scenarios, and show how even without predictions for every token in the vocabulary we can recover the probability vector through search. On Llama-2 7b, our inversion method reconstructs prompts with a BLEU of 59 and token-level F1 of 78 and recovers 27% of prompts exactly.
+
+### Link
+- https://arxiv.org/abs/2311.13647
+- https://github.com/jxmorris12/vec2text
+

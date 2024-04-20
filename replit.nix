@@ -1,5 +1,8 @@
 {pkgs}: {
   deps = [
+    pkgs.postgresql
+    pkgs.R
+    pkgs.glibcLocales
     pkgs.tk
     pkgs.tcl
     pkgs.qhull

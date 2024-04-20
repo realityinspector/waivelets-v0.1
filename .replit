@@ -1,4 +1,4 @@
-entrypoint = "main.py"
+entrypoint = "main_apr18.py"
 modules = ["python-3.10:v18-20230807-322e88b"]
 
 [nix]
@@ -11,5 +11,20 @@ language = "python3"
 requiredFiles = [".replit", "replit.nix"]
 
 [deployment]
-run = ["python3", "main.py"]
+run = ["python3", "main_apr18.py"]
 deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 8000
+externalPort = 8008
+exposeLocalhost = true
+
+[[ports]]
+localPort = 11385
+externalPort = 8099
+exposeLocalhost = true
+
+[[ports]]
+localPort = 25057
+externalPort = 5173
+exposeLocalhost = true
