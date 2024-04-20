@@ -36,7 +36,11 @@ print(yeatsClustData[1]['embNo'])
 
 # Prepare environment
 run_id = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-output_folder = Path(f"outputs/{run_id}")
+if not Path(f"outputs/{run_id}").exists():
+    output_folder = Path(f"outputs/{run_id}")
+    output_folder.mkdir(parents=True, exist_ok=True)
+else:
+    output_folder = Path(f"outputs/{run_id}")
 output_folder.mkdir(parents=True, exist_ok=True)
 log_file = output_folder / "log.txt"
 
