@@ -1,5 +1,8 @@
 {pkgs}: {
   deps = [
+    pkgs.libGLU
+    pkgs.libGL
+    pkgs.openssl
     pkgs.postgresql
     pkgs.R
     pkgs.glibcLocales

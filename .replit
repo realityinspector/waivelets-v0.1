@@ -1,5 +1,5 @@
-entrypoint = "main_apr18.py"
-modules = ["python-3.10:v18-20230807-322e88b"]
+entrypoint = "main.py"
+modules = ["python-3.10:v18-20230807-322e88b", "postgresql-16"]
 
 [nix]
 channel = "stable-23_05"

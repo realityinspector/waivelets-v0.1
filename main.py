@@ -12,7 +12,70 @@ import pandas as pd
 import pywt
 from matplotlib import transforms
 from sentence_transformers import SentenceTransformer
+import psycopg2.pool
 
+def build_DB():
+
+  cur.execute(
+    """CREATE TABLE text_header (
+        text_id SERIAL PRIMARY KEY,
+        textTitle VARCHAR(255),
+        textType VARCHAR(20),
+        textSplitLevel VARCHAR(20),
+        embeddingModel VARCHAR(50),
+        splitLevelDims INT,
+        embeddingDims INT          
+    )
+    """)
+  cur.execute(
+    """
+    CREATE TABLE text_parts (
+        text_id SERIAL REFERENCES text_header (text_id),
+        text_part_seq INT PRIMARY KEY,
+        text_part text        
+    )
+    """)
+  cur.execute(
+    """
+    CREATE TABLE embeddings (
+        text_id SERIAL REFERENCES text_header (text_id),
+        embed_dim_id INT PRIMARY KEY,
+        embedding_series FLOAT []
+    )
+    """)
+  cur.execute(
+    """
+    CREATE TABLE wavPowerSpectrum (
+        text_id SERIAL REFERENCES text_header (text_id),
+        embed_dim_id INT REFERENCES embeddings (embed_dim_id),
+        power_spectrum FLOAT [][]
+    )
+    """)
+  conn.commit()
+
+
+pool = psycopg2.pool.SimpleConnectionPool(0, 80, os.environ['DATABASE_URL'])
+conn = pool.getconn()
+
+cur = conn.cursor()
+
+build_DB()
+
+cur.close()
+pool.putconn(conn)
+
+pool.closeall()
+
+
+
+'''
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+GRANT ALL ON SCHEMA public TO public;
+'''
+  
+
+'''
 embedText = []
 powerSpectrum = []
 
@@ -53,7 +116,7 @@ for i in range(len(embedText[1])):
   #powerSpectrum.append(power.tolist())
   print(i)
 
-
+'''
 
 #if os.path.exists("./wAIvGUI/processedTexts/GatsbyWavPower.json"):
 #  os.remove("./wAIvGUI/processedTexts/GatsbyWavPower.json")
