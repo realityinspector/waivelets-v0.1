@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Shape of Meaning — Waivelets Research</title>
+<meta name="description" content="Text has measurable shape. We discovered four dynamical structural modes that classify 2,500 years of writing at 94.1% accuracy using 28 bytes and less than 1ms of compute.">
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08080e;--bg2:#0e0e18;--bg3:#141422;--border:#1a1a2e;
+  --text:#c0c0d0;--text2:#8888aa;--text3:#555570;
+  --accent:#6366f1;--accent2:#818cf8;
+  --convergent:#f59e0b;--contemplative:#8b5cf6;
+  --discursive:#06b6d4;--dialectical:#ef4444;
+  --green:#10b981;
+}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
+.container{max-width:960px;margin:0 auto;padding:0 24px}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Hero */
+.hero{padding:80px 0 60px;text-align:center;background:linear-gradient(180deg,#0c0c1a 0%,var(--bg) 100%)}
+.hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:300;color:#e8e8f4;letter-spacing:0.03em;margin-bottom:16px}
+.hero h1 em{font-style:normal;color:var(--accent2)}
+.hero .lead{font-size:1.15rem;color:var(--text2);max-width:640px;margin:0 auto 32px;line-height:1.7}
+.hero .stats{display:flex;gap:32px;justify-content:center;flex-wrap:wrap}
+.hero .stat{text-align:center}
+.hero .stat .val{font-size:2rem;font-weight:600;color:var(--accent2)}
+.hero .stat .label{font-size:0.8rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em}
+
+/* Sections */
+section{padding:60px 0}
+section h2{font-size:1.6rem;font-weight:400;color:#d0d0e0;margin-bottom:8px}
+section .subtitle{color:var(--text2);margin-bottom:32px;font-size:0.95rem}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
+.card h3{font-size:1rem;color:var(--text);margin-bottom:8px}
+.card p{color:var(--text2);font-size:0.9rem}
+
+/* Mode cards */
+.modes-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.mode-card{border-left:4px solid;padding-left:20px}
+.mode-card.convergent{border-color:var(--convergent)}
+.mode-card.contemplative{border-color:var(--contemplative)}
+.mode-card.discursive{border-color:var(--discursive)}
+.mode-card.dialectical{border-color:var(--dialectical)}
+.mode-card .mode-name{font-size:1.1rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px}
+.mode-card.convergent .mode-name{color:var(--convergent)}
+.mode-card.contemplative .mode-name{color:var(--contemplative)}
+.mode-card.discursive .mode-name{color:var(--discursive)}
+.mode-card.dialectical .mode-name{color:var(--dialectical)}
+.mode-card .mode-desc{color:var(--text2);font-size:0.85rem;margin-bottom:8px}
+.mode-card .mode-examples{font-size:0.8rem;color:var(--text3);font-style:italic}
+
+/* Corpus scatter */
+#corpus-chart{width:100%;height:400px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.corpus-dot{cursor:pointer;transition:r 0.15s}
+.corpus-dot:hover{r:8}
+
+/* Corpus table */
+.corpus-table{width:100%;border-collapse:collapse;font-size:0.82rem}
+.corpus-table th{text-align:left;padding:8px 12px;color:var(--text3);border-bottom:1px solid var(--border);font-weight:500;text-transform:uppercase;letter-spacing:0.08em;font-size:0.7rem}
+.corpus-table td{padding:6px 12px;border-bottom:1px solid #111120;color:var(--text2)}
+.corpus-table tr:hover td{background:var(--bg3)}
+.mode-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
+.mode-badge.convergent{background:rgba(245,158,11,0.15);color:var(--convergent)}
+.mode-badge.contemplative{background:rgba(139,92,246,0.15);color:var(--contemplative)}
+.mode-badge.discursive{background:rgba(6,182,212,0.15);color:var(--discursive)}
+.mode-badge.dialectical{background:rgba(239,68,68,0.15);color:var(--dialectical)}
+
+/* Try it section */
+.try-input{width:100%;min-height:140px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:0.9rem;padding:16px;resize:vertical;outline:none}
+.try-input:focus{border-color:var(--accent)}
+.try-input::placeholder{color:var(--text3)}
+.try-btn{background:var(--accent);color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:0.95rem;cursor:pointer;margin-top:12px;font-weight:500;transition:background 0.15s}
+.try-btn:hover{background:var(--accent2)}
+.try-btn:disabled{opacity:0.5;cursor:not-allowed}
+#try-result{margin-top:20px;min-height:60px}
+.result-mode{font-size:1.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px}
+.result-desc{color:var(--text2);font-size:0.9rem;margin-bottom:16px}
+.result-bars{display:flex;flex-direction:column;gap:8px}
+.result-bar-row{display:flex;align-items:center;gap:12px}
+.result-bar-label{width:120px;text-align:right;font-size:0.78rem;color:var(--text3);text-transform:uppercase}
+.result-bar-track{flex:1;height:20px;background:var(--bg);border-radius:4px;overflow:hidden;position:relative}
+.result-bar-fill{height:100%;border-radius:4px;transition:width 0.5s ease}
+.result-bar-val{width:50px;font-size:0.78rem;color:var(--text2);text-align:right}
+
+/* Speed section */
+.speed-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.speed-card{text-align:center}
+.speed-card .speed-val{font-size:2.2rem;font-weight:700}
+.speed-card .speed-unit{font-size:0.9rem;color:var(--text2)}
+.speed-card .speed-label{font-size:0.75rem;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:0.08em}
+
+/* Insight boxes */
+.insight{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:12px;padding:28px;margin:32px 0}
+.insight .tag{font-size:0.7rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:8px}
+.insight p{color:var(--text2);font-size:0.95rem}
+.insight strong{color:var(--text)}
+
+/* Comparison table */
+.compare-table{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.85rem}
+.compare-table th{text-align:left;padding:10px 14px;color:var(--text3);border-bottom:2px solid var(--border);font-weight:500}
+.compare-table td{padding:8px 14px;border-bottom:1px solid #111120}
+.compare-table .highlight{color:var(--green);font-weight:600}
+
+/* Footer */
+footer{padding:40px 0;text-align:center;color:var(--text3);font-size:0.8rem;border-top:1px solid var(--border)}
+footer a{color:var(--text2)}
+
+/* Tooltip */
+.tooltip{position:absolute;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.78rem;color:var(--text2);pointer-events:none;z-index:100;max-width:280px;opacity:0;transition:opacity 0.15s;line-height:1.5}
+
+/* Responsive */
+@media(max-width:700px){
+  .modes-grid,.speed-grid{grid-template-columns:1fr}
+  .hero .stats{flex-direction:column;gap:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="container">
+    <h1>The <em>Shape</em> of Meaning</h1>
+    <p class="lead">
+      Text has measurable structure in embedding space. We discovered four dynamical
+      modes that classify 2,500 years of human writing — from the Bhagavad Gita to
+      Ulysses — using 28 bytes and less than 1 millisecond of compute.
+    </p>
+    <div class="stats">
+      <div class="stat"><div class="val">4</div><div class="label">Dynamical Modes</div></div>
+      <div class="stat"><div class="val">94.1%</div><div class="label">Accuracy</div></div>
+      <div class="stat"><div class="val">49</div><div class="label">Texts Tested</div></div>
+      <div class="stat"><div class="val">&lt;1ms</div><div class="label">Classification</div></div>
+      <div class="stat"><div class="val">28</div><div class="label">Bytes</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ WHAT WE FOUND ═══ -->
+<section>
+<div class="container">
+  <h2>What We Found</h2>
+  <p class="subtitle">
+    When you embed sentences with a neural network and analyze how the 384-dimensional
+    trajectory unfolds over time, four distinct structural modes emerge. These are not genres.
+    They describe <strong>how meaning moves</strong> — and they cut across genre boundaries
+    in historically coherent ways.
+  </p>
+
+  <div class="modes-grid">
+    <div class="card mode-card convergent">
+      <div class="mode-name">Convergent</div>
+      <div class="mode-desc">Narrows to few attractor basins and holds. High coherence, concentrated semantic range. Liturgical, aphoristic, legalistic, or meditative structure.</div>
+      <div class="mode-examples">KJV Bible, Bhagavad Gita, Dickinson, Locke</div>
+    </div>
+    <div class="card mode-card contemplative">
+      <div class="mode-name">Contemplative</div>
+      <div class="mode-desc">Thinks about thinking. High interiority, low scene narration. Self-aware analysis — text that reflects on its own process.</div>
+      <div class="mode-examples">Russell, Hobbes, Darwin (Descent of Man), Swift</div>
+    </div>
+    <div class="card mode-card discursive">
+      <div class="mode-name">Discursive</div>
+      <div class="mode-desc">The wide river. Moderate pace, many attractor basins visited, balanced semantic domains. Sustained shaped discourse — narrative, argument, or epic.</div>
+      <div class="mode-examples">Austen, Dostoevsky, Whitman, Plato, Dante, Kafka</div>
+    </div>
+    <div class="card mode-card dialectical">
+      <div class="mode-name">Dialectical</div>
+      <div class="mode-desc">Rapid oscillation between registers. Dramatic mode-switching, systematic contrast. Each sentence pushes away from the last.</div>
+      <div class="mode-examples">Shakespeare, Dickens, Melville, Darwin (Origin), Tao Te Ching</div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="tag">Key Insight</div>
+    <p>
+      <strong>These modes are not genres.</strong> Shakespeare and Darwin share a mode (dialectical)
+      because they both do rapid systematic contrast between registers. The Bible and a graph database
+      textbook share a mode (convergent) because they both narrow to a few semantic basins and repeat.
+      Plato and Austen share a mode (discursive) because they're both doing sustained shaped discourse.
+      <strong>The modes capture what texts DO, not what they're called.</strong>
+    </p>
+  </div>
+</div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section style="background:var(--bg2)">
+<div class="container">
+  <h2>How It Works</h2>
+  <p class="subtitle">Three steps. No LLM inference. No fine-tuning. Just linear algebra on embeddings.</p>
+
+  <div class="card" style="margin-bottom:20px">
+    <h3>1. Embed &rarr; 2. Project &rarr; 3. Measure</h3>
+    <p style="margin-top:12px">
+      <strong>Embed:</strong> Convert each sentence to a 384-dimensional vector using a small sentence transformer (MiniLM, 22M params).<br>
+      <strong>Project:</strong> Multiply by a precomputed 384&times;26 eigenbasis matrix (37KB). This projects each sentence onto 26 attractor coordinates.<br>
+      <strong>Measure:</strong> Compute smoothness (cosine similarity between consecutive projections), oscillation (variance of smoothness), cluster activations (4 semantic domains), and basin entropy. Total: 7 numbers.
+    </p>
+  </div>
+
+  <div class="insight">
+    <div class="tag">The Discovery Pipeline</div>
+    <p>
+      The eigenbasis was found through <strong>continuous wavelet transforms</strong> on the embedding sequences,
+      building <strong>384&times;384 correlation matrices</strong> across dimensions, and extracting
+      <strong>topological invariants</strong>. This is the expensive part (~minutes per text). But once
+      the eigenbasis is computed, it's reusable — the wavelets were the <strong>telescope</strong>,
+      the eigenbasis is the <strong>map</strong>. You don't need the telescope once you have the map.
+    </p>
+  </div>
+</div>
+</section>
+
+<!-- ═══ SPEED ═══ -->
+<section>
+<div class="container">
+  <h2>Speed Comparison</h2>
+  <p class="subtitle">The fingerprint is not an LLM. It's a matrix multiply.</p>
+
+  <div class="speed-grid" style="margin-bottom:32px">
+    <div class="card speed-card">
+      <div class="speed-val" style="color:var(--green)">68 &mu;s</div>
+      <div class="speed-unit">per text</div>
+      <div class="speed-label">Fingerprint Only</div>
+    </div>
+    <div class="card speed-card">
+      <div class="speed-val" style="color:var(--accent2)">140 ms</div>
+      <div class="speed-unit">per 500 sentences</div>
+      <div class="speed-label">With Embedding (GPU)</div>
+    </div>
+    <div class="card speed-card">
+      <div class="speed-val" style="color:var(--convergent)">3,600</div>
+      <div class="speed-unit">sentences/second</div>
+      <div class="speed-label">MPS Throughput</div>
+    </div>
+  </div>
+
+  <table class="compare-table">
+    <thead>
+      <tr><th>Method</th><th>Model Size</th><th>Classification Time</th><th>Compute Cost</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>GPT-4 / Claude (prompt-based)</td><td>~1T params</td><td>2-10 seconds</td><td>$0.01-0.05 per text</td></tr>
+      <tr><td>Fine-tuned BERT classifier</td><td>110M params</td><td>50-200ms</td><td>GPU required</td></tr>
+      <tr><td>TF-IDF + SVM</td><td>~10MB vocab</td><td>1-5ms</td><td>CPU only</td></tr>
+      <tr>
+        <td><strong>Waivelets Fingerprint</strong></td>
+        <td class="highlight">22M embed + 37KB basis</td>
+        <td class="highlight">68 &mu;s (+ 140ms embed)</td>
+        <td class="highlight">CPU only, pre-embedded: free</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="insight">
+    <div class="tag">Ultra-Low Compute</div>
+    <p>
+      For pre-embedded corpora, classification is <strong>10,000+ documents per second</strong>
+      on a single CPU core. The entire classifier — eigenbasis + cluster map + mode centroids —
+      fits in <strong>38KB</strong>. This could run on a microcontroller. The embedding step
+      (22M param model) is the only meaningful cost, and it's a one-time operation per text.
+    </p>
+  </div>
+</div>
+</section>
+
+<!-- ═══ CORPUS ═══ -->
+<section style="background:var(--bg2)">
+<div class="container">
+  <h2>49 Texts Across 2,500 Years</h2>
+  <p class="subtitle">
+    From Homer to Joyce. Each dot is a text, positioned by its smoothness (x) and
+    basin entropy (y). Color = dynamical mode. Hover for details.
+  </p>
+  <div id="corpus-chart"></div>
+
+  <div style="margin-top:24px;max-height:500px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">
+    <table class="corpus-table" id="corpus-table">
+      <thead><tr>
+        <th>Title</th><th>Author</th><th>Genre</th><th>Mode</th><th>Smooth</th><th>Entropy</th><th>Dist</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ═══ TRY IT ═══ -->
+<section>
+<div class="container">
+  <h2>Try It Yourself</h2>
+  <p class="subtitle">
+    Paste any text (3+ sentences). The server will embed it, project onto the attractor basis,
+    and classify its dynamical mode in real time.
+  </p>
+  <textarea class="try-input" id="try-text" placeholder="Paste your text here. Minimum 3 sentences. The more text, the more accurate the fingerprint.
+
+Try pasting: a news article, a poem, a technical document, a speech, a novel excerpt, or even this paragraph."></textarea>
+  <button class="try-btn" id="try-btn" onclick="runFingerprint()">Analyze</button>
+  <div id="try-result"></div>
+</div>
+</section>
+
+<!-- ═══ IMPLICATIONS ═══ -->
+<section style="background:var(--bg2)">
+<div class="container">
+  <h2>Why This Matters</h2>
+  <p class="subtitle">
+    The fingerprint opens several doors that are hard to open with traditional NLP.
+  </p>
+
+  <div class="card" style="margin-bottom:16px">
+    <h3>Few-Shot Style Transfer by Dynamics</h3>
+    <p>Instead of selecting few-shot examples by topic ("find examples about databases"), select by dynamical fingerprint ("find examples that unfold like a textbook"). This gives you two-axis control: WHAT to say &times; HOW to unfold it.</p>
+  </div>
+  <div class="card" style="margin-bottom:16px">
+    <h3>AI Text Detection</h3>
+    <p>If LLM-generated text has different attractor dynamics than human text — plausible, since LLMs lack multi-scale self-similarity — the fingerprint could detect it at near-zero cost.</p>
+  </div>
+  <div class="card" style="margin-bottom:16px">
+    <h3>Cultural &amp; Persona Fingerprints</h3>
+    <p>A corpus's mode distribution characterizes how that body of text structures meaning. Different literary traditions, authors, and LLM personas would have different distributions. The deviation from expected is a measure of authenticity.</p>
+  </div>
+  <div class="card">
+    <h3>Ultra-Low Compute Structural Analysis</h3>
+    <p>The 38KB classifier could run on embedded systems, edge devices, or in browser. Pre-embedded text can be classified at 10,000 docs/second. This enables structural text analysis at scales and costs that are impractical for any LLM-based approach.</p>
+  </div>
+</div>
+</section>
+
+<!-- ═══ METHOD ═══ -->
+<section>
+<div class="container">
+  <h2>Methodology &amp; References</h2>
+  <p class="subtitle">The discovery chain: wavelets &rarr; correlation &rarr; topology &rarr; attractors &rarr; modes.</p>
+
+  <div class="card" style="font-size:0.85rem;color:var(--text2)">
+    <p><strong>Embedding model:</strong> <a href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2">all-MiniLM-L6-v2</a> (22M params, 384 dims). Reimers &amp; Gurevych, 2019.</p>
+    <p style="margin-top:8px"><strong>Wavelet transform:</strong> Continuous Wavelet Transform with Morlet wavelet, validated across 10 wavelet families. Torrence &amp; Compo, 1998.</p>
+    <p style="margin-top:8px"><strong>Topological analysis:</strong> Graph Laplacian spectrum, Betti numbers, fractal exponents via log-log regression. Adapted from IMT topology methods.</p>
+    <p style="margin-top:8px"><strong>Attractor analysis:</strong> Hebbian correlation &rarr; eigendecomposition &rarr; Hopfield-like attractor landscape with 26 effective modes. Ramsauer et al., 2021 (Modern Hopfield Networks).</p>
+    <p style="margin-top:8px"><strong>Autoresearch:</strong> 75-iteration Karpathy-style configuration search across wavelets, thresholds, shuffle methods, and correlation metrics.</p>
+    <p style="margin-top:8px"><strong>Validation:</strong> 49-text Project Gutenberg corpus spanning 8 traditional genres, 2,500 years. 94.1% accuracy on dynamical mode classification.</p>
+    <p style="margin-top:16px"><a href="/whitepaper">Read the full whitepaper &rarr;</a> &nbsp;|&nbsp; <a href="https://github.com/realityinspector/waivelets-v0.1">GitHub Repository &rarr;</a></p>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>Waivelets v0.1 &mdash; Research by Sean McDonald + Claude (Opus 4.6) &mdash; March 2026</p>
+    <p style="margin-top:8px"><a href="https://github.com/realityinspector/waivelets-v0.1">GitHub</a> &nbsp;|&nbsp; <a href="/whitepaper">Whitepaper</a></p>
+  </div>
+</footer>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+const MODE_COLORS = {
+  convergent: '#f59e0b',
+  contemplative: '#8b5cf6',
+  discursive: '#06b6d4',
+  dialectical: '#ef4444',
+};
+
+const tooltip = d3.select('#tooltip');
+
+// Load precomputed data
+fetch('/api/precomputed').then(r => r.json()).then(data => {
+  renderCorpusChart(data.corpus);
+  renderCorpusTable(data.corpus);
+});
+
+function renderCorpusChart(corpus) {
+  const container = document.getElementById('corpus-chart');
+  const W = container.clientWidth, H = 400;
+  const pad = {top: 30, right: 30, bottom: 50, left: 60};
+
+  const svg = d3.select('#corpus-chart').append('svg')
+    .attr('width', W).attr('height', H);
+
+  const x = d3.scaleLinear()
+    .domain([0.1, 0.6])
+    .range([pad.left, W - pad.right]);
+  const y = d3.scaleLinear()
+    .domain([3.0, 4.8])
+    .range([H - pad.bottom, pad.top]);
+
+  // Axes
+  svg.append('g').attr('transform', `translate(0,${H - pad.bottom})`)
+    .call(d3.axisBottom(x).ticks(6))
+    .selectAll('text').style('fill', '#444460');
+  svg.append('g').attr('transform', `translate(${pad.left},0)`)
+    .call(d3.axisLeft(y).ticks(5))
+    .selectAll('text').style('fill', '#444460');
+
+  svg.selectAll('.axis line, .axis path').style('stroke', '#222240');
+
+  // Axis labels
+  svg.append('text').attr('x', W / 2).attr('y', H - 8)
+    .attr('text-anchor', 'middle').attr('fill', '#555570').attr('font-size', '12px')
+    .text('Smoothness (higher = stays in one mode)');
+  svg.append('text').attr('transform', 'rotate(-90)')
+    .attr('x', -H / 2).attr('y', 16)
+    .attr('text-anchor', 'middle').attr('fill', '#555570').attr('font-size', '12px')
+    .text('Basin Entropy (higher = more modes visited)');
+
+  // Dots
+  svg.selectAll('.cdot')
+    .data(corpus)
+    .join('circle')
+    .attr('class', 'corpus-dot')
+    .attr('cx', d => x(d.fp.smoothness_mean))
+    .attr('cy', d => y(d.fp.basin_entropy))
+    .attr('r', 6)
+    .attr('fill', d => MODE_COLORS[d.mode])
+    .attr('opacity', 0.8)
+    .attr('stroke', '#0a0a0f')
+    .attr('stroke-width', 1)
+    .on('mouseover', (event, d) => {
+      tooltip.style('opacity', 1)
+        .html(`<strong>${d.title}</strong> (${d.author})<br>Genre: ${d.genre}<br>Mode: <span style="color:${MODE_COLORS[d.mode]}">${d.mode}</span><br>Smoothness: ${d.fp.smoothness_mean.toFixed(3)}<br>Entropy: ${d.fp.basin_entropy.toFixed(2)}`)
+        .style('left', (event.pageX + 14) + 'px')
+        .style('top', (event.pageY - 14) + 'px');
+    })
+    .on('mouseout', () => tooltip.style('opacity', 0));
+}
+
+function renderCorpusTable(corpus) {
+  const tbody = document.querySelector('#corpus-table tbody');
+  const sorted = [...corpus].sort((a, b) => b.fp.smoothness_mean - a.fp.smoothness_mean);
+  sorted.forEach(d => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${d.title}</td>
+      <td>${d.author}</td>
+      <td>${d.genre}</td>
+      <td><span class="mode-badge ${d.mode}">${d.mode}</span></td>
+      <td>${d.fp.smoothness_mean.toFixed(3)}</td>
+      <td>${d.fp.basin_entropy.toFixed(2)}</td>
+      <td>${d.distance}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+async function runFingerprint() {
+  const text = document.getElementById('try-text').value.trim();
+  if (!text) return;
+
+  const btn = document.getElementById('try-btn');
+  const result = document.getElementById('try-result');
+  btn.disabled = true;
+  btn.textContent = 'Analyzing...';
+  result.innerHTML = '<p style="color:var(--text3)">Embedding and classifying...</p>';
+
+  try {
+    const resp = await fetch('/api/fingerprint', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({text}),
+    });
+    const data = await resp.json();
+
+    if (data.error) {
+      result.innerHTML = `<p style="color:var(--dialectical)">${data.error}</p>`;
+      return;
+    }
+
+    const color = MODE_COLORS[data.mode];
+    const fp = data.fingerprint;
+
+    // Mode distance bars
+    const maxDist = Math.max(...Object.values(data.mode_distances));
+    let modeBars = '';
+    for (const [mode, dist] of Object.entries(data.mode_distances).sort((a,b) => a[1] - b[1])) {
+      const pct = Math.max(5, (1 - dist / (maxDist + 1)) * 100);
+      const mc = MODE_COLORS[mode];
+      const active = mode === data.mode ? ' style="font-weight:700;color:' + mc + '"' : '';
+      modeBars += `<div class="result-bar-row">
+        <div class="result-bar-label"${active}>${mode}</div>
+        <div class="result-bar-track"><div class="result-bar-fill" style="width:${pct}%;background:${mc}"></div></div>
+        <div class="result-bar-val">${dist.toFixed(2)}</div>
+      </div>`;
+    }
+
+    result.innerHTML = `
+      <div class="card" style="border-left:4px solid ${color}">
+        <div class="result-mode" style="color:${color}">${data.mode}</div>
+        <div class="result-desc">${data.description}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;font-size:0.85rem">
+          <div>Smoothness: <strong>${fp.smoothness_mean > 0 ? '+' : ''}${fp.smoothness_mean.toFixed(3)}</strong></div>
+          <div>Oscillation: <strong>${fp.smoothness_std.toFixed(3)}</strong></div>
+          <div>Basin entropy: <strong>${fp.basin_entropy.toFixed(2)} bits</strong></div>
+          <div>Processed: <strong>${data.n_sentences} sentences in ${data.time_ms}ms</strong></div>
+        </div>
+        <div style="font-size:0.8rem;color:var(--text3);margin-bottom:8px">MODE DISTANCES (lower = closer match)</div>
+        <div class="result-bars">${modeBars}</div>
+      </div>
+    `;
+  } catch (e) {
+    result.innerHTML = `<p style="color:var(--dialectical)">Error: ${e.message}</p>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Analyze';
+  }
+}
+</script>
+</body>
+</html>

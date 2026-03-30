@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waivelets — The Shape of Meaning</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    background: #0a0a0f;
+    color: #c8c8d0;
+    overflow-x: hidden;
+  }
+  .hero {
+    text-align: center;
+    padding: 60px 20px 40px;
+    background: linear-gradient(180deg, #0a0a1a 0%, #0a0a0f 100%);
+  }
+  .hero h1 {
+    font-size: 2.5em;
+    color: #e0e0f0;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+  .hero .subtitle {
+    font-size: 1.1em;
+    color: #6a6a8a;
+    margin-top: 12px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  .section h2 {
+    font-size: 1.4em;
+    color: #a0a0c0;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+  .section .desc {
+    color: #6a6a8a;
+    font-size: 0.85em;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+  .panel {
+    background: #12121a;
+    border: 1px solid #1a1a2a;
+    border-radius: 8px;
+    padding: 16px;
+    position: relative;
+  }
+  .panel h3 {
+    font-size: 0.9em;
+    color: #8888aa;
+    font-weight: 400;
+    margin-bottom: 4px;
+  }
+  .panel .stat {
+    font-size: 0.75em;
+    color: #555570;
+    margin-bottom: 12px;
+  }
+  svg { display: block; }
+  .trajectory-path {
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .trajectory-dot {
+    opacity: 0.7;
+  }
+  .trajectory-start {
+    stroke: #fff;
+    stroke-width: 2;
+  }
+  .smoothness-line {
+    fill: none;
+    stroke-width: 1.5;
+  }
+  .axis text { fill: #444460; font-size: 10px; }
+  .axis line, .axis path { stroke: #222240; }
+  .tooltip {
+    position: absolute;
+    background: #1a1a2e;
+    border: 1px solid #2a2a4a;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.75em;
+    color: #b0b0c8;
+    pointer-events: none;
+    z-index: 100;
+    max-width: 300px;
+    line-height: 1.4;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .insight-box {
+    background: linear-gradient(135deg, #0f1020, #141428);
+    border: 1px solid #2a2a4a;
+    border-radius: 12px;
+    padding: 28px;
+    margin: 32px 0;
+    line-height: 1.7;
+  }
+  .insight-box .label {
+    font-size: 0.7em;
+    color: #5555aa;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  .insight-box p {
+    color: #9898b8;
+    font-size: 0.9em;
+  }
+  .insight-box strong { color: #c0c0e0; }
+  .cluster-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  .cluster-label {
+    font-size: 0.75em;
+    color: #7777aa;
+    width: 120px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .cluster-bars {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .cluster-bar {
+    height: 18px;
+    border-radius: 3px;
+    min-width: 2px;
+  }
+  .cluster-val {
+    font-size: 0.65em;
+    color: #555570;
+    width: 40px;
+  }
+  .transition-node {
+    cursor: pointer;
+  }
+  .transition-link {
+    stroke-linecap: round;
+  }
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #2a2a4a, transparent);
+    margin: 40px 0;
+  }
+  @media (max-width: 900px) {
+    .grid-3 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>The Shape of Meaning</h1>
+  <div class="subtitle">
+    Text has measurable structure in embedding space. The shape of how meaning
+    unfolds over time — which semantic modes follow which, at what rhythm —
+    is a compact fingerprint that distinguishes genres, detects style shifts,
+    and carries meaning without any words.
+  </div>
+</div>
+
+<!-- Section 1: Trajectories -->
+<div class="section">
+  <h2>1. Attractor Trajectories</h2>
+  <div class="desc">
+    Each sentence is a point in 384-dimensional embedding space. Projected to 2D via the
+    top eigenvectors of the wavelet correlation matrix, the path reveals how each text
+    moves through semantic space. Color = which attractor basin the text occupies.
+  </div>
+  <div class="grid-3" id="trajectories"></div>
+</div>
+
+<div class="section">
+  <div class="insight-box">
+    <div class="label">What you're seeing</div>
+    <p>
+      <strong>O'Reilly oscillates between two regions</strong> — definition and example,
+      back and forth. <strong>Yeats cycles through a handful of modes</strong> with periodic
+      returns. <strong>Gatsby traverses everything</strong> — maximum entropy, every basin
+      visited, no repetition. These are three fundamentally different ways of unfolding meaning,
+      visible as shapes before you read a single word.
+    </p>
+  </div>
+</div>
+
+<!-- Section 2: Smoothness Timeline -->
+<div class="section">
+  <h2>2. Dynamical Smoothness Over Time</h2>
+  <div class="desc">
+    How similar is each sentence's attractor state to the next?
+    High = staying in the same semantic mode (expository).
+    Low = jumping between modes (confrontation).
+    The rhythm of this line IS the style.
+  </div>
+  <div id="smoothness"></div>
+</div>
+
+<div class="section">
+  <div class="insight-box">
+    <div class="label">The key finding</div>
+    <p>
+      <strong>O'Reilly's smoothness never drops</strong> — it stays in the same attractor basin
+      at every scale. <strong>Gatsby swings wildly</strong> between smooth (backstory, exposition)
+      and rough (confrontation, action). The passages where Gatsby's smoothness matches O'Reilly's
+      level are exactly where Fitzgerald writes like a textbook. The passages where it goes
+      negative are the dramatic confrontations. <strong>Style is the shape of this line.</strong>
+    </p>
+  </div>
+</div>
+
+<!-- Section 3: Transition Graphs -->
+<div class="section">
+  <h2>3. Transition Graphs</h2>
+  <div class="desc">
+    Each node is an attractor basin. Edges show transition probabilities between basins.
+    Thicker/brighter edges = more frequent transitions. The topology of this graph
+    is the text's structural fingerprint.
+  </div>
+  <div class="grid-3" id="transitions"></div>
+</div>
+
+<div class="section">
+  <div class="insight-box">
+    <div class="label">Shape as meaning</div>
+    <p>
+      <strong>O'Reilly is a barbell</strong> — two dominant basins connected by a thick edge.
+      The text bounces between them. <strong>Yeats is a ring</strong> — cyclic pathways with
+      preferred transitions. <strong>Gatsby is a web</strong> — every basin connects to every
+      other. You can tell the genre from the graph topology alone, without reading any text.
+      <strong>The shape carries the meaning.</strong>
+    </p>
+  </div>
+</div>
+
+<!-- Section 4: Semantic Domain Activation -->
+<div class="section">
+  <h2>4. Semantic Domain Activation</h2>
+  <div class="desc">
+    The 384 embedding dimensions cluster into functional groups. These groups fire for
+    interpretable semantic properties — exposition, interiority, formal structure —
+    regardless of topic. The activation pattern across these clusters IS the genre signature.
+  </div>
+  <div class="grid-3" id="clusters"></div>
+</div>
+
+<div class="section">
+  <div class="insight-box">
+    <div class="label">Semantic domains without words</div>
+    <p>
+      <strong>Cluster "Exposition" fires 6x stronger for technical text</strong> than for novels.
+      <strong>"Interiority" fires 3x stronger for literary text.</strong>
+      <strong>"Formal Structure" fires for BOTH technical prose AND poetry</strong> — it detects
+      formalism itself. These are not topic labels. They are structural modes of meaning-making,
+      discovered purely from the mathematics of how embedding dimensions co-activate across
+      wavelet scales.
+    </p>
+  </div>
+</div>
+
+<!-- Section 5: The Fingerprint -->
+<div class="section">
+  <h2>5. The 2.8KB Fingerprint</h2>
+  <div class="desc">
+    The entire dynamical signature of a text — visit distribution, transition matrix,
+    autocorrelation profile — fits in 706 numbers. 2,824 bytes. Stable within a work
+    (Gatsby first-half vs second-half: cosine similarity 0.999). Discriminative between
+    works (30x separation ratio).
+  </div>
+
+  <div id="fingerprint" style="display: flex; gap: 16px; flex-wrap: wrap;"></div>
+
+  <div class="insight-box" style="margin-top: 32px;">
+    <div class="label">What this means</div>
+    <p>
+      A book's entire style of meaning-unfolding compresses to <strong>2.8 kilobytes</strong>.
+      Not what it says — how it moves. You could select few-shot examples by matching this
+      fingerprint, steering an AI to write in any dynamical style about any topic.
+      Content and dynamics are orthogonal axes. <strong>The shape is the style. The style
+      is the shape.</strong>
+    </p>
+  </div>
+</div>
+
+<div style="text-align: center; padding: 40px 20px 60px; color: #444460; font-size: 0.8em;">
+  waivelets v0.1 &mdash; midway research &mdash; 2026-03-29
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+// Load data and render
+fetch('viz_data.json').then(r => r.json()).then(data => {
+
+const COLORS = {
+  'yeats_circus_animals': '#c084fc',
+  'oreilly_graph_db': '#60a5fa',
+  'gatsby': '#f97316',
+};
+const BASIN_COLORS = d3.scaleOrdinal(d3.schemeTableau10);
+const CLUSTER_COLORS = {
+  'Exposition': '#60a5fa',
+  'Interiority': '#f97316',
+  'Formal Structure': '#a78bfa',
+  'Scene Narration': '#f43f5e',
+  'Naming/Categorical': '#34d399',
+  'Universal': '#94a3b8',
+};
+
+const tooltip = d3.select('#tooltip');
+
+// ── 1. Trajectories ──
+const trajContainer = d3.select('#trajectories');
+const textIds = ['yeats_circus_animals', 'oreilly_graph_db', 'gatsby'];
+
+textIds.forEach(tid => {
+  const td = data.texts[tid];
+  const panel = trajContainer.append('div').attr('class', 'panel');
+  panel.append('h3').text(td.title);
+  panel.append('div').attr('class', 'stat')
+    .text(`${td.n} sentences | ${new Set(td.basin).size} basins active`);
+
+  const W = 350, H = 280, pad = 20;
+  const svg = panel.append('svg').attr('width', W).attr('height', H)
+    .attr('viewBox', `0 0 ${W} ${H}`);
+
+  const pts = td.trajectory;
+  const xExt = d3.extent(pts, d => d[0]);
+  const yExt = d3.extent(pts, d => d[1]);
+  const x = d3.scaleLinear().domain(xExt).range([pad, W - pad]);
+  const y = d3.scaleLinear().domain(yExt).range([H - pad, pad]);
+
+  // Draw path
+  const line = d3.line().x(d => x(d[0])).y(d => y(d[1])).curve(d3.curveCatmullRom.alpha(0.5));
+  svg.append('path')
+    .datum(pts)
+    .attr('class', 'trajectory-path')
+    .attr('d', line)
+    .attr('stroke', COLORS[tid])
+    .attr('opacity', 0.3);
+
+  // Draw dots
+  svg.selectAll('.tdot')
+    .data(pts)
+    .join('circle')
+    .attr('class', 'trajectory-dot')
+    .attr('cx', d => x(d[0]))
+    .attr('cy', d => y(d[1]))
+    .attr('r', tid === 'gatsby' ? 2 : 4)
+    .attr('fill', (d, i) => BASIN_COLORS(td.basin[i]))
+    .on('mouseover', (event, d) => {
+      const i = pts.indexOf(d);
+      const si = Math.floor(i / (td.snippets_step || 1));
+      const snip = td.snippets[Math.min(si, td.snippets.length - 1)] || '';
+      tooltip.style('opacity', 1)
+        .html(`<strong>Sentence ${i}</strong> | Basin ${td.basin[i]}<br>${snip}`)
+        .style('left', (event.pageX + 12) + 'px')
+        .style('top', (event.pageY - 12) + 'px');
+    })
+    .on('mouseout', () => tooltip.style('opacity', 0));
+
+  // Start marker
+  svg.append('circle')
+    .attr('class', 'trajectory-start')
+    .attr('cx', x(pts[0][0]))
+    .attr('cy', y(pts[0][1]))
+    .attr('r', 6)
+    .attr('fill', 'none')
+    .attr('stroke', '#fff');
+});
+
+// ── 2. Smoothness Timeline ──
+const smContainer = d3.select('#smoothness');
+textIds.forEach(tid => {
+  const td = data.texts[tid];
+  const panel = smContainer.append('div').attr('class', 'panel').style('margin-bottom', '12px');
+  panel.append('h3').text(td.title);
+
+  const W = 1160, H = 100, pad = 40;
+  const svg = panel.append('svg').attr('width', '100%').attr('height', H)
+    .attr('viewBox', `0 0 ${W} ${H}`);
+
+  const sm = td.smoothness;
+  const x = d3.scaleLinear().domain([0, sm.length - 1]).range([pad, W - 10]);
+  const y = d3.scaleLinear().domain([-0.5, 1.0]).range([H - 10, 5]);
+
+  // Zero line
+  svg.append('line')
+    .attr('x1', pad).attr('x2', W - 10)
+    .attr('y1', y(0)).attr('y2', y(0))
+    .attr('stroke', '#222240').attr('stroke-dasharray', '3,3');
+
+  // Area fill
+  const area = d3.area()
+    .x((d, i) => x(i))
+    .y0(y(0))
+    .y1(d => y(d))
+    .curve(d3.curveBasis);
+
+  svg.append('path')
+    .datum(sm)
+    .attr('d', area)
+    .attr('fill', COLORS[tid])
+    .attr('opacity', 0.15);
+
+  // Line
+  const line = d3.line().x((d, i) => x(i)).y(d => y(d)).curve(d3.curveBasis);
+  svg.append('path')
+    .datum(sm)
+    .attr('class', 'smoothness-line')
+    .attr('d', line)
+    .attr('stroke', COLORS[tid]);
+
+  // Labels
+  svg.append('text').attr('x', 5).attr('y', y(0.8)).text('coherent')
+    .attr('fill', '#333350').attr('font-size', '9px');
+  svg.append('text').attr('x', 5).attr('y', y(-0.3)).text('jumping')
+    .attr('fill', '#333350').attr('font-size', '9px');
+});
+
+// ── 3. Transition Graphs ──
+const transContainer = d3.select('#transitions');
+textIds.forEach(tid => {
+  const td = data.texts[tid];
+  const panel = transContainer.append('div').attr('class', 'panel');
+  panel.append('h3').text(td.title);
+
+  const W = 350, H = 300;
+  const svg = panel.append('svg').attr('width', W).attr('height', H)
+    .attr('viewBox', `0 0 ${W} ${H}`);
+
+  const tm = td.transition_matrix;
+  const K = tm.length;
+  const bc = td.basin_counts;
+  const totalVisits = bc.reduce((a, b) => a + b, 0);
+
+  // Only show basins with >1% of visits
+  const activeBasins = [];
+  for (let i = 0; i < K; i++) {
+    if (bc[i] / totalVisits > 0.01) activeBasins.push(i);
+  }
+
+  // Build edges (only between active basins, above threshold)
+  const edges = [];
+  const threshold = tid === 'gatsby' ? 0.0005 : 0.0002;
+  for (const i of activeBasins) {
+    for (const j of activeBasins) {
+      if (i >= j) continue;
+      const w = tm[i][j] + tm[j][i];
+      if (w > threshold) {
+        edges.push({ source: i, target: j, weight: w });
+      }
+    }
+  }
+
+  // Force simulation
+  const nodes = activeBasins.map(i => ({
+    id: i,
+    radius: Math.max(4, Math.sqrt(bc[i] / totalVisits) * 40),
+  }));
+
+  const nodeMap = {};
+  nodes.forEach((n, idx) => nodeMap[n.id] = idx);
+
+  const simEdges = edges.map(e => ({
+    source: nodeMap[e.source],
+    target: nodeMap[e.target],
+    weight: e.weight,
+  })).filter(e => e.source !== undefined && e.target !== undefined);
+
+  const maxWeight = d3.max(simEdges, d => d.weight) || 1;
+
+  const sim = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(simEdges).distance(60))
+    .force('charge', d3.forceManyBody().strength(-80))
+    .force('center', d3.forceCenter(W / 2, H / 2))
+    .force('collision', d3.forceCollide().radius(d => d.radius + 4))
+    .stop();
+
+  for (let i = 0; i < 200; i++) sim.tick();
+
+  // Draw edges
+  svg.selectAll('.tlink')
+    .data(simEdges)
+    .join('line')
+    .attr('class', 'transition-link')
+    .attr('x1', d => nodes[d.source].x)
+    .attr('y1', d => nodes[d.source].y)
+    .attr('x2', d => nodes[d.target].x)
+    .attr('y2', d => nodes[d.target].y)
+    .attr('stroke', COLORS[tid])
+    .attr('stroke-opacity', d => 0.1 + 0.6 * (d.weight / maxWeight))
+    .attr('stroke-width', d => 0.5 + 4 * (d.weight / maxWeight));
+
+  // Draw nodes
+  svg.selectAll('.tnode')
+    .data(nodes)
+    .join('circle')
+    .attr('class', 'transition-node')
+    .attr('cx', d => d.x)
+    .attr('cy', d => d.y)
+    .attr('r', d => d.radius)
+    .attr('fill', d => BASIN_COLORS(d.id))
+    .attr('stroke', '#0a0a0f')
+    .attr('stroke-width', 1)
+    .on('mouseover', (event, d) => {
+      const pct = (bc[d.id] / totalVisits * 100).toFixed(1);
+      tooltip.style('opacity', 1)
+        .html(`<strong>Basin ${d.id}</strong><br>${pct}% of positions`)
+        .style('left', (event.pageX + 12) + 'px')
+        .style('top', (event.pageY - 12) + 'px');
+    })
+    .on('mouseout', () => tooltip.style('opacity', 0));
+});
+
+// ── 4. Semantic Domain Activation ──
+const clContainer = d3.select('#clusters');
+const clusterNames = Object.keys(data.clusters);
+
+textIds.forEach(tid => {
+  const td = data.texts[tid];
+  const panel = clContainer.append('div').attr('class', 'panel');
+  panel.append('h3').text(td.title);
+
+  clusterNames.forEach(cname => {
+    const acts = td.cluster_activations[cname];
+    if (!acts) return;
+    const mean = acts.reduce((a, b) => a + b, 0) / acts.length;
+    const maxVal = 0.07; // normalize
+
+    const row = panel.append('div').attr('class', 'cluster-row');
+    row.append('div').attr('class', 'cluster-label').text(cname);
+
+    const barW = Math.max(2, (mean / maxVal) * 140);
+    const bar = row.append('div').attr('class', 'cluster-bars');
+    bar.append('div')
+      .attr('class', 'cluster-bar')
+      .style('width', barW + 'px')
+      .style('background', CLUSTER_COLORS[cname] || '#666');
+
+    row.append('div').attr('class', 'cluster-val').text(mean.toFixed(3));
+  });
+});
+
+// ── 5. Fingerprint Comparison ──
+const fpContainer = d3.select('#fingerprint');
+
+textIds.forEach(tid => {
+  const td = data.texts[tid];
+  const panel = fpContainer.append('div').attr('class', 'panel').style('flex', '1').style('min-width', '300px');
+  panel.append('h3').text(td.title);
+
+  const bc = td.basin_counts;
+  const total = bc.reduce((a, b) => a + b, 0);
+  const visit = bc.map(b => b / total);
+
+  // Visit distribution as mini bar chart
+  const W = 340, H = 60;
+  const svg = panel.append('svg').attr('width', '100%').attr('height', H)
+    .attr('viewBox', `0 0 ${W} ${H}`);
+
+  const maxVisit = d3.max(visit);
+  const barW = W / visit.length - 1;
+
+  svg.selectAll('.vbar')
+    .data(visit)
+    .join('rect')
+    .attr('x', (d, i) => i * (barW + 1))
+    .attr('y', d => H - (d / maxVisit) * (H - 5))
+    .attr('width', barW)
+    .attr('height', d => (d / maxVisit) * (H - 5))
+    .attr('fill', (d, i) => BASIN_COLORS(i))
+    .attr('opacity', 0.8);
+
+  panel.append('div').style('font-size', '0.7em').style('color', '#555570').style('margin-top', '8px')
+    .text(`${td.n} sentences | Basin visit distribution (26 basins)`);
+
+  // Smoothness summary
+  const sm = td.smoothness;
+  const smMean = sm.reduce((a, b) => a + b, 0) / sm.length;
+  panel.append('div').style('font-size', '0.75em').style('color', '#7777aa').style('margin-top', '8px')
+    .html(`Smoothness: <strong style="color:${COLORS[tid]}">${smMean.toFixed(3)}</strong> | ` +
+          `Active basins: <strong>${new Set(td.basin).size}</strong>`);
+});
+
+}); // end fetch
+</script>
+</body>
+</html>

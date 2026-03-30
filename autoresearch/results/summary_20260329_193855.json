@@ -1,0 +1,32 @@
+{
+  "timestamp": "20260329_193855",
+  "iterations": 5,
+  "n_improved": 1,
+  "n_failed": 0,
+  "best_significance_score": 1.24972367945684,
+  "best_config": {
+    "wavelet": "morl",
+    "max_scale_ratio": 0.5,
+    "min_scale": 1,
+    "scale_step": "linear",
+    "correlation_threshold": 0.5,
+    "correlation_method": "pearson",
+    "fractal_method": "polyfit",
+    "fractal_fit_range_low": 0.0,
+    "fractal_fit_range_high": 1.0,
+    "shuffle_method": "permute_rows",
+    "baseline_trials": 5,
+    "weight_edges": true
+  },
+  "all_scores": [
+    1.24972367945684,
+    1.24972367945684,
+    1.24972367945684,
+    1.24972367945684,
+    0.6084732141755775
+  ],
+  "texts_used": [
+    "yeats_circus_animals"
+  ],
+  "clusters": null
+}

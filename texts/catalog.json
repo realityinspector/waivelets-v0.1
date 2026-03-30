@@ -1,0 +1,25 @@
+{
+  "texts": {
+    "yeats_circus_animals": {
+      "title": "The Circus Animals' Desertion (Yeats)",
+      "source": "content.json",
+      "source_key": "texts.yeats",
+      "unit": "line",
+      "precomputed_embeddings": null
+    },
+    "oreilly_graph_db": {
+      "title": "Graph Databases (O'Reilly extract)",
+      "source": "content.json",
+      "source_key": "texts.oreilly",
+      "unit": "sentence",
+      "precomputed_embeddings": null
+    },
+    "gatsby": {
+      "title": "The Great Gatsby",
+      "source": "texts/gatsby.json",
+      "source_key": "para",
+      "unit": "paragraph",
+      "precomputed_embeddings": "texts/GatsbyEmbed.json"
+    }
+  }
+}
