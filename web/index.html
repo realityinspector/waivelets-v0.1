@@ -338,7 +338,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
   <div class="callout">
     <div class="tag">Honest limitations</div>
     <p>
-      This is a research preview, not a production detector. <strong>Short texts (&lt;5 sentences) are unreliable.</strong>
+      This is a research preview, not a production detector. <strong>Short texts (&lt;15 sentences) are unreliable.</strong>
       Adversarial AI text (casual tone, style mimicry) evades detection ~29% of the time.
       The eval corpus is 79 samples — not thousands. The classifier was trained on LLM-generated text
       and may not generalize to all LLMs. Human text from unusual genres (legal boilerplate, liturgical repetition)
@@ -407,7 +407,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
     </thead>
     <tbody>
       <tr>
-        <td>GPT-4 prompt <span style="font-size:0.72rem;color:var(--text3)">(different task)</span></td>
+        <td>LLM prompt <span style="font-size:0.72rem;color:var(--text3)">(different task)</span></td>
         <td>~1T params</td><td>2&ndash;10 sec</td><td>N/A</td><td>Yes</td><td>$0.01&ndash;0.05</td>
       </tr>
       <tr>
@@ -432,7 +432,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
   <div class="callout">
     <div class="tag">Where Waivelets actually wins</div>
     <p>
-      The real story isn't "faster than GPT-4" &mdash; that's apples to oranges.
+      The real story isn't "faster than an LLM" &mdash; that's apples to oranges.
       It's that <strong>the entire classifier fits in 38KB</strong>. The MiniLM embedding model is 22M params,
       but that's a one-time cost shared across every downstream task. Once you have embeddings
       (which many pipelines already do), structural classification is essentially free:
@@ -447,7 +447,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
 <!-- ═══ CORPUS EXPLORER ═══ -->
 <section id="corpus">
 <div class="container">
-  <h2>100 texts. 2,500 years. 8 genres.</h2>
+  <h2>100 texts. 2,500 years. 7 genres.</h2>
   <p class="subtitle">
     From Homer's Iliad to Kafka's Trial. Each dot is a text, positioned by how its
     meaning moves through embedding space. Click any dot.
@@ -508,7 +508,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
       <div class="mc-name">Convergent</div>
       <div class="mc-desc">Narrows to few attractor basins and holds. High coherence, concentrated semantic range. Liturgical, aphoristic, or legalistic repetition.</div>
       <div class="mc-examples">Augustine, Bhagavad Gita, Dickinson, KJV Bible, Locke</div>
-      <div class="mc-stat">High smoothness (+0.40) &middot; Low entropy (3.8 bits)</div>
+      <div class="mc-stat">High smoothness (+0.40) &middot; Low entropy (3.6 bits)</div>
     </div>
     <div class="mode-card contemplative" onclick="loadExample('darwin')">
       <div class="mc-name">Contemplative</div>
@@ -533,8 +533,8 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
   <div class="callout" style="margin-top:32px">
     <div class="tag">The surprising cross-cuts</div>
     <p>
-      <strong>Drama is 100% dialectical.</strong> All 9 plays in our corpus &mdash; Shakespeare, Wilde,
-      every one &mdash; register as dialectical. Dialogue IS register oscillation.
+      <strong>Drama is overwhelmingly dialectical.</strong> 7 of 9 plays in our corpus register
+      as dialectical. Dialogue IS register oscillation.
       Meanwhile, <strong>religious texts cluster convergent</strong>: the Gita, Augustine's Confessions,
       and the KJV Bible all converge to few semantic basins and cycle there.
       Darwin's two books split across modes: <strong>Origin</strong> (dialectical, arguing evidence)
@@ -619,7 +619,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
       the original repo &mdash; which contained the raw wavelet analysis code, a 49-text validation corpus, and a
       static Shiny app &mdash; we rebuilt the entire pipeline: wrote <code>fastprint.py</code> (a zero-dependency
       fingerprinter that classifies text in 68&mu;s), scaled the Gutenberg corpus from 49 to 100 texts across
-      8 genres and 2,500 years of writing, built a FastAPI server with a live fingerprinting API, designed
+      7 genres and 2,500 years of writing, built a FastAPI server with a live fingerprinting API, designed
       this interactive frontend with D3.js visualizations, and deployed everything to Railway with auto-deploy
       from GitHub. The four dynamical modes &mdash; convergent, contemplative, discursive, dialectical &mdash; held up
       at scale: drama went 100% dialectical, religious texts clustered convergent, and Darwin's two books
@@ -761,7 +761,7 @@ function animateRace() {
 function renderSizeCompare() {
   const el = document.getElementById('size-compare');
   const items = [
-    {name: 'GPT-4', size: '1 TB', px: 180, color: '#555'},
+    {name: 'LLM (~1T)', size: '1 TB', px: 180, color: '#555'},
     {name: 'BERT', size: '440 MB', px: 100, color: '#7c3aed'},
     {name: 'TF-IDF', size: '10 MB', px: 50, color: '#b45309'},
     {name: 'Waivelets', size: '38 KB', px: 14, color: '#34d399'},

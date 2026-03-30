@@ -32,7 +32,7 @@ These are not genres. Shakespeare and Darwin share a mode (dialectical) because 
 | Fingerprint size | **28 bytes** (7 float32s) |
 | Classifier size | **38 KB** (eigenbasis + clusters + centroids) |
 | Embedding model | all-MiniLM-L6-v2 (22M params, not included in 38KB) |
-| Corpus validated | **100 texts**, 8 genres, 2,500 years |
+| Corpus validated | **100 texts**, 7 genres, 2,500 years |
 | Compression ratio | **22 million to 1** |
 
 > **On speed claims:** The 68μs number is the classification step only — the matrix multiply after embeddings are computed. The full pipeline (MiniLM embedding + classification) runs ~5–50ms on CPU. For pre-embedded corpora (common in search/retrieval pipelines), you skip embedding and get 10K+ docs/sec. We compare against fine-tuned BERT (~200ms) as the closest apples-to-apples, not LLM inference which is a fundamentally different task.
@@ -149,7 +149,7 @@ Built and shipped AI vs human text detection. Ran comprehensive eval: 39 AI-gene
 
 ### March 29, 2026 — Launch
 
-Took Waivelets from a research notebook to a live, interactive research tool. Starting from the original repo — which contained the raw wavelet analysis code, a 49-text validation corpus, and a static Shiny app — we rebuilt the entire pipeline: wrote `fastprint.py` (a zero-dependency fingerprinter), scaled the Gutenberg corpus from 49 to 100 texts across 8 genres and 2,500 years of writing, built a FastAPI server with a live fingerprinting API, designed an interactive frontend with D3.js visualizations, and deployed everything to Railway with auto-deploy from GitHub. The four dynamical modes held up at scale: drama went 100% dialectical, religious texts clustered convergent, and Darwin's two books split across modes exactly as the theory predicts.
+Took Waivelets from a research notebook to a live, interactive research tool. Starting from the original repo — which contained the raw wavelet analysis code, a 49-text validation corpus, and a static Shiny app — we rebuilt the entire pipeline: wrote `fastprint.py` (a zero-dependency fingerprinter), scaled the Gutenberg corpus from 49 to 100 texts across 7 genres and 2,500 years of writing, built a FastAPI server with a live fingerprinting API, designed an interactive frontend with D3.js visualizations, and deployed everything to Railway with auto-deploy from GitHub. The four dynamical modes held up at scale: drama went 100% dialectical, religious texts clustered convergent, and Darwin's two books split across modes exactly as the theory predicts.
 
 ## Credits
 

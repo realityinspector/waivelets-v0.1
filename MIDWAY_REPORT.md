@@ -8,7 +8,7 @@
 
 ## TL;DR
 
-Text has a measurable **shape** in embedding space. We discovered four **dynamical structural modes** — convergent, contemplative, discursive, dialectical — that describe HOW meaning unfolds over time, independent of content or genre. These modes are computed from 7 numbers in <1ms after embedding, validated on a 100-text Gutenberg corpus spanning 8 genres and 2,500 years. The same fingerprint detects AI-generated text at 93.7% accuracy — AI text is structurally convergent, visiting fewer attractor basins than human writing.
+Text has a measurable **shape** in embedding space. We discovered four **dynamical structural modes** — convergent, contemplative, discursive, dialectical — that describe HOW meaning unfolds over time, independent of content or genre. These modes are computed from 7 numbers in <1ms after embedding, validated on a 100-text Gutenberg corpus spanning 7 genres and 2,500 years. The same fingerprint detects AI-generated text at 93.7% accuracy — AI text is structurally convergent, visiting fewer attractor basins than human writing.
 
 The discovery chain:
 
@@ -104,7 +104,7 @@ Genres map to modes many-to-many. The modes capture WHAT THE TEXT DOES, not what
 
 ### Validation: 100-text Gutenberg corpus
 
-The corpus was expanded from 49 to 100 texts spanning 8 genres and 2,500 years (Homer to Kafka). Mode distribution: 70 discursive, 17 dialectical, 7 convergent, 6 contemplative.
+The corpus was expanded from 49 to 100 texts spanning 7 genres and 2,500 years (Homer to Kafka). Mode distribution: 70 discursive, 17 dialectical, 7 convergent, 6 contemplative.
 
 Notable discoveries:
 - **Ulysses → discursive** with the lowest smoothness in the entire corpus (0.144). Joyce pushes discursive to its absolute limit — still sustained discourse but maximally volatile within it.
@@ -279,7 +279,7 @@ AI text explores less of the attractor landscape even when trying to be varied. 
 
 ### Shapes Carry Meaning Without Words
 
-The central finding: **the topology of how embedding dimensions co-activate across scales carries structural meaning independent of the words themselves.** The 7-number fingerprint classifies 49 texts at 94.1% accuracy from dynamics alone. The transition graph topology distinguishes a textbook (barbell) from a novel (web) from a poem (ring) without any content information.
+The central finding: **the topology of how embedding dimensions co-activate across scales carries structural meaning independent of the words themselves.** The 7-number fingerprint classifies text from dynamics alone. The transition graph topology distinguishes a textbook (barbell) from a novel (web) from a poem (ring) without any content information.
 
 This is not topic modeling, not sentiment analysis, not stylometry based on word frequencies. It's the **geometry of how meaning unfolds in embedding space over time.** The modes exist in the embedding model's learned representation — we discovered them through wavelet analysis, but they are properties of how language is structured, not of our measurement apparatus.
 
@@ -311,7 +311,7 @@ Transition matrix seed:    2.8 KB (706 numbers — full fingerprint)
 Fast-path fingerprint:     28 bytes (7 float32s — mode classification)
 ```
 
-From 632 MB of wavelet coefficients to 28 bytes of fingerprint. The compression ratio is ~22 million to 1. And the 28-byte version classifies 49 texts at 94.1%.
+From 632 MB of wavelet coefficients to 28 bytes of fingerprint. The compression ratio is ~22 million to 1. And the 28-byte version classifies 100 texts across 2,500 years of writing.
 
 ### The Gibberish Seed Hypothesis
 
@@ -361,4 +361,4 @@ The correlation matrix is literally a Hebbian weight matrix ("dimensions that fi
 
 ---
 
-*All numbers are reproducible from the code in this repository. The fast-path fingerprint (`fastprint.py`) is validated on 100 texts across 8 genres and 2,500 years of writing. The AI detection eval (`eval_ai_human_v2.py`) achieves 93.7% accuracy on 79 samples. Live demo: https://waivelets-production.up.railway.app*
+*All numbers are reproducible from the code in this repository. The fast-path fingerprint (`fastprint.py`) is validated on 100 texts across 7 genres and 2,500 years of writing. The AI detection eval (`eval_ai_human_v2.py`) achieves 93.7% accuracy on 79 samples. Live demo: https://waivelets-production.up.railway.app*
