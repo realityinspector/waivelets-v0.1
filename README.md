@@ -25,14 +25,17 @@ These are not genres. Shakespeare and Darwin share a mode (dialectical) because 
 
 | Metric | Value |
 |--------|-------|
-| Classification speed | **68 microseconds** (fingerprint only) |
-| With embedding | **140ms** (500 sentences, GPU) |
+| **End-to-end (raw text → mode)** | **~5–50ms on CPU** (embed + classify) |
+| Classify only (pre-embedded) | **68 microseconds** (matrix multiply) |
+| With GPU embedding (500 sentences) | **~140ms** |
+| Throughput (pre-embedded) | **10,000+ docs/sec** on CPU |
 | Fingerprint size | **28 bytes** (7 float32s) |
 | Classifier size | **38 KB** (eigenbasis + clusters + centroids) |
-| Embedding model | all-MiniLM-L6-v2 (22M params) |
-| Throughput (pre-embedded) | **10,000+ docs/sec** on CPU |
+| Embedding model | all-MiniLM-L6-v2 (22M params, not included in 38KB) |
 | Corpus validated | **100 texts**, 8 genres, 2,500 years |
 | Compression ratio | **22 million to 1** |
+
+> **On speed claims:** The 68μs number is the classification step only — the matrix multiply after embeddings are computed. The full pipeline (MiniLM embedding + classification) runs ~5–50ms on CPU. For pre-embedded corpora (common in search/retrieval pipelines), you skip embedding and get 10K+ docs/sec. We compare against fine-tuned BERT (~200ms) as the closest apples-to-apples, not LLM inference which is a fundamentally different task.
 
 ## How it works
 

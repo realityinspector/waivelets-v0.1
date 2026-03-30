@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Waivelets — 7 Numbers That Decode Any Text</title>
-<meta name="description" content="Every text ever written has a structural fingerprint. We found it. 7 numbers, 68 microseconds, 28 bytes. Try it live.">
+<meta name="description" content="Every text ever written has a structural fingerprint. We found it. 7 numbers, 38KB classifier, 4 structural modes across 2,500 years of writing. Try it live.">
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -215,13 +215,14 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
   <div class="kicker">Research Preview</div>
   <h1>Every text has a <span>structural fingerprint</span>. We found it.</h1>
   <p class="lead">
-    Seven numbers. Sixty-eight microseconds. Twenty-eight bytes. That's all it takes to
-    classify 2,500 years of human writing into four dynamical modes that cut across every
-    genre boundary. No LLM. No fine-tuning. Just linear algebra on embeddings.
+    Seven numbers. Twenty-eight bytes. A 38KB classifier. That's all it takes to
+    decode the structural dynamics of 2,500 years of human writing into four modes
+    that cut across every genre boundary. No LLM. No fine-tuning. Just a small
+    sentence embedder and linear algebra.
   </p>
   <div class="cta-row">
     <a href="#try" class="btn btn-primary">Try it live</a>
-    <a href="#speed" class="btn btn-ghost">See the speed</a>
+    <a href="#speed" class="btn btn-ghost">See the numbers</a>
   </div>
 </div>
 </div>
@@ -231,7 +232,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
 <div class="container">
   <div class="grid">
     <div><div class="num" style="color:var(--accent2)">7</div><div class="label">Numbers</div></div>
-    <div><div class="num" style="color:var(--green)">68 &mu;s</div><div class="label">Classification</div></div>
+    <div><div class="num" style="color:var(--green)">38 KB</div><div class="label">Classifier Size</div></div>
     <div><div class="num" style="color:var(--convergent)">28 B</div><div class="label">Fingerprint Size</div></div>
     <div><div class="num" style="color:var(--discursive)">100</div><div class="label">Texts Validated</div></div>
     <div><div class="num" style="color:var(--contemplative)">4</div><div class="label">Modes Found</div></div>
@@ -269,42 +270,50 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
 <!-- ═══ SPEED ═══ -->
 <section class="section-alt" id="speed">
 <div class="container">
-  <h2>73,000x faster than an LLM</h2>
+  <h2>How fast is it, honestly?</h2>
   <p class="subtitle">
-    The fingerprint isn't a language model. It's a matrix multiply. Here's what that means.
+    Two steps: embed sentences with MiniLM (the only neural network), then classify
+    with a matrix multiply. Here are the real numbers for each step.
   </p>
 
+  <div class="callout" style="margin-bottom:32px">
+    <div class="tag">Full transparency on the pipeline</div>
+    <p>
+      The fingerprint has two phases. <strong>Phase 1: Embedding</strong> &mdash; MiniLM (22M params) embeds your sentences
+      into 384-dim vectors. This costs ~5&ndash;50ms on CPU depending on text length, or ~140ms for 500 sentences on GPU.
+      <strong>Phase 2: Classification</strong> &mdash; a matrix multiply + 7 scalar statistics. This is the 68&mu;s part.
+      For pre-embedded corpora (search indexes, cached embeddings), you skip Phase 1 entirely and get 10,000+ docs/sec.
+      For raw text end-to-end, the honest number is <strong>~5&ndash;50ms on CPU</strong>.
+    </p>
+  </div>
+
   <div class="race-chart" id="race-chart">
+    <div style="font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">End-to-end: raw text in, classification out</div>
     <div class="race-row">
-      <div class="race-label">GPT-4 / Claude</div>
-      <div class="race-track"><div class="race-bar" data-width="100" style="width:0;background:linear-gradient(90deg,#666,#888)">5,000 ms</div></div>
+      <div class="race-label">GPT-4 / Claude<br><span style="font-size:0.68rem;color:var(--text3)">(generative, different task)</span></div>
+      <div class="race-track"><div class="race-bar" data-width="100" style="width:0;background:linear-gradient(90deg,#555,#777)">~5,000 ms</div></div>
       <div class="race-note">~$0.03 / text</div>
     </div>
     <div class="race-row">
-      <div class="race-label">Fine-tuned BERT</div>
-      <div class="race-track"><div class="race-bar" data-width="4" style="width:0;background:linear-gradient(90deg,#b45309,#d97706)">200 ms</div></div>
+      <div class="race-label">Fine-tuned BERT<br><span style="font-size:0.68rem;color:var(--text3)">(closest apples-to-apples)</span></div>
+      <div class="race-track"><div class="race-bar" data-width="4" style="width:0;background:linear-gradient(90deg,#b45309,#d97706)">~200 ms</div></div>
       <div class="race-note">GPU required</div>
     </div>
     <div class="race-row">
       <div class="race-label">TF-IDF + SVM</div>
-      <div class="race-track"><div class="race-bar" data-width="0.1" style="width:0;background:linear-gradient(90deg,#7c3aed,#a78bfa)">5 ms</div></div>
+      <div class="race-track"><div class="race-bar" data-width="0.1" style="width:0;background:linear-gradient(90deg,#7c3aed,#a78bfa)">~5 ms</div></div>
       <div class="race-note">No semantics</div>
     </div>
     <div class="race-row">
-      <div class="race-label" style="color:var(--green);font-weight:700">Waivelets</div>
-      <div class="race-track"><div class="race-bar" data-width="0.00136" style="width:0;background:linear-gradient(90deg,var(--green),var(--green2))">0.068 ms</div></div>
-      <div class="race-note" style="color:var(--green)">CPU only, free</div>
+      <div class="race-label" style="color:var(--green);font-weight:700">Waivelets (full pipeline)<br><span style="font-size:0.68rem;color:var(--text3)">MiniLM embed + classify</span></div>
+      <div class="race-track"><div class="race-bar" data-width="0.6" style="width:0;background:linear-gradient(90deg,var(--green),var(--green2))">~5–50 ms</div></div>
+      <div class="race-note" style="color:var(--green)">CPU only</div>
     </div>
-  </div>
-
-  <div class="callout">
-    <div class="tag">What this means in practice</div>
-    <p>
-      For pre-embedded text, Waivelets classifies <strong>10,000+ documents per second</strong>
-      on a single CPU core. The entire classifier &mdash; eigenbasis, cluster map, mode centroids &mdash;
-      fits in <strong>38 KB</strong>. This could run on a microcontroller, in a browser, or as a
-      pre-filter for every document entering an LLM pipeline.
-    </p>
+    <div class="race-row">
+      <div class="race-label" style="color:var(--green2)">Waivelets (pre-embedded)<br><span style="font-size:0.68rem;color:var(--text3)">classify only, no embed</span></div>
+      <div class="race-track"><div class="race-bar" data-width="0.00136" style="width:0;background:linear-gradient(90deg,var(--green2),#a7f3d0)">0.068 ms</div></div>
+      <div class="race-note" style="color:var(--green2)">10K docs/sec</div>
+    </div>
   </div>
 
   <!-- Size comparison -->
@@ -313,21 +322,44 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
 
   <table class="eval-table">
     <thead>
-      <tr><th>Method</th><th>Model Size</th><th>Speed</th><th>Semantic?</th><th>Cost</th></tr>
+      <tr><th>Method</th><th>Model Size</th><th>End-to-End</th><th>Classify Only</th><th>Semantic?</th><th>Cost</th></tr>
     </thead>
     <tbody>
-      <tr><td>GPT-4 prompt</td><td>~1T params</td><td>2-10 sec</td><td>Yes</td><td>$0.01-0.05</td></tr>
-      <tr><td>Fine-tuned BERT</td><td>440 MB</td><td>50-200 ms</td><td>Yes</td><td>GPU time</td></tr>
-      <tr><td>TF-IDF + SVM</td><td>~10 MB</td><td>1-5 ms</td><td>No</td><td>CPU</td></tr>
+      <tr>
+        <td>GPT-4 prompt <span style="font-size:0.72rem;color:var(--text3)">(different task)</span></td>
+        <td>~1T params</td><td>2&ndash;10 sec</td><td>N/A</td><td>Yes</td><td>$0.01&ndash;0.05</td>
+      </tr>
+      <tr>
+        <td>Fine-tuned BERT</td>
+        <td>440 MB</td><td>50&ndash;200 ms</td><td>50&ndash;200 ms</td><td>Yes</td><td>GPU time</td>
+      </tr>
+      <tr>
+        <td>TF-IDF + SVM</td>
+        <td>~10 MB</td><td>1&ndash;5 ms</td><td>1&ndash;5 ms</td><td>No</td><td>CPU</td>
+      </tr>
       <tr class="winner-row">
         <td><strong>Waivelets</strong></td>
-        <td class="winner">38 KB</td>
+        <td class="winner">22M embed + 38 KB classifier</td>
+        <td class="winner">5&ndash;50 ms (CPU)</td>
         <td class="winner">68 &mu;s</td>
         <td class="winner">Yes</td>
-        <td class="winner">Free (CPU)</td>
+        <td class="winner">CPU only</td>
       </tr>
     </tbody>
   </table>
+
+  <div class="callout">
+    <div class="tag">Where Waivelets actually wins</div>
+    <p>
+      The real story isn't "faster than GPT-4" &mdash; that's apples to oranges.
+      It's that <strong>the entire classifier fits in 38KB</strong>. The MiniLM embedding model is 22M params,
+      but that's a one-time cost shared across every downstream task. Once you have embeddings
+      (which many pipelines already do), structural classification is essentially free:
+      a matrix multiply that runs on a microcontroller. The interesting question isn't speed &mdash;
+      it's that <strong>text has measurable structural dynamics at all</strong>, and they're
+      capturable in 7 numbers.
+    </p>
+  </div>
 </div>
 </section>
 
@@ -489,7 +521,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
     </div>
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:24px">
       <div style="font-weight:700;color:var(--white);margin-bottom:6px">Edge classification</div>
-      <div style="font-size:0.85rem;color:var(--text2)">38KB classifier runs on a microcontroller. Pre-filter every document entering an LLM pipeline at wire speed.</div>
+      <div style="font-size:0.85rem;color:var(--text2)">The 38KB classifier runs anywhere. For pipelines that already embed text, structural classification adds negligible overhead.</div>
     </div>
   </div>
 </div>
@@ -636,7 +668,7 @@ async function runFingerprint() {
 // ═══ SPEED RACE ANIMATION ═══
 function animateRace() {
   const bars = document.querySelectorAll('.race-bar');
-  const values = [5000, 200, 5, 0.068];
+  const values = [5000, 200, 5, 25, 0.068];
   const maxLog = Math.log10(5000);
   bars.forEach((bar, i) => {
     const logPct = Math.max(3, (Math.log10(values[i] + 0.001) + 2) / (maxLog + 2) * 100);
