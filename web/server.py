@@ -30,6 +30,19 @@ app = FastAPI(title="Waivelets", docs_url=None, redoc_url=None)
 
 WEB_DIR = Path(__file__).parent
 
+# Load AI detector params
+_DETECTOR = None
+_detector_path = WEB_DIR.parent / "ai_detector_params.json"
+if _detector_path.exists():
+    with open(_detector_path) as f:
+        _DETECTOR = json.load(f)
+    _DET_MEAN = np.array(_DETECTOR["z_mean"])
+    _DET_STD = np.array(_DETECTOR["z_std"])
+    _DET_WEIGHTS = np.array(_DETECTOR["weights"])
+    _DET_THRESH = _DETECTOR["threshold"]
+    _DET_AI_CENT = np.array(_DETECTOR["centroid"]["ai"])
+    _DET_HUM_CENT = np.array(_DETECTOR["centroid"]["human"])
+
 
 @app.on_event("startup")
 async def warmup():
@@ -86,6 +99,74 @@ async def api_fingerprint(body: TextInput):
         "description": profile["description"],
         "fingerprint": {k: round(v, 4) for k, v in fp.to_dict().items()},
         "mode_distances": mode_distances,
+        "n_sentences": len(sentences),
+        "time_ms": round(fp_time * 1000, 1),
+    }
+
+
+@app.post("/api/detect")
+async def api_detect(body: TextInput):
+    """Detect whether text is AI-generated or human-written using structural fingerprint."""
+    if _DETECTOR is None:
+        return JSONResponse({"error": "AI detector not configured"}, 500)
+
+    text = body.text.strip()
+    if len(text) < 20:
+        return JSONResponse({"error": "Text too short (need at least a few sentences)"}, 400)
+
+    text = html_lib.escape(text)
+    if len(text) > 50000:
+        text = text[:50000]
+
+    sentences = split_sentences(text)
+    if len(sentences) < 3:
+        return JSONResponse({"error": f"Only found {len(sentences)} sentences. Need at least 3."}, 400)
+    if len(sentences) > 500:
+        sentences = sentences[:500]
+
+    t0 = time.time()
+    fp = fingerprint("", sentences=sentences)
+    fp_time = time.time() - t0
+
+    mode, dist = classify(fp)
+    fp_arr = fp.to_array()
+
+    # Composite weighted score
+    z = (fp_arr - _DET_MEAN) / _DET_STD
+    score = float(z @ _DET_WEIGHTS)
+
+    # Centroid distances
+    dist_ai = float(np.linalg.norm(fp_arr - _DET_AI_CENT))
+    dist_human = float(np.linalg.norm(fp_arr - _DET_HUM_CENT))
+
+    # Classification
+    is_ai = score > _DET_THRESH
+    # Confidence: how far past the threshold (scaled to 0-1)
+    margin = abs(score - _DET_THRESH)
+    confidence = min(1.0, margin / 4.0)  # 4.0 = reasonable max margin
+
+    # Basin entropy is the strongest single signal
+    entropy_signal = "low" if fp.basin_entropy < 3.38 else "normal"
+
+    return {
+        "prediction": "ai" if is_ai else "human",
+        "confidence": round(confidence, 3),
+        "score": round(score, 3),
+        "threshold": round(_DET_THRESH, 3),
+        "signals": {
+            "basin_entropy": round(fp.basin_entropy, 3),
+            "basin_entropy_signal": entropy_signal,
+            "formal_structure": round(fp.formal_structure, 4),
+            "smoothness_mean": round(fp.smoothness_mean, 4),
+            "smoothness_std": round(fp.smoothness_std, 4),
+        },
+        "centroid_distances": {
+            "to_ai": round(dist_ai, 3),
+            "to_human": round(dist_human, 3),
+        },
+        "mode": mode,
+        "mode_distance": round(dist, 2),
+        "fingerprint": {k: round(v, 4) for k, v in fp.to_dict().items()},
         "n_sentences": len(sentences),
         "time_ms": round(fp_time * 1000, 1),
     }

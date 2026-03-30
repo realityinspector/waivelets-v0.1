@@ -1,0 +1,683 @@
+{
+  "timestamp": "2026-03-30 05:30:09",
+  "n_ai": 20,
+  "n_human": 17,
+  "results": [
+    {
+      "source": "ai",
+      "id": "ai_novel_romance",
+      "genre": "novel",
+      "topic": "romance/social comedy (cf. Austen)",
+      "mode": "convergent",
+      "distance": 5.701,
+      "fp": {
+        "smoothness_mean": 0.1464611440896988,
+        "smoothness_std": 0.22189410030841827,
+        "exposition": 0.043511923402547836,
+        "interiority": 0.0361783504486084,
+        "formal_structure": 0.04445788264274597,
+        "scene_narration": 0.03941453620791435,
+        "basin_entropy": 2.9219280948873623
+      },
+      "time_ms": 9819.4
+    },
+    {
+      "source": "ai",
+      "id": "ai_novel_adventure",
+      "genre": "novel",
+      "topic": "adventure narrative (cf. Stevenson, Doyle)",
+      "mode": "discursive",
+      "distance": 6.241,
+      "fp": {
+        "smoothness_mean": 0.14342352747917175,
+        "smoothness_std": 0.24054022133350372,
+        "exposition": 0.04160304367542267,
+        "interiority": 0.034848202019929886,
+        "formal_structure": 0.04172138869762421,
+        "scene_narration": 0.04697197303175926,
+        "basin_entropy": 3.327819531114783
+      },
+      "time_ms": 237.3
+    },
+    {
+      "source": "ai",
+      "id": "ai_novel_psychological",
+      "genre": "novel",
+      "topic": "psychological realism (cf. Dostoevsky, Kafka)",
+      "mode": "dialectical",
+      "distance": 4.593,
+      "fp": {
+        "smoothness_mean": 0.1736326366662979,
+        "smoothness_std": 0.28501611948013306,
+        "exposition": 0.039485637098550797,
+        "interiority": 0.0362071730196476,
+        "formal_structure": 0.04259723424911499,
+        "scene_narration": 0.04239962622523308,
+        "basin_entropy": 3.521640636343319
+      },
+      "time_ms": 120.1
+    },
+    {
+      "source": "ai",
+      "id": "ai_philosophy_ethics",
+      "genre": "philosophy",
+      "topic": "moral philosophy (cf. Mill, Kant)",
+      "mode": "convergent",
+      "distance": 5.979,
+      "fp": {
+        "smoothness_mean": 0.2516123652458191,
+        "smoothness_std": 0.17303681373596191,
+        "exposition": 0.03971269726753235,
+        "interiority": 0.03788469731807709,
+        "formal_structure": 0.042359668761491776,
+        "scene_narration": 0.04435289651155472,
+        "basin_entropy": 2.7068905956085185
+      },
+      "time_ms": 113.1
+    },
+    {
+      "source": "ai",
+      "id": "ai_philosophy_epistemology",
+      "genre": "philosophy",
+      "topic": "theory of knowledge (cf. Descartes, Russell)",
+      "mode": "contemplative",
+      "distance": 5.285,
+      "fp": {
+        "smoothness_mean": 0.22451245784759521,
+        "smoothness_std": 0.2195325791835785,
+        "exposition": 0.04238385707139969,
+        "interiority": 0.04445791244506836,
+        "formal_structure": 0.038965266197919846,
+        "scene_narration": 0.0363050252199173,
+        "basin_entropy": 3.4219280948873623
+      },
+      "time_ms": 77.6
+    },
+    {
+      "source": "ai",
+      "id": "ai_science_evolution",
+      "genre": "science",
+      "topic": "natural selection (cf. Darwin)",
+      "mode": "convergent",
+      "distance": 6.6,
+      "fp": {
+        "smoothness_mean": 0.22468379139900208,
+        "smoothness_std": 0.24374626576900482,
+        "exposition": 0.03701223060488701,
+        "interiority": 0.04008982330560684,
+        "formal_structure": 0.04196331650018692,
+        "scene_narration": 0.04334890469908714,
+        "basin_entropy": 2.8402239289418523
+      },
+      "time_ms": 107.1
+    },
+    {
+      "source": "ai",
+      "id": "ai_science_physics",
+      "genre": "science",
+      "topic": "physics/cosmology (cf. Hawking, Sagan)",
+      "mode": "contemplative",
+      "distance": 6.599,
+      "fp": {
+        "smoothness_mean": 0.20535235106945038,
+        "smoothness_std": 0.16519758105278015,
+        "exposition": 0.0408686026930809,
+        "interiority": 0.04256797581911087,
+        "formal_structure": 0.038182780146598816,
+        "scene_narration": 0.04268443584442139,
+        "basin_entropy": 3.238901256602631
+      },
+      "time_ms": 62.6
+    },
+    {
+      "source": "ai",
+      "id": "ai_drama_dialogue",
+      "genre": "drama",
+      "topic": "dramatic dialogue (cf. Shakespeare, Wilde)",
+      "mode": "dialectical",
+      "distance": 6.412,
+      "fp": {
+        "smoothness_mean": 0.26533034443855286,
+        "smoothness_std": 0.22117114067077637,
+        "exposition": 0.036364030092954636,
+        "interiority": 0.0361996591091156,
+        "formal_structure": 0.04144946113228798,
+        "scene_narration": 0.03852659463882446,
+        "basin_entropy": 3.288678408771471
+      },
+      "time_ms": 162.1
+    },
+    {
+      "source": "ai",
+      "id": "ai_drama_monologue",
+      "genre": "drama",
+      "topic": "dramatic monologue (cf. Shakespeare soliloquy)",
+      "mode": "contemplative",
+      "distance": 4.49,
+      "fp": {
+        "smoothness_mean": 0.26721179485321045,
+        "smoothness_std": 0.17504170536994934,
+        "exposition": 0.03872644156217575,
+        "interiority": 0.04283357784152031,
+        "formal_structure": 0.043390993028879166,
+        "scene_narration": 0.04018743708729744,
+        "basin_entropy": 3.378783493486176
+      },
+      "time_ms": 86.6
+    },
+    {
+      "source": "ai",
+      "id": "ai_poetry_lyric",
+      "genre": "poetry",
+      "topic": "lyric poetry (cf. Whitman, Dickinson)",
+      "mode": "contemplative",
+      "distance": 5.772,
+      "fp": {
+        "smoothness_mean": 0.23848429322242737,
+        "smoothness_std": 0.17672428488731384,
+        "exposition": 0.03972197324037552,
+        "interiority": 0.041123032569885254,
+        "formal_structure": 0.04131896048784256,
+        "scene_narration": 0.04085344076156616,
+        "basin_entropy": 3.0391486719030705
+      },
+      "time_ms": 107.3
+    },
+    {
+      "source": "ai",
+      "id": "ai_poetry_narrative",
+      "genre": "poetry",
+      "topic": "narrative/epic poetry (cf. Homer, Milton)",
+      "mode": "contemplative",
+      "distance": 8.375,
+      "fp": {
+        "smoothness_mean": 0.21164579689502716,
+        "smoothness_std": 0.17727814614772797,
+        "exposition": 0.03863304480910301,
+        "interiority": 0.045744892209768295,
+        "formal_structure": 0.040065329521894455,
+        "scene_narration": 0.04499942064285278,
+        "basin_entropy": 2.6464393446710157
+      },
+      "time_ms": 79.3
+    },
+    {
+      "source": "ai",
+      "id": "ai_religious_sermon",
+      "genre": "religious",
+      "topic": "spiritual/devotional (cf. Augustine, KJV Bible)",
+      "mode": "convergent",
+      "distance": 4.658,
+      "fp": {
+        "smoothness_mean": 0.3003014326095581,
+        "smoothness_std": 0.16493628919124603,
+        "exposition": 0.03841723874211311,
+        "interiority": 0.0364229679107666,
+        "formal_structure": 0.04572774097323418,
+        "scene_narration": 0.03987279534339905,
+        "basin_entropy": 3.572469458770136
+      },
+      "time_ms": 96.3
+    },
+    {
+      "source": "ai",
+      "id": "ai_political_democracy",
+      "genre": "political",
+      "topic": "democratic theory (cf. Mill, Paine)",
+      "mode": "convergent",
+      "distance": 4.795,
+      "fp": {
+        "smoothness_mean": 0.3041062653064728,
+        "smoothness_std": 0.19312706589698792,
+        "exposition": 0.03910442441701889,
+        "interiority": 0.038743097335100174,
+        "formal_structure": 0.04361332207918167,
+        "scene_narration": 0.03710014000535011,
+        "basin_entropy": 3.1808329872054406
+      },
+      "time_ms": 96.8
+    },
+    {
+      "source": "ai",
+      "id": "ai_legal_contract",
+      "genre": "legal",
+      "topic": "legal prose (cf. legal documents)",
+      "mode": "convergent",
+      "distance": 9.277,
+      "fp": {
+        "smoothness_mean": 0.48170897364616394,
+        "smoothness_std": 0.08078056573867798,
+        "exposition": 0.03835012763738632,
+        "interiority": 0.03525155037641525,
+        "formal_structure": 0.04317124933004379,
+        "scene_narration": 0.04263755679130554,
+        "basin_entropy": 2.5216406363433186
+      },
+      "time_ms": 294.3
+    },
+    {
+      "source": "ai",
+      "id": "ai_novel_gothic",
+      "genre": "novel",
+      "topic": "gothic/horror (cf. Shelley, Poe, Stoker)",
+      "mode": "convergent",
+      "distance": 7.2,
+      "fp": {
+        "smoothness_mean": 0.15975810587406158,
+        "smoothness_std": 0.14623169600963593,
+        "exposition": 0.03753342851996422,
+        "interiority": 0.03995584696531296,
+        "formal_structure": 0.0423978753387928,
+        "scene_narration": 0.04222417622804642,
+        "basin_entropy": 3.085055102756477
+      },
+      "time_ms": 70.7
+    },
+    {
+      "source": "ai",
+      "id": "ai_news_economy",
+      "genre": "journalism",
+      "topic": "economic reporting",
+      "mode": "contemplative",
+      "distance": 8.547,
+      "fp": {
+        "smoothness_mean": 0.2482079714536667,
+        "smoothness_std": 0.16162197291851044,
+        "exposition": 0.03910209611058235,
+        "interiority": 0.050316281616687775,
+        "formal_structure": 0.04331716522574425,
+        "scene_narration": 0.04393099993467331,
+        "basin_entropy": 3.0
+      },
+      "time_ms": 52.7
+    },
+    {
+      "source": "ai",
+      "id": "ai_novel_literary",
+      "genre": "novel",
+      "topic": "literary fiction (cf. Woolf, Joyce)",
+      "mode": "dialectical",
+      "distance": 5.839,
+      "fp": {
+        "smoothness_mean": 0.05253065377473831,
+        "smoothness_std": 0.2067817747592926,
+        "exposition": 0.03826513513922691,
+        "interiority": 0.03418663516640663,
+        "formal_structure": 0.0458252839744091,
+        "scene_narration": 0.04520488902926445,
+        "basin_entropy": 3.6644977792004623
+      },
+      "time_ms": 39.5
+    },
+    {
+      "source": "ai",
+      "id": "ai_history_war",
+      "genre": "history",
+      "topic": "military history (cf. Thucydides, Gibbon)",
+      "mode": "convergent",
+      "distance": 5.736,
+      "fp": {
+        "smoothness_mean": 0.31652921438217163,
+        "smoothness_std": 0.21465416252613068,
+        "exposition": 0.041079919785261154,
+        "interiority": 0.03699366748332977,
+        "formal_structure": 0.04013696312904358,
+        "scene_narration": 0.03862527385354042,
+        "basin_entropy": 3.095795255000934
+      },
+      "time_ms": 76.8
+    },
+    {
+      "source": "ai",
+      "id": "ai_essay_technology",
+      "genre": "essay",
+      "topic": "technology criticism (cf. Postman, Carr)",
+      "mode": "dialectical",
+      "distance": 6.586,
+      "fp": {
+        "smoothness_mean": 0.27975359559059143,
+        "smoothness_std": 0.2976793348789215,
+        "exposition": 0.03598121181130409,
+        "interiority": 0.041212256997823715,
+        "formal_structure": 0.041902702301740646,
+        "scene_narration": 0.03875125199556351,
+        "basin_entropy": 3.323231428797621
+      },
+      "time_ms": 97.2
+    },
+    {
+      "source": "ai",
+      "id": "ai_memoir_personal",
+      "genre": "memoir",
+      "topic": "personal narrative (cf. Thoreau, Didion)",
+      "mode": "convergent",
+      "distance": 6.441,
+      "fp": {
+        "smoothness_mean": 0.1962643414735794,
+        "smoothness_std": 0.2519506812095642,
+        "exposition": 0.04004262387752533,
+        "interiority": 0.03790033608675003,
+        "formal_structure": 0.041100624948740005,
+        "scene_narration": 0.04219837114214897,
+        "basin_entropy": 2.6416041678685933
+      },
+      "time_ms": 97.3
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_1342",
+      "genre": "novel",
+      "topic": "Pride and Prejudice by Austen",
+      "mode": "discursive",
+      "distance": 1.69,
+      "fp": {
+        "smoothness_mean": 0.2755926847457886,
+        "smoothness_std": 0.21488723158836365,
+        "exposition": 0.03918612748384476,
+        "interiority": 0.039113983511924744,
+        "formal_structure": 0.04415127635002136,
+        "scene_narration": 0.04339607432484627,
+        "basin_entropy": 4.438066914172644
+      },
+      "time_ms": 2969.2
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_84",
+      "genre": "novel",
+      "topic": "Frankenstein by Shelley",
+      "mode": "discursive",
+      "distance": 1.24,
+      "fp": {
+        "smoothness_mean": 0.22526603937149048,
+        "smoothness_std": 0.20469656586647034,
+        "exposition": 0.040968529880046844,
+        "interiority": 0.039444927126169205,
+        "formal_structure": 0.044337958097457886,
+        "scene_narration": 0.04286479204893112,
+        "basin_entropy": 4.370776799644384
+      },
+      "time_ms": 1585.4
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_1661",
+      "genre": "novel",
+      "topic": "Sherlock Holmes Adventures by Doyle",
+      "mode": "discursive",
+      "distance": 1.66,
+      "fp": {
+        "smoothness_mean": 0.22128233313560486,
+        "smoothness_std": 0.22631274163722992,
+        "exposition": 0.040799692273139954,
+        "interiority": 0.03937602415680885,
+        "formal_structure": 0.04196963459253311,
+        "scene_narration": 0.04127582907676697,
+        "basin_entropy": 4.476343990688925
+      },
+      "time_ms": 1289.3
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_76",
+      "genre": "novel",
+      "topic": "Huckleberry Finn by Twain",
+      "mode": "dialectical",
+      "distance": 1.84,
+      "fp": {
+        "smoothness_mean": 0.2019326090812683,
+        "smoothness_std": 0.23389889299869537,
+        "exposition": 0.03870507702231407,
+        "interiority": 0.039191145449876785,
+        "formal_structure": 0.04700401425361633,
+        "scene_narration": 0.04200035333633423,
+        "basin_entropy": 4.486678137826616
+      },
+      "time_ms": 4737.4
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_174",
+      "genre": "novel",
+      "topic": "The Picture of Dorian Gray by Wilde",
+      "mode": "discursive",
+      "distance": 1.79,
+      "fp": {
+        "smoothness_mean": 0.2297520786523819,
+        "smoothness_std": 0.24675990641117096,
+        "exposition": 0.03936328738927841,
+        "interiority": 0.03891206160187721,
+        "formal_structure": 0.0438607856631279,
+        "scene_narration": 0.04223527014255524,
+        "basin_entropy": 4.523971431185383
+      },
+      "time_ms": 2490.8
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_5827",
+      "genre": "philosophy",
+      "topic": "Problems of Philosophy by Russell",
+      "mode": "contemplative",
+      "distance": 2.52,
+      "fp": {
+        "smoothness_mean": 0.4299090802669525,
+        "smoothness_std": 0.23891109228134155,
+        "exposition": 0.042059995234012604,
+        "interiority": 0.04263199120759964,
+        "formal_structure": 0.04244465380907059,
+        "scene_narration": 0.037760160863399506,
+        "basin_entropy": 4.477331542250404
+      },
+      "time_ms": 4936.4
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_1497",
+      "genre": "philosophy",
+      "topic": "The Republic by Plato",
+      "mode": "discursive",
+      "distance": 1.79,
+      "fp": {
+        "smoothness_mean": 0.2728175222873688,
+        "smoothness_std": 0.21911552548408508,
+        "exposition": 0.04219842702150345,
+        "interiority": 0.03840707615017891,
+        "formal_structure": 0.044486068189144135,
+        "scene_narration": 0.039917729794979095,
+        "basin_entropy": 4.409201829621531
+      },
+      "time_ms": 16229.4
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_4363",
+      "genre": "philosophy",
+      "topic": "An Ideal Husband by Wilde",
+      "mode": "discursive",
+      "distance": 1.06,
+      "fp": {
+        "smoothness_mean": 0.26043757796287537,
+        "smoothness_std": 0.2228541374206543,
+        "exposition": 0.04132192209362984,
+        "interiority": 0.03861772269010544,
+        "formal_structure": 0.04304862767457962,
+        "scene_narration": 0.04249252751469612,
+        "basin_entropy": 4.544175442878498
+      },
+      "time_ms": 7041.8
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_1524",
+      "genre": "drama",
+      "topic": "Hamlet by Shakespeare",
+      "mode": "dialectical",
+      "distance": 1.29,
+      "fp": {
+        "smoothness_mean": 0.2089965045452118,
+        "smoothness_std": 0.24227817356586456,
+        "exposition": 0.03993384912610054,
+        "interiority": 0.0373014360666275,
+        "formal_structure": 0.04591338336467743,
+        "scene_narration": 0.041818130761384964,
+        "basin_entropy": 4.352396928781842
+      },
+      "time_ms": 3892.1
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_1513",
+      "genre": "drama",
+      "topic": "A Midsummer Night's Dream by Shakespeare",
+      "mode": "dialectical",
+      "distance": 1.51,
+      "fp": {
+        "smoothness_mean": 0.2209368646144867,
+        "smoothness_std": 0.25929492712020874,
+        "exposition": 0.038493990898132324,
+        "interiority": 0.038935232907533646,
+        "formal_structure": 0.04723193868994713,
+        "scene_narration": 0.0409727543592453,
+        "basin_entropy": 4.4615920077599425
+      },
+      "time_ms": 8707.9
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_2267",
+      "genre": "drama",
+      "topic": "Gutenberg #2267",
+      "mode": "dialectical",
+      "distance": 3.781,
+      "fp": {
+        "smoothness_mean": 0.24203677475452423,
+        "smoothness_std": 0.27013975381851196,
+        "exposition": 0.039409782737493515,
+        "interiority": 0.039782993495464325,
+        "formal_structure": 0.04550018906593323,
+        "scene_narration": 0.03828906640410423,
+        "basin_entropy": 3.486440501696144
+      },
+      "time_ms": 162.8
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_1321",
+      "genre": "poetry",
+      "topic": "Paradise Lost by Milton",
+      "mode": "discursive",
+      "distance": 1.25,
+      "fp": {
+        "smoothness_mean": 0.20613612234592438,
+        "smoothness_std": 0.2130926102399826,
+        "exposition": 0.04014509543776512,
+        "interiority": 0.038611918687820435,
+        "formal_structure": 0.0437687449157238,
+        "scene_narration": 0.04227032512426376,
+        "basin_entropy": 4.49668915325291
+      },
+      "time_ms": 3996.0
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_74",
+      "genre": "poetry",
+      "topic": "Tom Sawyer by Twain",
+      "mode": "discursive",
+      "distance": 1.5,
+      "fp": {
+        "smoothness_mean": 0.24162830412387848,
+        "smoothness_std": 0.23040235042572021,
+        "exposition": 0.041455283761024475,
+        "interiority": 0.04026686027646065,
+        "formal_structure": 0.04568023607134819,
+        "scene_narration": 0.042595427483320236,
+        "basin_entropy": 4.458847507377134
+      },
+      "time_ms": 4726.4
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_2009",
+      "genre": "science",
+      "topic": "Origin of Species by Darwin",
+      "mode": "dialectical",
+      "distance": 1.44,
+      "fp": {
+        "smoothness_mean": 0.29527848958969116,
+        "smoothness_std": 0.2385510504245758,
+        "exposition": 0.03899221122264862,
+        "interiority": 0.03952791169285774,
+        "formal_structure": 0.046018414199352264,
+        "scene_narration": 0.04090484604239464,
+        "basin_entropy": 4.427543731800705
+      },
+      "time_ms": 6247.6
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_1228",
+      "genre": "science",
+      "topic": "Gutenberg #1228",
+      "mode": "dialectical",
+      "distance": 1.235,
+      "fp": {
+        "smoothness_mean": 0.2837454080581665,
+        "smoothness_std": 0.2629442811012268,
+        "exposition": 0.03896282613277435,
+        "interiority": 0.0385391041636467,
+        "formal_structure": 0.04562843218445778,
+        "scene_narration": 0.04177340120077133,
+        "basin_entropy": 4.0964393446710154
+      },
+      "time_ms": 419.0
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_10",
+      "genre": "religious",
+      "topic": "Bible (KJV) by Various",
+      "mode": "convergent",
+      "distance": 3.72,
+      "fp": {
+        "smoothness_mean": 0.5482782125473022,
+        "smoothness_std": 0.21507816016674042,
+        "exposition": 0.04363425076007843,
+        "interiority": 0.03723568841814995,
+        "formal_structure": 0.04827798530459404,
+        "scene_narration": 0.039225440472364426,
+        "basin_entropy": 3.7956463065734143
+      },
+      "time_ms": 11298.6
+    },
+    {
+      "source": "human",
+      "id": "gutenberg_2680",
+      "genre": "religious",
+      "topic": "Meditations by Descartes",
+      "mode": "discursive",
+      "distance": 2.03,
+      "fp": {
+        "smoothness_mean": 0.2883438467979431,
+        "smoothness_std": 0.21764805912971497,
+        "exposition": 0.04155537486076355,
+        "interiority": 0.038989972323179245,
+        "formal_structure": 0.0467706024646759,
+        "scene_narration": 0.040776681154966354,
+        "basin_entropy": 4.428188781935723
+      },
+      "time_ms": 5437.0
+    }
+  ],
+  "analysis": {
+    "centroid_distance": 1.2173,
+    "ai_intra_dist": 0.2897,
+    "human_intra_dist": 0.2095,
+    "separation_ratio": 4.877,
+    "verdict": "STRONG separation \u2014 fingerprints differ systematically",
+    "best_single_feature_acc": 0.973,
+    "best_feature": "basin_entropy",
+    "centroid_classifier_acc": 0.973
+  }
+}

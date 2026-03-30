@@ -1,0 +1,1384 @@
+{
+  "timestamp": "2026-03-30 05:58:03",
+  "n_ai": 39,
+  "n_human": 40,
+  "n_adversarial": 7,
+  "results": [
+    {
+      "source": "ai",
+      "id": "ai_romance_1",
+      "genre": "novel",
+      "mode": "convergent",
+      "distance": 5.701,
+      "fp": {
+        "smoothness_mean": 0.1464611440896988,
+        "smoothness_std": 0.22189410030841827,
+        "exposition": 0.043511923402547836,
+        "interiority": 0.0361783504486084,
+        "formal_structure": 0.04445788264274597,
+        "scene_narration": 0.03941453620791435,
+        "basin_entropy": 2.9219280948873623
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_adventure_1",
+      "genre": "novel",
+      "mode": "convergent",
+      "distance": 6.935,
+      "fp": {
+        "smoothness_mean": 0.14166919887065887,
+        "smoothness_std": 0.19910307228565216,
+        "exposition": 0.04176388680934906,
+        "interiority": 0.033856749534606934,
+        "formal_structure": 0.0425478033721447,
+        "scene_narration": 0.04843061417341232,
+        "basin_entropy": 3.238901256602631
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_psychological_1",
+      "genre": "novel",
+      "mode": "dialectical",
+      "distance": 7.548,
+      "fp": {
+        "smoothness_mean": 0.16114991903305054,
+        "smoothness_std": 0.32902029156684875,
+        "exposition": 0.039379801601171494,
+        "interiority": 0.036290254443883896,
+        "formal_structure": 0.04093728959560394,
+        "scene_narration": 0.04203534498810768,
+        "basin_entropy": 2.9219280948873623
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_gothic_1",
+      "genre": "novel",
+      "mode": "convergent",
+      "distance": 7.586,
+      "fp": {
+        "smoothness_mean": 0.17403748631477356,
+        "smoothness_std": 0.14115992188453674,
+        "exposition": 0.036786094307899475,
+        "interiority": 0.038200657814741135,
+        "formal_structure": 0.04254965856671333,
+        "scene_narration": 0.03948758542537689,
+        "basin_entropy": 3.121928094887362
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_literary_1",
+      "genre": "novel",
+      "mode": "dialectical",
+      "distance": 8.176,
+      "fp": {
+        "smoothness_mean": -0.044735848903656006,
+        "smoothness_std": 0.22389057278633118,
+        "exposition": 0.03632697835564613,
+        "interiority": 0.035931844264268875,
+        "formal_structure": 0.04669015854597092,
+        "scene_narration": 0.04431196302175522,
+        "basin_entropy": 2.807354922057604
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_scifi_1",
+      "genre": "novel",
+      "mode": "dialectical",
+      "distance": 10.405,
+      "fp": {
+        "smoothness_mean": 0.14174653589725494,
+        "smoothness_std": 0.3849332332611084,
+        "exposition": 0.04081626608967781,
+        "interiority": 0.04240697622299194,
+        "formal_structure": 0.037733566015958786,
+        "scene_narration": 0.03768085315823555,
+        "basin_entropy": 3.095795255000934
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_thriller_1",
+      "genre": "novel",
+      "mode": "dialectical",
+      "distance": 6.019,
+      "fp": {
+        "smoothness_mean": 0.11090347915887833,
+        "smoothness_std": 0.2633964419364929,
+        "exposition": 0.041143618524074554,
+        "interiority": 0.03481382131576538,
+        "formal_structure": 0.042997509241104126,
+        "scene_narration": 0.042884960770606995,
+        "basin_entropy": 3.188721875540867
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_detective_1",
+      "genre": "novel",
+      "mode": "discursive",
+      "distance": 6.718,
+      "fp": {
+        "smoothness_mean": 0.1732426881790161,
+        "smoothness_std": 0.24376310408115387,
+        "exposition": 0.04006962478160858,
+        "interiority": 0.035920556634664536,
+        "formal_structure": 0.03934701904654503,
+        "scene_narration": 0.04725313559174538,
+        "basin_entropy": 3.238901256602631
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_ethics_1",
+      "genre": "philosophy",
+      "mode": "convergent",
+      "distance": 8.102,
+      "fp": {
+        "smoothness_mean": 0.22421082854270935,
+        "smoothness_std": 0.1687716394662857,
+        "exposition": 0.03951163962483406,
+        "interiority": 0.036038484424352646,
+        "formal_structure": 0.04214624688029289,
+        "scene_narration": 0.04618855565786362,
+        "basin_entropy": 2.1180782093497093
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_epistemology_1",
+      "genre": "philosophy",
+      "mode": "contemplative",
+      "distance": 6.325,
+      "fp": {
+        "smoothness_mean": 0.23473306000232697,
+        "smoothness_std": 0.24145449697971344,
+        "exposition": 0.042275309562683105,
+        "interiority": 0.041987281292676926,
+        "formal_structure": 0.03775307163596153,
+        "scene_narration": 0.035485219210386276,
+        "basin_entropy": 3.180832987205441
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_existentialism_1",
+      "genre": "philosophy",
+      "mode": "contemplative",
+      "distance": 7.201,
+      "fp": {
+        "smoothness_mean": 0.2619703710079193,
+        "smoothness_std": 0.2317192405462265,
+        "exposition": 0.03590968996286392,
+        "interiority": 0.04486740380525589,
+        "formal_structure": 0.04262194782495499,
+        "scene_narration": 0.042085424065589905,
+        "basin_entropy": 2.9219280948873623
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_evolution_1",
+      "genre": "science",
+      "mode": "convergent",
+      "distance": 6.269,
+      "fp": {
+        "smoothness_mean": 0.23529502749443054,
+        "smoothness_std": 0.26625528931617737,
+        "exposition": 0.03740093484520912,
+        "interiority": 0.04170265793800354,
+        "formal_structure": 0.046356964856386185,
+        "scene_narration": 0.04203437268733978,
+        "basin_entropy": 2.6464393446710153
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_physics_1",
+      "genre": "science",
+      "mode": "discursive",
+      "distance": 8.563,
+      "fp": {
+        "smoothness_mean": 0.19441279768943787,
+        "smoothness_std": 0.19149178266525269,
+        "exposition": 0.040619924664497375,
+        "interiority": 0.04044155776500702,
+        "formal_structure": 0.036333806812763214,
+        "scene_narration": 0.04467296972870827,
+        "basin_entropy": 2.75
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_neuro_1",
+      "genre": "science",
+      "mode": "contemplative",
+      "distance": 8.326,
+      "fp": {
+        "smoothness_mean": 0.1925359070301056,
+        "smoothness_std": 0.21842586994171143,
+        "exposition": 0.03778551146388054,
+        "interiority": 0.04978255555033684,
+        "formal_structure": 0.04304581135511398,
+        "scene_narration": 0.03816951811313629,
+        "basin_entropy": 2.75
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_dialogue_1",
+      "genre": "drama",
+      "mode": "dialectical",
+      "distance": 7.203,
+      "fp": {
+        "smoothness_mean": 0.277997761964798,
+        "smoothness_std": 0.2138597071170807,
+        "exposition": 0.036749038845300674,
+        "interiority": 0.035445891320705414,
+        "formal_structure": 0.040673766285181046,
+        "scene_narration": 0.037786178290843964,
+        "basin_entropy": 3.140361163698485
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_monologue_1",
+      "genre": "drama",
+      "mode": "contemplative",
+      "distance": 6.368,
+      "fp": {
+        "smoothness_mean": 0.2148863673210144,
+        "smoothness_std": 0.1805046945810318,
+        "exposition": 0.040062256157398224,
+        "interiority": 0.041453130543231964,
+        "formal_structure": 0.04043472558259964,
+        "scene_narration": 0.04155196622014046,
+        "basin_entropy": 2.9219280948873623
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_courtroom_1",
+      "genre": "drama",
+      "mode": "convergent",
+      "distance": 6.043,
+      "fp": {
+        "smoothness_mean": 0.19704733788967133,
+        "smoothness_std": 0.19190950691699982,
+        "exposition": 0.04142654687166214,
+        "interiority": 0.03356665000319481,
+        "formal_structure": 0.04326491802930832,
+        "scene_narration": 0.0438711903989315,
+        "basin_entropy": 3.0269868333592873
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_lyric_1",
+      "genre": "poetry",
+      "mode": "contemplative",
+      "distance": 10.763,
+      "fp": {
+        "smoothness_mean": 0.26298993825912476,
+        "smoothness_std": 0.09523602575063705,
+        "exposition": 0.04093772917985916,
+        "interiority": 0.047571856528520584,
+        "formal_structure": 0.039795808494091034,
+        "scene_narration": 0.04131872579455376,
+        "basin_entropy": 2.2359263506290326
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_epic_1",
+      "genre": "poetry",
+      "mode": "convergent",
+      "distance": 10.455,
+      "fp": {
+        "smoothness_mean": 0.21400673687458038,
+        "smoothness_std": 0.2087026685476303,
+        "exposition": 0.039801955223083496,
+        "interiority": 0.045981887727975845,
+        "formal_structure": 0.04284046217799187,
+        "scene_narration": 0.04314928874373436,
+        "basin_entropy": 1.4591479170272448
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_essay_tech_1",
+      "genre": "essay",
+      "mode": "dialectical",
+      "distance": 8.081,
+      "fp": {
+        "smoothness_mean": 0.2783569097518921,
+        "smoothness_std": 0.35392630100250244,
+        "exposition": 0.037932369858026505,
+        "interiority": 0.0389479398727417,
+        "formal_structure": 0.04121459275484085,
+        "scene_narration": 0.03919536620378494,
+        "basin_entropy": 2.9219280948873623
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_essay_education_1",
+      "genre": "essay",
+      "mode": "contemplative",
+      "distance": 7.927,
+      "fp": {
+        "smoothness_mean": 0.13605265319347382,
+        "smoothness_std": 0.17791904509067535,
+        "exposition": 0.037440281361341476,
+        "interiority": 0.046545516699552536,
+        "formal_structure": 0.04071030020713806,
+        "scene_narration": 0.03856373578310013,
+        "basin_entropy": 2.75
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_memoir_1",
+      "genre": "memoir",
+      "mode": "discursive",
+      "distance": 10.453,
+      "fp": {
+        "smoothness_mean": 0.08122048527002335,
+        "smoothness_std": 0.2755698263645172,
+        "exposition": 0.03982362151145935,
+        "interiority": 0.040208302438259125,
+        "formal_structure": 0.03558772802352905,
+        "scene_narration": 0.041458383202552795,
+        "basin_entropy": 2.321928094887362
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_news_econ_1",
+      "genre": "journalism",
+      "mode": "convergent",
+      "distance": 9.099,
+      "fp": {
+        "smoothness_mean": 0.2030981034040451,
+        "smoothness_std": 0.14256486296653748,
+        "exposition": 0.03750987723469734,
+        "interiority": 0.04670395329594612,
+        "formal_structure": 0.046033814549446106,
+        "scene_narration": 0.04369262233376503,
+        "basin_entropy": 2.584962500721156
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_news_politics_1",
+      "genre": "journalism",
+      "mode": "convergent",
+      "distance": 13.437,
+      "fp": {
+        "smoothness_mean": 0.3231603801250458,
+        "smoothness_std": 0.08791439235210419,
+        "exposition": 0.042713724076747894,
+        "interiority": 0.04416165500879288,
+        "formal_structure": 0.0367058627307415,
+        "scene_narration": 0.042422518134117126,
+        "basin_entropy": 1.3787834934861753
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_legal_1",
+      "genre": "legal",
+      "mode": "convergent",
+      "distance": 10.062,
+      "fp": {
+        "smoothness_mean": 0.5161052346229553,
+        "smoothness_std": 0.08035334199666977,
+        "exposition": 0.03919990360736847,
+        "interiority": 0.035044487565755844,
+        "formal_structure": 0.044590603560209274,
+        "scene_narration": 0.04032973200082779,
+        "basin_entropy": 2.0
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_religious_1",
+      "genre": "religious",
+      "mode": "convergent",
+      "distance": 5.675,
+      "fp": {
+        "smoothness_mean": 0.3157902956008911,
+        "smoothness_std": 0.19271661341190338,
+        "exposition": 0.03922135755419731,
+        "interiority": 0.03360813483595848,
+        "formal_structure": 0.0437922403216362,
+        "scene_narration": 0.0427289754152298,
+        "basin_entropy": 2.9219280948873623
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_political_1",
+      "genre": "political",
+      "mode": "convergent",
+      "distance": 6.225,
+      "fp": {
+        "smoothness_mean": 0.32920122146606445,
+        "smoothness_std": 0.22945989668369293,
+        "exposition": 0.041076745837926865,
+        "interiority": 0.03523813933134079,
+        "formal_structure": 0.043977610766887665,
+        "scene_narration": 0.03611530363559723,
+        "basin_entropy": 2.5
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_history_1",
+      "genre": "history",
+      "mode": "convergent",
+      "distance": 8.676,
+      "fp": {
+        "smoothness_mean": 0.2994629144668579,
+        "smoothness_std": 0.20636756718158722,
+        "exposition": 0.041399601846933365,
+        "interiority": 0.03820572420954704,
+        "formal_structure": 0.038498587906360626,
+        "scene_narration": 0.035443879663944244,
+        "basin_entropy": 2.2359263506290326
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_adversarial_casual",
+      "genre": "adversarial",
+      "mode": "convergent",
+      "distance": 4.644,
+      "fp": {
+        "smoothness_mean": 0.23737801611423492,
+        "smoothness_std": 0.16487032175064087,
+        "exposition": 0.04103174805641174,
+        "interiority": 0.03839468955993652,
+        "formal_structure": 0.04685636982321739,
+        "scene_narration": 0.03727562725543976,
+        "basin_entropy": 3.2516291673878226
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_adversarial_rant",
+      "genre": "adversarial",
+      "mode": "convergent",
+      "distance": 4.473,
+      "fp": {
+        "smoothness_mean": 0.23896946012973785,
+        "smoothness_std": 0.257518470287323,
+        "exposition": 0.04040319845080376,
+        "interiority": 0.03556389734148979,
+        "formal_structure": 0.044054124504327774,
+        "scene_narration": 0.0403338186442852,
+        "basin_entropy": 3.323231428797621
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_adversarial_blog",
+      "genre": "adversarial",
+      "mode": "dialectical",
+      "distance": 6.432,
+      "fp": {
+        "smoothness_mean": 0.22422443330287933,
+        "smoothness_std": 0.29878151416778564,
+        "exposition": 0.036613255739212036,
+        "interiority": 0.04276644438505173,
+        "formal_structure": 0.04326009750366211,
+        "scene_narration": 0.03804226219654083,
+        "basin_entropy": 3.373557262275185
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_adversarial_letter",
+      "genre": "adversarial",
+      "mode": "dialectical",
+      "distance": 7.673,
+      "fp": {
+        "smoothness_mean": 0.20791439712047577,
+        "smoothness_std": 0.21519158780574799,
+        "exposition": 0.034862417727708817,
+        "interiority": 0.03838746249675751,
+        "formal_structure": 0.04195581376552582,
+        "scene_narration": 0.0390346385538578,
+        "basin_entropy": 2.94770277922009
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_adversarial_diary",
+      "genre": "adversarial",
+      "mode": "convergent",
+      "distance": 6.943,
+      "fp": {
+        "smoothness_mean": 0.1791052222251892,
+        "smoothness_std": 0.14553450047969818,
+        "exposition": 0.039561182260513306,
+        "interiority": 0.03475132957100868,
+        "formal_structure": 0.042496781796216965,
+        "scene_narration": 0.04519226774573326,
+        "basin_entropy": 3.251629167387823
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_adversarial_hemingway",
+      "genre": "adversarial",
+      "mode": "convergent",
+      "distance": 4.536,
+      "fp": {
+        "smoothness_mean": 0.2270822525024414,
+        "smoothness_std": 0.17843130230903625,
+        "exposition": 0.039708252996206284,
+        "interiority": 0.036720436066389084,
+        "formal_structure": 0.04477377608418465,
+        "scene_narration": 0.04521065577864647,
+        "basin_entropy": 3.327819531114783
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_adversarial_twain",
+      "genre": "adversarial",
+      "mode": "contemplative",
+      "distance": 8.902,
+      "fp": {
+        "smoothness_mean": 0.2025197148323059,
+        "smoothness_std": 0.2566780745983124,
+        "exposition": 0.03958137333393097,
+        "interiority": 0.040797486901283264,
+        "formal_structure": 0.03676069155335426,
+        "scene_narration": 0.03933974355459213,
+        "basin_entropy": 2.4193819456463714
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_short_1",
+      "genre": "essay",
+      "mode": "dialectical",
+      "distance": 7.537,
+      "fp": {
+        "smoothness_mean": 0.058197762817144394,
+        "smoothness_std": 0.2668886184692383,
+        "exposition": 0.036783065646886826,
+        "interiority": 0.034660376608371735,
+        "formal_structure": 0.04079895839095116,
+        "scene_narration": 0.03889542445540428,
+        "basin_entropy": 3.128085278891394
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_short_2",
+      "genre": "essay",
+      "mode": "convergent",
+      "distance": 6.746,
+      "fp": {
+        "smoothness_mean": 0.35190489888191223,
+        "smoothness_std": 0.15367163717746735,
+        "exposition": 0.03759783133864403,
+        "interiority": 0.03855216130614281,
+        "formal_structure": 0.04558394104242325,
+        "scene_narration": 0.038127027451992035,
+        "basin_entropy": 2.5
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_technical_1",
+      "genre": "technical",
+      "mode": "contemplative",
+      "distance": 8.363,
+      "fp": {
+        "smoothness_mean": 0.36998793482780457,
+        "smoothness_std": 0.2600114643573761,
+        "exposition": 0.04125630110502243,
+        "interiority": 0.04219917953014374,
+        "formal_structure": 0.03635949641466141,
+        "scene_narration": 0.03994455188512802,
+        "basin_entropy": 2.584962500721156
+      }
+    },
+    {
+      "source": "ai",
+      "id": "ai_technical_2",
+      "genre": "technical",
+      "mode": "convergent",
+      "distance": 7.832,
+      "fp": {
+        "smoothness_mean": 0.33902880549430847,
+        "smoothness_std": 0.20711340010166168,
+        "exposition": 0.045604851096868515,
+        "interiority": 0.043399445712566376,
+        "formal_structure": 0.04206803813576698,
+        "scene_narration": 0.038288701325654984,
+        "basin_entropy": 2.521640636343318
+      }
+    },
+    {
+      "source": "human",
+      "id": "g1342",
+      "genre": "gutenberg",
+      "mode": "contemplative",
+      "distance": 4.49,
+      "fp": {
+        "smoothness_mean": 0.27866408228874207,
+        "smoothness_std": 0.1860331892967224,
+        "exposition": 0.037992388010025024,
+        "interiority": 0.04175345599651337,
+        "formal_structure": 0.04349439591169357,
+        "scene_narration": 0.04100681096315384,
+        "basin_entropy": 3.452819531114783
+      },
+      "title": "Pride and Prejudice"
+    },
+    {
+      "source": "human",
+      "id": "g84",
+      "genre": "gutenberg",
+      "mode": "discursive",
+      "distance": 3.851,
+      "fp": {
+        "smoothness_mean": 0.21754072606563568,
+        "smoothness_std": 0.1836392730474472,
+        "exposition": 0.04227075353264809,
+        "interiority": 0.03882770612835884,
+        "formal_structure": 0.044394683092832565,
+        "scene_narration": 0.04478508606553078,
+        "basin_entropy": 3.7406015629507228
+      },
+      "title": "Frankenstein"
+    },
+    {
+      "source": "human",
+      "id": "g1661",
+      "genre": "gutenberg",
+      "mode": "discursive",
+      "distance": 3.774,
+      "fp": {
+        "smoothness_mean": 0.24920792877674103,
+        "smoothness_std": 0.24976898729801178,
+        "exposition": 0.041565049439668655,
+        "interiority": 0.03957049548625946,
+        "formal_structure": 0.04176962375640869,
+        "scene_narration": 0.04338016360998154,
+        "basin_entropy": 3.6288278440927844
+      },
+      "title": "Sherlock Holmes"
+    },
+    {
+      "source": "human",
+      "id": "g76",
+      "genre": "gutenberg",
+      "mode": "dialectical",
+      "distance": 5.722,
+      "fp": {
+        "smoothness_mean": 0.14163336157798767,
+        "smoothness_std": 0.19987957179546356,
+        "exposition": 0.03643691912293434,
+        "interiority": 0.04251869022846222,
+        "formal_structure": 0.047818832099437714,
+        "scene_narration": 0.04351511225104332,
+        "basin_entropy": 3.808209480894381
+      },
+      "title": "Huckleberry Finn"
+    },
+    {
+      "source": "human",
+      "id": "g174",
+      "genre": "gutenberg",
+      "mode": "dialectical",
+      "distance": 5.905,
+      "fp": {
+        "smoothness_mean": 0.41686683893203735,
+        "smoothness_std": 0.34553855657577515,
+        "exposition": 0.03647129237651825,
+        "interiority": 0.03992480784654617,
+        "formal_structure": 0.0466342493891716,
+        "scene_narration": 0.03911764547228813,
+        "basin_entropy": 4.2433475383733565
+      },
+      "title": "Dorian Gray"
+    },
+    {
+      "source": "human",
+      "id": "g345",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 8.766,
+      "fp": {
+        "smoothness_mean": 0.5277173519134521,
+        "smoothness_std": 0.3389313817024231,
+        "exposition": 0.04008125886321068,
+        "interiority": 0.04581809043884277,
+        "formal_structure": 0.04254171997308731,
+        "scene_narration": 0.0452108271420002,
+        "basin_entropy": 3.0954936989021875
+      },
+      "title": "Dracula"
+    },
+    {
+      "source": "human",
+      "id": "g2701",
+      "genre": "gutenberg",
+      "mode": "dialectical",
+      "distance": 3.567,
+      "fp": {
+        "smoothness_mean": 0.3162877857685089,
+        "smoothness_std": 0.2816793918609619,
+        "exposition": 0.03762993961572647,
+        "interiority": 0.037629153579473495,
+        "formal_structure": 0.048799268901348114,
+        "scene_narration": 0.03864433988928795,
+        "basin_entropy": 3.9617803476142335
+      },
+      "title": "Moby Dick"
+    },
+    {
+      "source": "human",
+      "id": "g1260",
+      "genre": "gutenberg",
+      "mode": "discursive",
+      "distance": 3.638,
+      "fp": {
+        "smoothness_mean": 0.20196767151355743,
+        "smoothness_std": 0.23458285629749298,
+        "exposition": 0.04032246768474579,
+        "interiority": 0.03785061091184616,
+        "formal_structure": 0.04171769320964813,
+        "scene_narration": 0.03946324437856674,
+        "basin_entropy": 3.7381493331928657
+      },
+      "title": "Jane Eyre"
+    },
+    {
+      "source": "human",
+      "id": "g120",
+      "genre": "gutenberg",
+      "mode": "discursive",
+      "distance": 4.4,
+      "fp": {
+        "smoothness_mean": 0.08646978437900543,
+        "smoothness_std": 0.21564745903015137,
+        "exposition": 0.03953928127884865,
+        "interiority": 0.04300376772880554,
+        "formal_structure": 0.044006314128637314,
+        "scene_narration": 0.04549029469490051,
+        "basin_entropy": 4.158973881813273
+      },
+      "title": "Treasure Island"
+    },
+    {
+      "source": "human",
+      "id": "g219",
+      "genre": "gutenberg",
+      "mode": "discursive",
+      "distance": 3.441,
+      "fp": {
+        "smoothness_mean": 0.1646449863910675,
+        "smoothness_std": 0.24252279102802277,
+        "exposition": 0.0413832850754261,
+        "interiority": 0.03602451831102371,
+        "formal_structure": 0.043146442621946335,
+        "scene_narration": 0.043952714651823044,
+        "basin_entropy": 3.9917292966721747
+      },
+      "title": "Heart of Darkness"
+    },
+    {
+      "source": "human",
+      "id": "g768",
+      "genre": "gutenberg",
+      "mode": "discursive",
+      "distance": 4.604,
+      "fp": {
+        "smoothness_mean": 0.16712547838687897,
+        "smoothness_std": 0.17667515575885773,
+        "exposition": 0.04144175723195076,
+        "interiority": 0.04179792106151581,
+        "formal_structure": 0.04180913791060448,
+        "scene_narration": 0.045338746160268784,
+        "basin_entropy": 3.8553885422075336
+      },
+      "title": "Wuthering Heights"
+    },
+    {
+      "source": "human",
+      "id": "g730",
+      "genre": "gutenberg",
+      "mode": "contemplative",
+      "distance": 8.929,
+      "fp": {
+        "smoothness_mean": 0.39031049609184265,
+        "smoothness_std": 0.10983698815107346,
+        "exposition": 0.042944762855768204,
+        "interiority": 0.04863502457737923,
+        "formal_structure": 0.04500105604529381,
+        "scene_narration": 0.040022727102041245,
+        "basin_entropy": 2.918295834054489
+      },
+      "title": "Oliver Twist"
+    },
+    {
+      "source": "human",
+      "id": "g11",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 2.705,
+      "fp": {
+        "smoothness_mean": 0.37798887491226196,
+        "smoothness_std": 0.22323450446128845,
+        "exposition": 0.04232839122414589,
+        "interiority": 0.04183582589030266,
+        "formal_structure": 0.0461101233959198,
+        "scene_narration": 0.04101940616965294,
+        "basin_entropy": 3.7024715122197467
+      },
+      "title": "Alice in Wonderland"
+    },
+    {
+      "source": "human",
+      "id": "g98",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 5.816,
+      "fp": {
+        "smoothness_mean": 0.27031320333480835,
+        "smoothness_std": 0.15496261417865753,
+        "exposition": 0.04026332125067711,
+        "interiority": 0.04252062365412712,
+        "formal_structure": 0.04765069857239723,
+        "scene_narration": 0.04328874498605728,
+        "basin_entropy": 2.7219280948873625
+      },
+      "title": "Tale of Two Cities"
+    },
+    {
+      "source": "human",
+      "id": "g1524",
+      "genre": "gutenberg",
+      "mode": "dialectical",
+      "distance": 3.67,
+      "fp": {
+        "smoothness_mean": 0.2940477430820465,
+        "smoothness_std": 0.31429001688957214,
+        "exposition": 0.0399211049079895,
+        "interiority": 0.03764588013291359,
+        "formal_structure": 0.04430479183793068,
+        "scene_narration": 0.04109921678900719,
+        "basin_entropy": 3.863493711011127
+      },
+      "title": "Hamlet"
+    },
+    {
+      "source": "human",
+      "id": "g1513",
+      "genre": "gutenberg",
+      "mode": "dialectical",
+      "distance": 3.854,
+      "fp": {
+        "smoothness_mean": 0.37696826457977295,
+        "smoothness_std": 0.27893567085266113,
+        "exposition": 0.03921642154455185,
+        "interiority": 0.04264149069786072,
+        "formal_structure": 0.04708169400691986,
+        "scene_narration": 0.04112367704510689,
+        "basin_entropy": 4.043780513056761
+      },
+      "title": "Midsummer Night's Dream"
+    },
+    {
+      "source": "human",
+      "id": "g1533",
+      "genre": "gutenberg",
+      "mode": "dialectical",
+      "distance": 3.348,
+      "fp": {
+        "smoothness_mean": 0.27951574325561523,
+        "smoothness_std": 0.2747192978858948,
+        "exposition": 0.039997950196266174,
+        "interiority": 0.041029803454875946,
+        "formal_structure": 0.04258903115987778,
+        "scene_narration": 0.04030503332614899,
+        "basin_entropy": 4.156857647946358
+      },
+      "title": "Macbeth"
+    },
+    {
+      "source": "human",
+      "id": "g844",
+      "genre": "gutenberg",
+      "mode": "dialectical",
+      "distance": 2.657,
+      "fp": {
+        "smoothness_mean": 0.23739022016525269,
+        "smoothness_std": 0.22184480726718903,
+        "exposition": 0.03790152445435524,
+        "interiority": 0.0369705967605114,
+        "formal_structure": 0.044874031096696854,
+        "scene_narration": 0.041288938373327255,
+        "basin_entropy": 4.218318251974832
+      },
+      "title": "Being Earnest"
+    },
+    {
+      "source": "human",
+      "id": "g5827",
+      "genre": "gutenberg",
+      "mode": "contemplative",
+      "distance": 3.636,
+      "fp": {
+        "smoothness_mean": 0.2557950019836426,
+        "smoothness_std": 0.26243501901626587,
+        "exposition": 0.04178846254944801,
+        "interiority": 0.041585005819797516,
+        "formal_structure": 0.040973786264657974,
+        "scene_narration": 0.03846877068281174,
+        "basin_entropy": 3.973660689688186
+      },
+      "title": "Problems of Philosophy"
+    },
+    {
+      "source": "human",
+      "id": "g1497",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 2.926,
+      "fp": {
+        "smoothness_mean": 0.2649960517883301,
+        "smoothness_std": 0.20190010964870453,
+        "exposition": 0.04045568406581879,
+        "interiority": 0.0397019125521183,
+        "formal_structure": 0.045865584164857864,
+        "scene_narration": 0.03963743895292282,
+        "basin_entropy": 3.736440501696144
+      },
+      "title": "Republic"
+    },
+    {
+      "source": "human",
+      "id": "g3600",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 2.48,
+      "fp": {
+        "smoothness_mean": 0.42210450768470764,
+        "smoothness_std": 0.22465765476226807,
+        "exposition": 0.041812118142843246,
+        "interiority": 0.04091658815741539,
+        "formal_structure": 0.04618553817272186,
+        "scene_narration": 0.042183782905340195,
+        "basin_entropy": 3.1713731502314886
+      },
+      "title": "Zarathustra"
+    },
+    {
+      "source": "human",
+      "id": "g1232",
+      "genre": "gutenberg",
+      "mode": "contemplative",
+      "distance": 3.932,
+      "fp": {
+        "smoothness_mean": 0.40017223358154297,
+        "smoothness_std": 0.25174009799957275,
+        "exposition": 0.039765387773513794,
+        "interiority": 0.043903518468141556,
+        "formal_structure": 0.04720713198184967,
+        "scene_narration": 0.03875347599387169,
+        "basin_entropy": 3.780881575003209
+      },
+      "title": "The Prince"
+    },
+    {
+      "source": "human",
+      "id": "g1321",
+      "genre": "gutenberg",
+      "mode": "discursive",
+      "distance": 3.096,
+      "fp": {
+        "smoothness_mean": 0.18966734409332275,
+        "smoothness_std": 0.18333348631858826,
+        "exposition": 0.039119184017181396,
+        "interiority": 0.04007295146584511,
+        "formal_structure": 0.04292510449886322,
+        "scene_narration": 0.04108360409736633,
+        "basin_entropy": 4.215354779870081
+      },
+      "title": "Paradise Lost"
+    },
+    {
+      "source": "human",
+      "id": "g4800",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 2.778,
+      "fp": {
+        "smoothness_mean": 0.27631810307502747,
+        "smoothness_std": 0.23421649634838104,
+        "exposition": 0.039985883980989456,
+        "interiority": 0.039497338235378265,
+        "formal_structure": 0.0478026419878006,
+        "scene_narration": 0.041565634310245514,
+        "basin_entropy": 3.16829583405449
+      },
+      "title": "Leaves of Grass"
+    },
+    {
+      "source": "human",
+      "id": "g1065",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 5.895,
+      "fp": {
+        "smoothness_mean": 0.26033639907836914,
+        "smoothness_std": 0.1862429529428482,
+        "exposition": 0.04105455428361893,
+        "interiority": 0.037143491208553314,
+        "formal_structure": 0.04071247950196266,
+        "scene_narration": 0.04429543763399124,
+        "basin_entropy": 2.94770277922009
+      },
+      "title": "Dickinson Poems"
+    },
+    {
+      "source": "human",
+      "id": "g2009",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 4.235,
+      "fp": {
+        "smoothness_mean": 0.3052756190299988,
+        "smoothness_std": 0.1821451187133789,
+        "exposition": 0.03913837671279907,
+        "interiority": 0.0406489335000515,
+        "formal_structure": 0.046414703130722046,
+        "scene_narration": 0.047319456934928894,
+        "basin_entropy": 3.6424896731661263
+      },
+      "title": "Origin of Species"
+    },
+    {
+      "source": "human",
+      "id": "g37729",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 5.085,
+      "fp": {
+        "smoothness_mean": 0.3696989119052887,
+        "smoothness_std": 0.15649569034576416,
+        "exposition": 0.039985861629247665,
+        "interiority": 0.03709615767002106,
+        "formal_structure": 0.042610395699739456,
+        "scene_narration": 0.040039949119091034,
+        "basin_entropy": 3.2848894517332403
+      },
+      "title": "Relativity"
+    },
+    {
+      "source": "human",
+      "id": "g10",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 2.995,
+      "fp": {
+        "smoothness_mean": 0.43469783663749695,
+        "smoothness_std": 0.26906946301460266,
+        "exposition": 0.04226422682404518,
+        "interiority": 0.03953900933265686,
+        "formal_structure": 0.04829025641083717,
+        "scene_narration": 0.0407722070813179,
+        "basin_entropy": 3.263933429485634
+      },
+      "title": "KJV Bible"
+    },
+    {
+      "source": "human",
+      "id": "g8300",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 2.582,
+      "fp": {
+        "smoothness_mean": 0.31529200077056885,
+        "smoothness_std": 0.2357298582792282,
+        "exposition": 0.041870709508657455,
+        "interiority": 0.04027995094656944,
+        "formal_structure": 0.04817534610629082,
+        "scene_narration": 0.04179800674319267,
+        "basin_entropy": 4.067901554211101
+      },
+      "title": "Tao Te Ching"
+    },
+    {
+      "source": "human",
+      "id": "g3207",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 5.77,
+      "fp": {
+        "smoothness_mean": 0.20127375423908234,
+        "smoothness_std": 0.24111846089363098,
+        "exposition": 0.045139867812395096,
+        "interiority": 0.03731261193752289,
+        "formal_structure": 0.043082159012556076,
+        "scene_narration": 0.04024816304445267,
+        "basin_entropy": 3.2184451519648007
+      },
+      "title": "Marcus Aurelius"
+    },
+    {
+      "source": "human",
+      "id": "g815",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 4.52,
+      "fp": {
+        "smoothness_mean": 0.32615238428115845,
+        "smoothness_std": 0.2461315095424652,
+        "exposition": 0.042595960199832916,
+        "interiority": 0.03673435375094414,
+        "formal_structure": 0.047524627298116684,
+        "scene_narration": 0.0419517420232296,
+        "basin_entropy": 2.584962500721156
+      },
+      "title": "Democracy in America"
+    },
+    {
+      "source": "human",
+      "id": "g61",
+      "genre": "gutenberg",
+      "mode": "dialectical",
+      "distance": 4.692,
+      "fp": {
+        "smoothness_mean": 0.3605120778083801,
+        "smoothness_std": 0.23562532663345337,
+        "exposition": 0.03782525286078453,
+        "interiority": 0.03548044338822365,
+        "formal_structure": 0.04307979717850685,
+        "scene_narration": 0.04154970869421959,
+        "basin_entropy": 3.5777471629109443
+      },
+      "title": "Communist Manifesto"
+    },
+    {
+      "source": "human",
+      "id": "g16328",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 7.477,
+      "fp": {
+        "smoothness_mean": 0.11898133158683777,
+        "smoothness_std": 0.16232779622077942,
+        "exposition": 0.043716203421354294,
+        "interiority": 0.039848364889621735,
+        "formal_structure": 0.04614436998963356,
+        "scene_narration": 0.03946858271956444,
+        "basin_entropy": 2.321928094887362
+      },
+      "title": "Dubliners"
+    },
+    {
+      "source": "human",
+      "id": "g5200",
+      "genre": "gutenberg",
+      "mode": "discursive",
+      "distance": 3.233,
+      "fp": {
+        "smoothness_mean": 0.18987217545509338,
+        "smoothness_std": 0.19902673363685608,
+        "exposition": 0.04256889224052429,
+        "interiority": 0.040274523198604584,
+        "formal_structure": 0.04234404116868973,
+        "scene_narration": 0.04339013248682022,
+        "basin_entropy": 4.0060710131011685
+      },
+      "title": "Metamorphosis"
+    },
+    {
+      "source": "human",
+      "id": "g600",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 3.281,
+      "fp": {
+        "smoothness_mean": 0.2956342399120331,
+        "smoothness_std": 0.1999305784702301,
+        "exposition": 0.03902440145611763,
+        "interiority": 0.037817105650901794,
+        "formal_structure": 0.04478159174323082,
+        "scene_narration": 0.04268316179513931,
+        "basin_entropy": 3.7096612043903474
+      },
+      "title": "Notes from Underground"
+    },
+    {
+      "source": "human",
+      "id": "g4300",
+      "genre": "gutenberg",
+      "mode": "discursive",
+      "distance": 2.962,
+      "fp": {
+        "smoothness_mean": 0.10886389017105103,
+        "smoothness_std": 0.2462148666381836,
+        "exposition": 0.040790896862745285,
+        "interiority": 0.03760254383087158,
+        "formal_structure": 0.04490155354142189,
+        "scene_narration": 0.044151391834020615,
+        "basin_entropy": 4.2184705346097
+      },
+      "title": "Ulysses"
+    },
+    {
+      "source": "human",
+      "id": "g2554",
+      "genre": "gutenberg",
+      "mode": "discursive",
+      "distance": 4.461,
+      "fp": {
+        "smoothness_mean": 0.22075065970420837,
+        "smoothness_std": 0.2294524759054184,
+        "exposition": 0.043602682650089264,
+        "interiority": 0.039698295295238495,
+        "formal_structure": 0.04140570014715195,
+        "scene_narration": 0.04342208802700043,
+        "basin_entropy": 3.6381404237049173
+      },
+      "title": "Crime and Punishment"
+    },
+    {
+      "source": "human",
+      "id": "g514",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 5.146,
+      "fp": {
+        "smoothness_mean": 0.22437554597854614,
+        "smoothness_std": 0.17899511754512787,
+        "exposition": 0.03858025744557381,
+        "interiority": 0.03470814973115921,
+        "formal_structure": 0.04525914415717125,
+        "scene_narration": 0.042069148272275925,
+        "basin_entropy": 3.6818808028034025
+      },
+      "title": "Little Women"
+    },
+    {
+      "source": "human",
+      "id": "g1399",
+      "genre": "gutenberg",
+      "mode": "discursive",
+      "distance": 4.824,
+      "fp": {
+        "smoothness_mean": 0.2866491377353668,
+        "smoothness_std": 0.18357697129249573,
+        "exposition": 0.0429941788315773,
+        "interiority": 0.040793828666210175,
+        "formal_structure": 0.04176613315939903,
+        "scene_narration": 0.044216737151145935,
+        "basin_entropy": 3.593991763091994
+      },
+      "title": "Anna Karenina"
+    },
+    {
+      "source": "human",
+      "id": "g86",
+      "genre": "gutenberg",
+      "mode": "convergent",
+      "distance": 5.035,
+      "fp": {
+        "smoothness_mean": 0.16594785451889038,
+        "smoothness_std": 0.18710103631019592,
+        "exposition": 0.040645647794008255,
+        "interiority": 0.04290103167295456,
+        "formal_structure": 0.04531759396195412,
+        "scene_narration": 0.043005771934986115,
+        "basin_entropy": 3.4548223999466066
+      },
+      "title": "Connecticut Yankee"
+    }
+  ],
+  "classifier": {
+    "version": "v2",
+    "method": "weighted_zscore",
+    "features": [
+      "smoothness_mean",
+      "smoothness_std",
+      "exposition",
+      "interiority",
+      "formal_structure",
+      "scene_narration",
+      "basin_entropy"
+    ],
+    "z_mean": [
+      0.2483715118392359,
+      0.2189514396499984,
+      0.04005104114737692,
+      0.03970696079202845,
+      0.0432293837111962,
+      0.04148828808831263,
+      3.196097408442239
+    ],
+    "z_std": [
+      0.10030691538736386,
+      0.05769838805396574,
+      0.002177961474458595,
+      0.003656833906502979,
+      0.0030583377315386118,
+      0.0027466195331204988,
+      0.634443751566417
+    ],
+    "weights": [
+      -0.5516331027190974,
+      -0.15124237275311617,
+      -0.4876197411165852,
+      -0.15622147295429212,
+      -1.0768414296876883,
+      -0.3858354323248345,
+      -1.7907762113366636
+    ],
+    "threshold": -0.453,
+    "accuracy": 0.9367,
+    "n_ai": 39,
+    "n_human": 40,
+    "single_feature": {
+      "feature": "basin_entropy",
+      "threshold": 3.3847,
+      "direction": "<",
+      "accuracy": 0.8608
+    },
+    "centroid": {
+      "ai": [
+        0.22136722648373017,
+        0.21453780508958376,
+        0.03952819720292703,
+        0.03941782898245714,
+        0.04175917555888494,
+        0.0409601958325276,
+        2.7674919018837363
+      ],
+      "human": [
+        0.27470069006085396,
+        0.22325473334640264,
+        0.04056081399321556,
+        0.039988864306360485,
+        0.04466283665969968,
+        0.04200317803770304,
+        3.613987777336779
+      ],
+      "accuracy": 0.8101
+    }
+  },
+  "separation_ratio": 2.147
+}

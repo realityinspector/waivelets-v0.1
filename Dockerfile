@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY fastprint.py .
 COPY basis.npz .
 COPY basis_clusters.json .
+COPY ai_detector_params.json .
 COPY MIDWAY_REPORT.md .
 COPY web/ web/
 

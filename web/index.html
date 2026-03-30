@@ -199,7 +199,8 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
 <div class="inner">
   <div class="logo">WAIVELETS</div>
   <div class="links">
-    <a href="#try">Try It</a>
+    <a href="#try">Fingerprint</a>
+    <a href="#detect">AI Detect</a>
     <a href="#speed">Speed</a>
     <a href="#corpus">Corpus</a>
     <a href="#modes">Modes</a>
@@ -267,8 +268,88 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
 </div>
 </section>
 
+<!-- ═══ AI DETECTION ═══ -->
+<section class="section-alt" id="detect">
+<div class="container">
+  <h2>AI or human? 93.7% accuracy.</h2>
+  <p class="subtitle">
+    AI text visits fewer attractor basins and has lower structural complexity.
+    The fingerprint catches it — even when the AI is trying to sound human.
+    Tested on 39 AI samples (including adversarial) vs 40 Gutenberg texts.
+  </p>
+
+  <div class="try-card">
+    <textarea class="try-textarea" id="detect-text" placeholder="Paste text you want to check (3+ sentences). Is it AI-generated or human-written?"></textarea>
+    <div class="try-actions">
+      <button class="btn btn-primary" id="detect-btn" onclick="runDetection()" style="background:var(--dialectical)">Detect AI / Human</button>
+      <span style="font-size:0.75rem;color:var(--text3);margin-left:4px">or try:</span>
+      <button class="example-btn" onclick="loadDetectExample('ai_essay')">AI essay</button>
+      <button class="example-btn" onclick="loadDetectExample('ai_casual')">AI casual</button>
+      <button class="example-btn" onclick="loadDetectExample('human_austen')">Austen</button>
+      <button class="example-btn" onclick="loadDetectExample('human_shakespeare')">Shakespeare</button>
+      <button class="example-btn" onclick="loadDetectExample('human_darwin')">Darwin</button>
+    </div>
+    <div id="detect-result"></div>
+  </div>
+
+  <!-- Evidence chart: AI vs Human distributions -->
+  <div style="margin-top:48px">
+    <h3 style="font-size:1.1rem;color:var(--white);margin-bottom:6px">The evidence: basin entropy separates AI from human</h3>
+    <p style="color:var(--text2);font-size:0.9rem;margin-bottom:20px">
+      AI-generated text (red) clusters at low basin entropy — it visits fewer attractor basins,
+      stays in more constrained semantic territory. Human text (green) spreads wider.
+      The strongest single signal: <code>basin_entropy &lt; 3.38</code> catches 86% of AI text.
+      A weighted 7-feature composite reaches <strong>93.7%</strong>.
+    </p>
+    <div id="entropy-chart" style="width:100%;height:180px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden"></div>
+  </div>
+
+  <!-- Key findings -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:32px">
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--green)">93.7%</div>
+      <div style="font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px">Composite accuracy</div>
+      <div style="font-size:0.78rem;color:var(--text2);margin-top:6px">7-feature weighted score</div>
+    </div>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--convergent)">d=1.79</div>
+      <div style="font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px">Basin entropy effect</div>
+      <div style="font-size:0.78rem;color:var(--text2);margin-top:6px">Cohen's d (large &gt; 0.8)</div>
+    </div>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--dialectical)">71%</div>
+      <div style="font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px">Adversarial detection</div>
+      <div style="font-size:0.78rem;color:var(--text2);margin-top:6px">AI told to "sound human"</div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:32px">
+    <div class="tag">Why this works</div>
+    <p>
+      AI text is structurally <strong>convergent</strong> — it narrows to fewer semantic basins
+      and stays there. 49% of AI samples classify as convergent mode vs 42% of human samples.
+      But the real signal is <strong>basin entropy</strong>: AI averages 2.77 bits vs human's 3.61 bits.
+      AI text explores less of the attractor landscape even when it's trying to be varied.
+      This is a <strong>dynamical property</strong> that's hard to game because it emerges from
+      how meaning unfolds over dozens of sentences, not from individual word choices.
+    </p>
+  </div>
+
+  <div class="callout">
+    <div class="tag">Honest limitations</div>
+    <p>
+      This is a research preview, not a production detector. <strong>Short texts (&lt;5 sentences) are unreliable.</strong>
+      Adversarial AI text (casual tone, style mimicry) evades detection ~29% of the time.
+      The eval corpus is 79 samples — not thousands. The classifier was trained on Claude-generated text
+      and may not generalize to all LLMs. Human text from unusual genres (legal boilerplate, liturgical repetition)
+      can false-positive as AI. <strong>Use this as a signal, not a verdict.</strong>
+    </p>
+  </div>
+</div>
+</section>
+
 <!-- ═══ SPEED ═══ -->
-<section class="section-alt" id="speed">
+<section id="speed">
 <div class="container">
   <h2>How fast is it, honestly?</h2>
   <p class="subtitle">
@@ -882,6 +963,167 @@ function setupAnimations() {
   });
 }
 
+// ═══ AI DETECTION ═══
+const DETECT_EXAMPLES = {
+  ai_essay: `We did not decide to become a society that stares at screens. It happened incrementally, one convenience at a time, each step so small and so obviously beneficial that objecting seemed not just futile but unreasonable. Who would refuse a device that holds every book ever written, connects you to every person you have ever known, and fits in your pocket? The problem was never any single technology. The problem was the aggregate, the way each individual optimization combined to produce a total environment that nobody designed and nobody controls. We optimized for engagement and got addiction. We optimized for connection and got loneliness. We optimized for information and got a world in which nobody can agree on basic facts.`,
+  ai_casual: `ok so here's the thing about living in this city that nobody tells you before you move here. The rent is stupid. Like, actually stupid. Not "oh that's a lot" stupid but "I have a master's degree and I literally cannot afford a studio apartment" stupid. My friend Jake, who's been here six years, says you get used to it. Jake also thinks mayonnaise is a food group and once forgot his own birthday so I'm not sure his judgment calls are the gold standard here. Anyway I found this place in Bushwick, third floor walkup, the bathtub is in the kitchen which is apparently legal in this state.`,
+  human_austen: `It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife. However little known the feelings or views of such a man may be on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families, that he is considered the rightful property of some one or other of their daughters. My dear Mr. Bennet, said his lady to him one day, have you heard that Netherfield Park is let at last? Mr. Bennet replied that he had not. But it is, returned she; for Mrs. Long has just been here, and she told me all about it.`,
+  human_shakespeare: `To be, or not to be, that is the question: Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune, or to take arms against a sea of troubles, and by opposing end them. To die, to sleep; no more; and by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to. 'Tis a consummation devoutly to be wished. To die, to sleep; to sleep: perchance to dream: ay, there's the rub; for in that sleep of death what dreams may come when we have shuffled off this mortal coil, must give us pause.`,
+  human_darwin: `When on board H.M.S. Beagle, as naturalist, I was much struck with certain facts in the distribution of the inhabitants of South America, and in the geological relations of the present to the past inhabitants of that continent. These facts seemed to me to throw some light on the origin of species — that mystery of mysteries, as it has been called by one of our greatest philosophers. On my return home, it occurred to me, in 1837, that something might perhaps be made out on this question by patiently accumulating and reflecting on all sorts of facts which could possibly have any bearing on it.`,
+};
+
+function loadDetectExample(key) {
+  document.getElementById('detect-text').value = DETECT_EXAMPLES[key];
+  document.querySelectorAll('#detect .example-btn').forEach(b => b.classList.remove('active'));
+  if (event && event.target) event.target.classList.add('active');
+  runDetection();
+}
+
+async function runDetection() {
+  const text = document.getElementById('detect-text').value.trim();
+  if (!text) return;
+  const btn = document.getElementById('detect-btn');
+  const result = document.getElementById('detect-result');
+  btn.disabled = true; btn.textContent = 'Analyzing...';
+  result.innerHTML = '<p style="color:var(--text3);padding:20px 0">Running structural analysis...</p>';
+
+  try {
+    const resp = await fetch('/api/detect', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({text})
+    });
+    const d = await resp.json();
+    if (d.error) { result.innerHTML = `<p style="color:var(--dialectical)">${d.error}</p>`; return; }
+
+    const isAI = d.prediction === 'ai';
+    const color = isAI ? 'var(--dialectical)' : 'var(--green)';
+    const label = isAI ? 'LIKELY AI-GENERATED' : 'LIKELY HUMAN-WRITTEN';
+    const confPct = Math.round(d.confidence * 100);
+    const entColor = d.signals.basin_entropy < 3.38 ? 'var(--dialectical)' : 'var(--green)';
+
+    // Gauge visualization
+    const gaugePos = Math.max(0, Math.min(100, 50 + (d.score - d.threshold) * 12));
+
+    result.innerHTML = `
+      <div class="result-card" style="border-left:4px solid ${color};margin-top:20px">
+        <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px">
+          <div style="font-size:1.8rem;font-weight:800;color:${color}">${label}</div>
+        </div>
+        <div style="font-size:0.85rem;color:var(--text2);margin-bottom:20px">
+          Confidence: <strong style="color:${color}">${confPct}%</strong> &middot;
+          Score: <span class="mono">${d.score.toFixed(3)}</span> (threshold: ${d.threshold}) &middot;
+          ${d.n_sentences} sentences in ${d.time_ms}ms
+        </div>
+
+        <!-- Score gauge -->
+        <div style="margin-bottom:24px">
+          <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text3);margin-bottom:4px">
+            <span>← MORE HUMAN</span><span>MORE AI →</span>
+          </div>
+          <div style="position:relative;height:28px;background:linear-gradient(90deg,var(--green)20,var(--bg3) 45%,var(--bg3) 55%,var(--dialectical)20 100%);border-radius:6px;overflow:hidden">
+            <div style="position:absolute;top:0;bottom:0;left:${gaugePos}%;width:3px;background:var(--white);border-radius:2px;box-shadow:0 0 8px rgba(255,255,255,0.5)"></div>
+            <div style="position:absolute;top:0;bottom:0;left:50%;width:1px;background:var(--text3);opacity:0.3"></div>
+          </div>
+        </div>
+
+        <!-- Key signals -->
+        <div style="font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Key structural signals</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.85rem">
+          <div style="background:var(--bg2);padding:12px;border-radius:8px">
+            <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;margin-bottom:4px">Basin Entropy</div>
+            <div class="mono" style="font-size:1.2rem;font-weight:700;color:${entColor}">${d.signals.basin_entropy.toFixed(2)} bits</div>
+            <div style="color:var(--text3);font-size:0.75rem">${d.signals.basin_entropy < 3.38 ? 'Low — fewer attractor basins visited (AI pattern)' : 'Normal range — diverse basin exploration (human pattern)'}</div>
+          </div>
+          <div style="background:var(--bg2);padding:12px;border-radius:8px">
+            <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;margin-bottom:4px">Structural Mode</div>
+            <div style="font-size:1.2rem;font-weight:700;color:${MC[d.mode]};text-transform:uppercase">${d.mode}</div>
+            <div style="color:var(--text3);font-size:0.75rem">Distance: ${d.mode_distance} &middot; Centroid: AI=${d.centroid_distances.to_ai.toFixed(2)}, Human=${d.centroid_distances.to_human.toFixed(2)}</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;font-size:0.85rem">
+          <div style="background:var(--bg2);padding:12px;border-radius:8px">
+            <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;margin-bottom:4px">Smoothness</div>
+            <div class="mono" style="font-weight:600">${d.signals.smoothness_mean > 0 ? '+' : ''}${d.signals.smoothness_mean.toFixed(3)}</div>
+            <div style="color:var(--text3);font-size:0.75rem">Oscillation: ${d.signals.smoothness_std.toFixed(3)}</div>
+          </div>
+          <div style="background:var(--bg2);padding:12px;border-radius:8px">
+            <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;margin-bottom:4px">Formal Structure</div>
+            <div class="mono" style="font-weight:600">${d.signals.formal_structure.toFixed(4)}</div>
+            <div style="color:var(--text3);font-size:0.75rem">${d.signals.formal_structure < 0.043 ? 'Below human average' : 'In human range'}</div>
+          </div>
+        </div>
+      </div>`;
+  } catch(e) {
+    result.innerHTML = `<p style="color:var(--dialectical)">Error: ${e.message}</p>`;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Detect AI / Human';
+  }
+}
+
+// ═══ ENTROPY DISTRIBUTION CHART ═══
+function renderEntropyChart() {
+  const el = document.getElementById('entropy-chart');
+  if (!el) return;
+  const W = el.clientWidth, H = 180;
+  const pad = {top:15,right:20,bottom:35,left:45};
+  const svg = d3.select('#entropy-chart').append('svg').attr('width',W).attr('height',H);
+
+  // Hardcoded from eval results
+  const aiEntropies = [2.92,3.24,2.92,3.12,2.81,3.10,3.19,3.24,2.12,3.18,2.92,2.65,2.75,2.75,3.14,2.92,3.03,2.24,1.46,2.92,2.75,2.32,2.58,1.38,2.00,2.92,2.50,2.24,3.25,3.32,3.37,2.95,3.25,3.33,2.42,3.13,2.50,2.58,2.52];
+  const humEntropies = [3.45,3.74,3.63,3.81,4.24,3.10,3.96,3.74,4.16,3.99,3.86,2.92,3.70,2.72,3.86,4.04,4.16,4.22,3.97,3.74,3.17,3.78,4.22,3.17,2.95,3.64,3.28,3.26,4.07,3.22,2.58,3.58,2.32,4.01,3.71,4.22,3.64,3.68,3.59,3.45];
+
+  // Build histograms
+  const bins = d3.range(1.0, 4.8, 0.3);
+  function histogram(vals) {
+    return bins.map((b,i) => ({
+      x0: b, x1: b + 0.3,
+      count: vals.filter(v => v >= b && v < b + 0.3).length
+    }));
+  }
+  const aiHist = histogram(aiEntropies);
+  const humHist = histogram(humEntropies);
+  const maxCount = Math.max(d3.max(aiHist, d=>d.count), d3.max(humHist, d=>d.count));
+
+  const x = d3.scaleLinear().domain([1.0, 4.8]).range([pad.left, W-pad.right]);
+  const y = d3.scaleLinear().domain([0, maxCount+1]).range([H-pad.bottom, pad.top]);
+
+  // Axes
+  svg.append('g').attr('transform',`translate(0,${H-pad.bottom})`)
+    .call(d3.axisBottom(x).ticks(8)).selectAll('text').style('fill','#444464').style('font-size','10px');
+  svg.selectAll('.domain').style('stroke','#222240');
+
+  svg.append('text').attr('x',W/2).attr('y',H-4).attr('text-anchor','middle')
+    .attr('fill','#555575').attr('font-size','10px').text('Basin Entropy (bits)');
+
+  // Threshold line
+  svg.append('line').attr('x1',x(3.38)).attr('x2',x(3.38))
+    .attr('y1',pad.top).attr('y2',H-pad.bottom)
+    .attr('stroke','var(--convergent)').attr('stroke-width',1.5).attr('stroke-dasharray','4,3');
+  svg.append('text').attr('x',x(3.38)+4).attr('y',pad.top+10)
+    .attr('fill','var(--convergent)').attr('font-size','9px').text('threshold');
+
+  const barW = (x(bins[1]) - x(bins[0])) * 0.4;
+
+  // AI bars (left side of each bin)
+  svg.selectAll('.ai-bar').data(aiHist).join('rect')
+    .attr('x', d => x(d.x0) + 1).attr('width', barW)
+    .attr('y', d => y(d.count)).attr('height', d => y(0)-y(d.count))
+    .attr('fill','var(--dialectical)').attr('opacity',0.7).attr('rx',2);
+
+  // Human bars (right side)
+  svg.selectAll('.hum-bar').data(humHist).join('rect')
+    .attr('x', d => x(d.x0) + barW + 3).attr('width', barW)
+    .attr('y', d => y(d.count)).attr('height', d => y(0)-y(d.count))
+    .attr('fill','var(--green)').attr('opacity',0.7).attr('rx',2);
+
+  // Legend
+  const lg = svg.append('g').attr('transform',`translate(${W-130},${pad.top})`);
+  lg.append('rect').attr('width',10).attr('height',10).attr('fill','var(--dialectical)').attr('opacity',0.7).attr('rx',2);
+  lg.append('text').attr('x',14).attr('y',9).attr('fill','var(--text2)').attr('font-size','10px').text('AI (n=39)');
+  lg.append('rect').attr('y',16).attr('width',10).attr('height',10).attr('fill','var(--green)').attr('opacity',0.7).attr('rx',2);
+  lg.append('text').attr('x',14).attr('y',25).attr('fill','var(--text2)').attr('font-size','10px').text('Human (n=40)');
+}
+
 // ═══ INIT ═══
 fetch('/api/precomputed').then(r=>r.json()).then(data => {
   allCorpus = data.corpus;
@@ -891,6 +1133,7 @@ fetch('/api/precomputed').then(r=>r.json()).then(data => {
 });
 
 renderSizeCompare();
+renderEntropyChart();
 setupAnimations();
 </script>
 </body>
