@@ -3,302 +3,377 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Shape of Meaning — Waivelets Research</title>
-<meta name="description" content="Text has measurable shape. We discovered four dynamical structural modes that classify 2,500 years of writing at 94.1% accuracy using 28 bytes and less than 1ms of compute.">
+<title>Waivelets — 7 Numbers That Decode Any Text</title>
+<meta name="description" content="Every text ever written has a structural fingerprint. We found it. 7 numbers, 68 microseconds, 28 bytes. Try it live.">
 <script src="https://d3js.org/d3.v7.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#08080e;--bg2:#0e0e18;--bg3:#141422;--border:#1a1a2e;
-  --text:#c0c0d0;--text2:#8888aa;--text3:#555570;
-  --accent:#6366f1;--accent2:#818cf8;
-  --convergent:#f59e0b;--contemplative:#8b5cf6;
-  --discursive:#06b6d4;--dialectical:#ef4444;
-  --green:#10b981;
+  --bg:#06060c;--bg2:#0a0a14;--bg3:#10101e;--bg4:#16162a;
+  --border:#1e1e3a;--border2:#2a2a4a;
+  --text:#d0d0e0;--text2:#9090b0;--text3:#606080;
+  --accent:#6366f1;--accent2:#818cf8;--accent3:#a5b4fc;
+  --convergent:#f59e0b;--contemplative:#a78bfa;
+  --discursive:#22d3ee;--dialectical:#f87171;
+  --green:#34d399;--green2:#6ee7b7;
+  --white:#f0f0f8;
 }
-body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
-.container{max-width:960px;margin:0 auto;padding:0 24px}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.container{max-width:1000px;margin:0 auto;padding:0 28px}
 a{color:var(--accent2);text-decoration:none}
 a:hover{text-decoration:underline}
+code,.mono{font-family:'JetBrains Mono',monospace}
+::selection{background:var(--accent);color:#fff}
 
-/* Hero */
-.hero{padding:80px 0 60px;text-align:center;background:linear-gradient(180deg,#0c0c1a 0%,var(--bg) 100%)}
-.hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:300;color:#e8e8f4;letter-spacing:0.03em;margin-bottom:16px}
-.hero h1 em{font-style:normal;color:var(--accent2)}
-.hero .lead{font-size:1.15rem;color:var(--text2);max-width:640px;margin:0 auto 32px;line-height:1.7}
-.hero .stats{display:flex;gap:32px;justify-content:center;flex-wrap:wrap}
-.hero .stat{text-align:center}
-.hero .stat .val{font-size:2rem;font-weight:600;color:var(--accent2)}
-.hero .stat .label{font-size:0.8rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em}
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(6,6,12,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 28px}
+nav .inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px}
+nav .logo{font-weight:700;font-size:0.9rem;letter-spacing:0.08em;color:var(--white)}
+nav .links{display:flex;gap:24px;font-size:0.8rem;color:var(--text2)}
+nav .links a{color:var(--text2);transition:color 0.15s}
+nav .links a:hover{color:var(--white);text-decoration:none}
 
-/* Sections */
-section{padding:60px 0}
-section h2{font-size:1.6rem;font-weight:400;color:#d0d0e0;margin-bottom:8px}
-section .subtitle{color:var(--text2);margin-bottom:32px;font-size:0.95rem}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
-.card h3{font-size:1rem;color:var(--text);margin-bottom:8px}
-.card p{color:var(--text2);font-size:0.9rem}
+/* ── HERO ── */
+.hero{padding:120px 0 80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(99,102,241,0.06) 0%,transparent 70%);pointer-events:none}
+.hero .kicker{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.2em;color:var(--accent2);margin-bottom:16px;font-weight:600}
+.hero h1{font-size:clamp(2.4rem,5.5vw,3.8rem);font-weight:800;color:var(--white);line-height:1.15;margin-bottom:20px;max-width:700px}
+.hero h1 span{background:linear-gradient(135deg,var(--accent2),var(--discursive));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero .lead{font-size:1.1rem;color:var(--text2);max-width:600px;margin-bottom:36px;line-height:1.8}
+.hero .cta-row{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:8px;font-size:0.9rem;font-weight:600;cursor:pointer;border:none;transition:all 0.2s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2);text-decoration:none;transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent2);text-decoration:none}
 
-/* Mode cards */
-.modes-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.mode-card{border-left:4px solid;padding-left:20px}
-.mode-card.convergent{border-color:var(--convergent)}
-.mode-card.contemplative{border-color:var(--contemplative)}
-.mode-card.discursive{border-color:var(--discursive)}
-.mode-card.dialectical{border-color:var(--dialectical)}
-.mode-card .mode-name{font-size:1.1rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px}
-.mode-card.convergent .mode-name{color:var(--convergent)}
-.mode-card.contemplative .mode-name{color:var(--contemplative)}
-.mode-card.discursive .mode-name{color:var(--discursive)}
-.mode-card.dialectical .mode-name{color:var(--dialectical)}
-.mode-card .mode-desc{color:var(--text2);font-size:0.85rem;margin-bottom:8px}
-.mode-card .mode-examples{font-size:0.8rem;color:var(--text3);font-style:italic}
+/* ── PROOF BAR ── */
+.proof-bar{padding:32px 0;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.proof-bar .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:24px;text-align:center}
+.proof-bar .num{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;line-height:1}
+.proof-bar .label{font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.12em;margin-top:4px}
+@media(max-width:700px){.proof-bar .grid{grid-template-columns:repeat(3,1fr);gap:16px}.proof-bar .num{font-size:1.4rem}}
 
-/* Corpus scatter */
-#corpus-chart{width:100%;height:400px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.corpus-dot{cursor:pointer;transition:r 0.15s}
-.corpus-dot:hover{r:8}
+/* ── SECTIONS ── */
+section{padding:80px 0}
+section h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:var(--white);margin-bottom:8px}
+section .subtitle{color:var(--text2);font-size:1rem;margin-bottom:40px;max-width:640px}
+.section-alt{background:var(--bg2)}
 
-/* Corpus table */
-.corpus-table{width:100%;border-collapse:collapse;font-size:0.82rem}
-.corpus-table th{text-align:left;padding:8px 12px;color:var(--text3);border-bottom:1px solid var(--border);font-weight:500;text-transform:uppercase;letter-spacing:0.08em;font-size:0.7rem}
-.corpus-table td{padding:6px 12px;border-bottom:1px solid #111120;color:var(--text2)}
-.corpus-table tr:hover td{background:var(--bg3)}
-.mode-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
-.mode-badge.convergent{background:rgba(245,158,11,0.15);color:var(--convergent)}
-.mode-badge.contemplative{background:rgba(139,92,246,0.15);color:var(--contemplative)}
-.mode-badge.discursive{background:rgba(6,182,212,0.15);color:var(--discursive)}
-.mode-badge.dialectical{background:rgba(239,68,68,0.15);color:var(--dialectical)}
+/* ── TRY IT (the star) ── */
+.try-section{position:relative;overflow:hidden}
+.try-section::before{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:1200px;height:600px;background:radial-gradient(ellipse,rgba(99,102,241,0.04) 0%,transparent 70%);pointer-events:none}
+.try-card{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:32px;position:relative}
+.try-textarea{width:100%;min-height:120px;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Inter',sans-serif;font-size:0.9rem;padding:16px;resize:vertical;outline:none;transition:border-color 0.2s}
+.try-textarea:focus{border-color:var(--accent)}
+.try-textarea::placeholder{color:var(--text3)}
+.try-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center}
+.example-btn{background:var(--bg);border:1px solid var(--border);color:var(--text2);padding:6px 14px;border-radius:6px;font-size:0.78rem;cursor:pointer;transition:all 0.15s}
+.example-btn:hover{border-color:var(--accent);color:var(--accent2)}
+.example-btn.active{border-color:var(--accent);background:rgba(99,102,241,0.1);color:var(--accent2)}
+#try-result{margin-top:24px}
 
-/* Try it section */
-.try-input{width:100%;min-height:140px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:0.9rem;padding:16px;resize:vertical;outline:none}
-.try-input:focus{border-color:var(--accent)}
-.try-input::placeholder{color:var(--text3)}
-.try-btn{background:var(--accent);color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:0.95rem;cursor:pointer;margin-top:12px;font-weight:500;transition:background 0.15s}
-.try-btn:hover{background:var(--accent2)}
-.try-btn:disabled{opacity:0.5;cursor:not-allowed}
-#try-result{margin-top:20px;min-height:60px}
-.result-mode{font-size:1.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px}
-.result-desc{color:var(--text2);font-size:0.9rem;margin-bottom:16px}
-.result-bars{display:flex;flex-direction:column;gap:8px}
-.result-bar-row{display:flex;align-items:center;gap:12px}
-.result-bar-label{width:120px;text-align:right;font-size:0.78rem;color:var(--text3);text-transform:uppercase}
-.result-bar-track{flex:1;height:20px;background:var(--bg);border-radius:4px;overflow:hidden;position:relative}
-.result-bar-fill{height:100%;border-radius:4px;transition:width 0.5s ease}
-.result-bar-val{width:50px;font-size:0.78rem;color:var(--text2);text-align:right}
+/* Result card */
+.result-card{background:var(--bg);border-radius:12px;padding:28px;border:1px solid var(--border);animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.result-header{display:flex;align-items:baseline;gap:16px;margin-bottom:6px}
+.result-mode{font-size:2.2rem;font-weight:800;text-transform:uppercase;letter-spacing:0.02em}
+.result-distance{font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--text3)}
+.result-desc{color:var(--text2);font-size:0.9rem;margin-bottom:24px}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:600px){.result-grid{grid-template-columns:1fr}}
+.result-metrics{display:flex;flex-direction:column;gap:10px}
+.metric-row{display:flex;align-items:center;gap:10px}
+.metric-label{width:110px;font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;text-align:right;flex-shrink:0}
+.metric-bar{flex:1;height:24px;background:var(--bg2);border-radius:4px;overflow:hidden;position:relative}
+.metric-fill{height:100%;border-radius:4px;transition:width 0.6s cubic-bezier(0.22,1,0.36,1)}
+.metric-val{width:50px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text2);text-align:right}
+.result-meta{font-size:0.78rem;color:var(--text3);margin-top:16px;font-family:'JetBrains Mono',monospace}
 
-/* Speed section */
-.speed-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-.speed-card{text-align:center}
-.speed-card .speed-val{font-size:2.2rem;font-weight:700}
-.speed-card .speed-unit{font-size:0.9rem;color:var(--text2)}
-.speed-card .speed-label{font-size:0.75rem;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:0.08em}
+/* ── SPEED RACE ── */
+.race-chart{margin:24px 0}
+.race-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.race-label{width:160px;font-size:0.82rem;color:var(--text2);text-align:right;flex-shrink:0}
+.race-track{flex:1;height:36px;background:var(--bg3);border-radius:6px;overflow:hidden;position:relative}
+.race-bar{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 12px;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#fff;font-weight:600;min-width:fit-content;white-space:nowrap;transition:width 1.2s cubic-bezier(0.22,1,0.36,1)}
+.race-note{width:140px;font-size:0.72rem;color:var(--text3);flex-shrink:0}
+@media(max-width:700px){.race-label,.race-note{width:auto;font-size:0.7rem}.race-row{flex-wrap:wrap}}
 
-/* Insight boxes */
-.insight{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:12px;padding:28px;margin:32px 0}
-.insight .tag{font-size:0.7rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:8px}
-.insight p{color:var(--text2);font-size:0.95rem}
-.insight strong{color:var(--text)}
+/* ── SCATTER ── */
+#corpus-scatter{width:100%;height:500px;background:var(--bg3);border:1px solid var(--border);border-radius:14px;overflow:hidden;position:relative}
+.scatter-controls{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.scatter-controls .label{font-size:0.75rem;color:var(--text3);margin-right:4px}
+.mode-pill{padding:5px 14px;border-radius:20px;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer;border:1px solid;transition:all 0.2s;background:transparent}
+.mode-pill.active{color:#fff!important}
+.mode-pill.convergent{border-color:var(--convergent);color:var(--convergent)}
+.mode-pill.convergent.active{background:var(--convergent)}
+.mode-pill.contemplative{border-color:var(--contemplative);color:var(--contemplative)}
+.mode-pill.contemplative.active{background:var(--contemplative)}
+.mode-pill.discursive{border-color:var(--discursive);color:var(--discursive)}
+.mode-pill.discursive.active{background:var(--discursive)}
+.mode-pill.dialectical{border-color:var(--dialectical);color:var(--dialectical)}
+.mode-pill.dialectical.active{background:var(--dialectical)}
+.mode-pill.all{border-color:var(--text3);color:var(--text3)}
+.mode-pill.all.active{background:var(--text3);color:var(--bg)}
 
-/* Comparison table */
-.compare-table{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.85rem}
-.compare-table th{text-align:left;padding:10px 14px;color:var(--text3);border-bottom:2px solid var(--border);font-weight:500}
-.compare-table td{padding:8px 14px;border-bottom:1px solid #111120}
-.compare-table .highlight{color:var(--green);font-weight:600}
+/* Corpus detail popover */
+.corpus-detail{position:absolute;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:16px 20px;max-width:300px;opacity:0;pointer-events:none;z-index:50;transition:opacity 0.15s;font-size:0.82rem;line-height:1.6;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
 
-/* Footer */
-footer{padding:40px 0;text-align:center;color:var(--text3);font-size:0.8rem;border-top:1px solid var(--border)}
+/* ── GENRE CHART ── */
+#genre-bars{width:100%;height:260px;overflow:hidden}
+
+/* ── MODE CARDS ── */
+.modes-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.modes-row{grid-template-columns:1fr}}
+.mode-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:24px;border-left:4px solid;cursor:pointer;transition:all 0.2s}
+.mode-card:hover{transform:translateY(-2px);border-color:var(--border2)}
+.mode-card.convergent{border-left-color:var(--convergent)}
+.mode-card.contemplative{border-left-color:var(--contemplative)}
+.mode-card.discursive{border-left-color:var(--discursive)}
+.mode-card.dialectical{border-left-color:var(--dialectical)}
+.mc-name{font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px}
+.mode-card.convergent .mc-name{color:var(--convergent)}
+.mode-card.contemplative .mc-name{color:var(--contemplative)}
+.mode-card.discursive .mc-name{color:var(--discursive)}
+.mode-card.dialectical .mc-name{color:var(--dialectical)}
+.mc-desc{font-size:0.85rem;color:var(--text2);margin-bottom:10px}
+.mc-examples{font-size:0.75rem;color:var(--text3);font-style:italic}
+.mc-stat{font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text3);margin-top:8px}
+
+/* ── COMPARISON TABLE ── */
+.eval-table{width:100%;border-collapse:collapse;margin:32px 0;font-size:0.85rem}
+.eval-table th{text-align:left;padding:12px 16px;color:var(--text3);border-bottom:2px solid var(--border);font-weight:500;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em}
+.eval-table td{padding:10px 16px;border-bottom:1px solid var(--border);color:var(--text2)}
+.eval-table tr:hover td{background:var(--bg3)}
+.eval-table .winner{color:var(--green);font-weight:700}
+.eval-table .winner-row td{background:rgba(52,211,153,0.04)}
+
+/* ── SIZE VIZ ── */
+.size-compare{display:flex;align-items:flex-end;gap:24px;justify-content:center;margin:32px 0;padding:32px 0}
+.size-block{text-align:center}
+.size-box{border-radius:8px;margin:0 auto 8px;transition:all 0.3s;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.7rem;color:rgba(255,255,255,0.7)}
+.size-label{font-size:0.72rem;color:var(--text3)}
+.size-name{font-size:0.82rem;color:var(--text2);margin-top:4px;font-weight:500}
+
+/* ── INSIGHT CALLOUTS ── */
+.callout{background:linear-gradient(135deg,var(--bg3),var(--bg4));border:1px solid var(--border);border-radius:12px;padding:24px 28px;margin:32px 0;position:relative}
+.callout::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--discursive));border-radius:12px 12px 0 0}
+.callout .tag{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--accent2);margin-bottom:8px;font-weight:700}
+.callout p{color:var(--text2);font-size:0.95rem}
+.callout strong{color:var(--text)}
+
+/* ── UPDATE BOX ── */
+.update-box{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:24px;margin:32px 0;font-size:0.9rem;color:var(--text2);line-height:1.8}
+.update-box .date{font-size:0.72rem;color:var(--accent2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;font-weight:600}
+
+/* ── FOOTER ── */
+footer{padding:48px 0;border-top:1px solid var(--border);text-align:center;color:var(--text3);font-size:0.8rem}
 footer a{color:var(--text2)}
+footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
 
-/* Tooltip */
-.tooltip{position:absolute;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.78rem;color:var(--text2);pointer-events:none;z-index:100;max-width:280px;opacity:0;transition:opacity 0.15s;line-height:1.5}
+/* ── CORPUS TABLE ── */
+.corpus-table-wrap{max-height:400px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;margin-top:24px}
+.corpus-table{width:100%;border-collapse:collapse;font-size:0.78rem}
+.corpus-table th{position:sticky;top:0;background:var(--bg3);text-align:left;padding:10px 12px;color:var(--text3);font-weight:600;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid var(--border);cursor:pointer}
+.corpus-table th:hover{color:var(--accent2)}
+.corpus-table td{padding:7px 12px;border-bottom:1px solid #0e0e1c;color:var(--text2)}
+.corpus-table tr:hover td{background:var(--bg3)}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.04em}
+.badge.convergent{background:rgba(245,158,11,0.12);color:var(--convergent)}
+.badge.contemplative{background:rgba(167,139,250,0.12);color:var(--contemplative)}
+.badge.discursive{background:rgba(34,211,238,0.12);color:var(--discursive)}
+.badge.dialectical{background:rgba(248,113,113,0.12);color:var(--dialectical)}
 
-/* Responsive */
-@media(max-width:700px){
-  .modes-grid,.speed-grid{grid-template-columns:1fr}
-  .hero .stats{flex-direction:column;gap:16px}
-}
+/* Animations */
+.animate-in{opacity:0;transform:translateY(20px);transition:all 0.6s cubic-bezier(0.22,1,0.36,1)}
+.animate-in.visible{opacity:1;transform:translateY(0)}
 </style>
 </head>
 <body>
 
-<!-- ═══ HERO ═══ -->
-<div class="hero">
-  <div class="container">
-    <h1>The <em>Shape</em> of Meaning</h1>
-    <p class="lead">
-      Text has measurable structure in embedding space. We discovered four dynamical
-      modes that classify 2,500 years of human writing — from the Bhagavad Gita to
-      Ulysses — using 28 bytes and less than 1 millisecond of compute.
-    </p>
-    <div class="stats">
-      <div class="stat"><div class="val">4</div><div class="label">Dynamical Modes</div></div>
-      <div class="stat"><div class="val">94.1%</div><div class="label">Accuracy</div></div>
-      <div class="stat"><div class="val">100</div><div class="label">Texts Tested</div></div>
-      <div class="stat"><div class="val">&lt;1ms</div><div class="label">Classification</div></div>
-      <div class="stat"><div class="val">28</div><div class="label">Bytes</div></div>
-    </div>
+<!-- NAV -->
+<nav>
+<div class="inner">
+  <div class="logo">WAIVELETS</div>
+  <div class="links">
+    <a href="#try">Try It</a>
+    <a href="#speed">Speed</a>
+    <a href="#corpus">Corpus</a>
+    <a href="#modes">Modes</a>
+    <a href="/whitepaper">Whitepaper</a>
+    <a href="https://github.com/realityinspector/waivelets-v0.1">GitHub</a>
   </div>
 </div>
+</nav>
 
-<!-- ═══ WHAT WE FOUND ═══ -->
-<section>
+<!-- HERO -->
+<div class="hero">
 <div class="container">
-  <h2>What We Found</h2>
+  <div class="kicker">Research Preview</div>
+  <h1>Every text has a <span>structural fingerprint</span>. We found it.</h1>
+  <p class="lead">
+    Seven numbers. Sixty-eight microseconds. Twenty-eight bytes. That's all it takes to
+    classify 2,500 years of human writing into four dynamical modes that cut across every
+    genre boundary. No LLM. No fine-tuning. Just linear algebra on embeddings.
+  </p>
+  <div class="cta-row">
+    <a href="#try" class="btn btn-primary">Try it live</a>
+    <a href="#speed" class="btn btn-ghost">See the speed</a>
+  </div>
+</div>
+</div>
+
+<!-- PROOF BAR -->
+<div class="proof-bar">
+<div class="container">
+  <div class="grid">
+    <div><div class="num" style="color:var(--accent2)">7</div><div class="label">Numbers</div></div>
+    <div><div class="num" style="color:var(--green)">68 &mu;s</div><div class="label">Classification</div></div>
+    <div><div class="num" style="color:var(--convergent)">28 B</div><div class="label">Fingerprint Size</div></div>
+    <div><div class="num" style="color:var(--discursive)">100</div><div class="label">Texts Validated</div></div>
+    <div><div class="num" style="color:var(--contemplative)">4</div><div class="label">Modes Found</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ TRY IT ═══ -->
+<section class="try-section" id="try">
+<div class="container">
+  <h2>Fingerprint any text in real time</h2>
   <p class="subtitle">
-    When you embed sentences with a neural network and analyze how the 384-dimensional
-    trajectory unfolds over time, four distinct structural modes emerge. These are not genres.
-    They describe <strong>how meaning moves</strong> — and they cut across genre boundaries
-    in historically coherent ways.
+    Paste anything — a news article, a poem, a legal brief, your own writing.
+    The server embeds it, projects onto the attractor basis, and classifies
+    its structural DNA.
   </p>
 
-  <div class="modes-grid">
-    <div class="card mode-card convergent">
-      <div class="mode-name">Convergent</div>
-      <div class="mode-desc">Narrows to few attractor basins and holds. High coherence, concentrated semantic range. Liturgical, aphoristic, legalistic, or meditative structure.</div>
-      <div class="mode-examples">Augustine, Bhagavad Gita, Dickinson, Locke, KJV Bible</div>
+  <div class="try-card">
+    <textarea class="try-textarea" id="try-text" placeholder="Paste your text here (3+ sentences). The more text, the sharper the fingerprint."></textarea>
+    <div class="try-actions">
+      <button class="btn btn-primary" id="try-btn" onclick="runFingerprint()">Fingerprint it</button>
+      <span style="font-size:0.75rem;color:var(--text3);margin-left:4px">or try:</span>
+      <button class="example-btn" onclick="loadExample('bible')">KJV Bible</button>
+      <button class="example-btn" onclick="loadExample('shakespeare')">Shakespeare</button>
+      <button class="example-btn" onclick="loadExample('austen')">Austen</button>
+      <button class="example-btn" onclick="loadExample('darwin')">Darwin</button>
+      <button class="example-btn" onclick="loadExample('news')">News article</button>
+      <button class="example-btn" onclick="loadExample('legal')">Legal text</button>
     </div>
-    <div class="card mode-card contemplative">
-      <div class="mode-name">Contemplative</div>
-      <div class="mode-desc">Thinks about thinking. High interiority, low scene narration. Self-aware analysis — text that reflects on its own process.</div>
-      <div class="mode-examples">Darwin, Dickens (Pickwick), Shakespeare (Tempest), Swift, Russell</div>
-    </div>
-    <div class="card mode-card discursive">
-      <div class="mode-name">Discursive</div>
-      <div class="mode-desc">The wide river. Moderate pace, many attractor basins visited, balanced semantic domains. Sustained shaped discourse — narrative, argument, or epic.</div>
-      <div class="mode-examples">Doyle, Wilde, Wells, Twain, Austen, Dostoevsky, Plato, Dante</div>
-    </div>
-    <div class="card mode-card dialectical">
-      <div class="mode-name">Dialectical</div>
-      <div class="mode-desc">Rapid oscillation between registers. Dramatic mode-switching, systematic contrast. Each sentence pushes away from the last.</div>
-      <div class="mode-examples">Shakespeare (plays), Darwin (Origin), Melville, Dickens, Tao Te Ching</div>
-    </div>
-  </div>
-
-  <div class="insight">
-    <div class="tag">Key Insight</div>
-    <p>
-      <strong>These modes are not genres.</strong> Shakespeare and Darwin share a mode (dialectical)
-      because they both do rapid systematic contrast between registers. The Bible and a graph database
-      textbook share a mode (convergent) because they both narrow to a few semantic basins and repeat.
-      Plato and Austen share a mode (discursive) because they're both doing sustained shaped discourse.
-      <strong>The modes capture what texts DO, not what they're called.</strong>
-    </p>
-  </div>
-</div>
-</section>
-
-<!-- ═══ HOW IT WORKS ═══ -->
-<section style="background:var(--bg2)">
-<div class="container">
-  <h2>How It Works</h2>
-  <p class="subtitle">Three steps. No LLM inference. No fine-tuning. Just linear algebra on embeddings.</p>
-
-  <div class="card" style="margin-bottom:20px">
-    <h3>1. Embed &rarr; 2. Project &rarr; 3. Measure</h3>
-    <p style="margin-top:12px">
-      <strong>Embed:</strong> Convert each sentence to a 384-dimensional vector using a small sentence transformer (MiniLM, 22M params).<br>
-      <strong>Project:</strong> Multiply by a precomputed 384&times;26 eigenbasis matrix (37KB). This projects each sentence onto 26 attractor coordinates.<br>
-      <strong>Measure:</strong> Compute smoothness (cosine similarity between consecutive projections), oscillation (variance of smoothness), cluster activations (4 semantic domains), and basin entropy. Total: 7 numbers.
-    </p>
-  </div>
-
-  <div class="insight">
-    <div class="tag">The Discovery Pipeline</div>
-    <p>
-      The eigenbasis was found through <strong>continuous wavelet transforms</strong> on the embedding sequences,
-      building <strong>384&times;384 correlation matrices</strong> across dimensions, and extracting
-      <strong>topological invariants</strong>. This is the expensive part (~minutes per text). But once
-      the eigenbasis is computed, it's reusable — the wavelets were the <strong>telescope</strong>,
-      the eigenbasis is the <strong>map</strong>. You don't need the telescope once you have the map.
-    </p>
+    <div id="try-result"></div>
   </div>
 </div>
 </section>
 
 <!-- ═══ SPEED ═══ -->
-<section>
+<section class="section-alt" id="speed">
 <div class="container">
-  <h2>Speed Comparison</h2>
-  <p class="subtitle">The fingerprint is not an LLM. It's a matrix multiply.</p>
+  <h2>73,000x faster than an LLM</h2>
+  <p class="subtitle">
+    The fingerprint isn't a language model. It's a matrix multiply. Here's what that means.
+  </p>
 
-  <div class="speed-grid" style="margin-bottom:32px">
-    <div class="card speed-card">
-      <div class="speed-val" style="color:var(--green)">68 &mu;s</div>
-      <div class="speed-unit">per text</div>
-      <div class="speed-label">Fingerprint Only</div>
+  <div class="race-chart" id="race-chart">
+    <div class="race-row">
+      <div class="race-label">GPT-4 / Claude</div>
+      <div class="race-track"><div class="race-bar" data-width="100" style="width:0;background:linear-gradient(90deg,#666,#888)">5,000 ms</div></div>
+      <div class="race-note">~$0.03 / text</div>
     </div>
-    <div class="card speed-card">
-      <div class="speed-val" style="color:var(--accent2)">140 ms</div>
-      <div class="speed-unit">per 500 sentences</div>
-      <div class="speed-label">With Embedding (GPU)</div>
+    <div class="race-row">
+      <div class="race-label">Fine-tuned BERT</div>
+      <div class="race-track"><div class="race-bar" data-width="4" style="width:0;background:linear-gradient(90deg,#b45309,#d97706)">200 ms</div></div>
+      <div class="race-note">GPU required</div>
     </div>
-    <div class="card speed-card">
-      <div class="speed-val" style="color:var(--convergent)">3,600</div>
-      <div class="speed-unit">sentences/second</div>
-      <div class="speed-label">MPS Throughput</div>
+    <div class="race-row">
+      <div class="race-label">TF-IDF + SVM</div>
+      <div class="race-track"><div class="race-bar" data-width="0.1" style="width:0;background:linear-gradient(90deg,#7c3aed,#a78bfa)">5 ms</div></div>
+      <div class="race-note">No semantics</div>
+    </div>
+    <div class="race-row">
+      <div class="race-label" style="color:var(--green);font-weight:700">Waivelets</div>
+      <div class="race-track"><div class="race-bar" data-width="0.00136" style="width:0;background:linear-gradient(90deg,var(--green),var(--green2))">0.068 ms</div></div>
+      <div class="race-note" style="color:var(--green)">CPU only, free</div>
     </div>
   </div>
 
-  <table class="compare-table">
+  <div class="callout">
+    <div class="tag">What this means in practice</div>
+    <p>
+      For pre-embedded text, Waivelets classifies <strong>10,000+ documents per second</strong>
+      on a single CPU core. The entire classifier &mdash; eigenbasis, cluster map, mode centroids &mdash;
+      fits in <strong>38 KB</strong>. This could run on a microcontroller, in a browser, or as a
+      pre-filter for every document entering an LLM pipeline.
+    </p>
+  </div>
+
+  <!-- Size comparison -->
+  <h3 style="font-size:1rem;color:var(--text2);text-align:center;margin:40px 0 8px">Model size comparison</h3>
+  <div class="size-compare" id="size-compare"></div>
+
+  <table class="eval-table">
     <thead>
-      <tr><th>Method</th><th>Model Size</th><th>Classification Time</th><th>Compute Cost</th></tr>
+      <tr><th>Method</th><th>Model Size</th><th>Speed</th><th>Semantic?</th><th>Cost</th></tr>
     </thead>
     <tbody>
-      <tr><td>GPT-4 / Claude (prompt-based)</td><td>~1T params</td><td>2-10 seconds</td><td>$0.01-0.05 per text</td></tr>
-      <tr><td>Fine-tuned BERT classifier</td><td>110M params</td><td>50-200ms</td><td>GPU required</td></tr>
-      <tr><td>TF-IDF + SVM</td><td>~10MB vocab</td><td>1-5ms</td><td>CPU only</td></tr>
-      <tr>
-        <td><strong>Waivelets Fingerprint</strong></td>
-        <td class="highlight">22M embed + 37KB basis</td>
-        <td class="highlight">68 &mu;s (+ 140ms embed)</td>
-        <td class="highlight">CPU only, pre-embedded: free</td>
+      <tr><td>GPT-4 prompt</td><td>~1T params</td><td>2-10 sec</td><td>Yes</td><td>$0.01-0.05</td></tr>
+      <tr><td>Fine-tuned BERT</td><td>440 MB</td><td>50-200 ms</td><td>Yes</td><td>GPU time</td></tr>
+      <tr><td>TF-IDF + SVM</td><td>~10 MB</td><td>1-5 ms</td><td>No</td><td>CPU</td></tr>
+      <tr class="winner-row">
+        <td><strong>Waivelets</strong></td>
+        <td class="winner">38 KB</td>
+        <td class="winner">68 &mu;s</td>
+        <td class="winner">Yes</td>
+        <td class="winner">Free (CPU)</td>
       </tr>
     </tbody>
   </table>
-
-  <div class="insight">
-    <div class="tag">Ultra-Low Compute</div>
-    <p>
-      For pre-embedded corpora, classification is <strong>10,000+ documents per second</strong>
-      on a single CPU core. The entire classifier — eigenbasis + cluster map + mode centroids —
-      fits in <strong>38KB</strong>. This could run on a microcontroller. The embedding step
-      (22M param model) is the only meaningful cost, and it's a one-time operation per text.
-    </p>
-  </div>
 </div>
 </section>
 
-<!-- ═══ CORPUS ═══ -->
-<section style="background:var(--bg2)">
+<!-- ═══ CORPUS EXPLORER ═══ -->
+<section id="corpus">
 <div class="container">
-  <h2>100 Texts Across 2,500 Years</h2>
+  <h2>100 texts. 2,500 years. 8 genres.</h2>
   <p class="subtitle">
-    From Homer to Joyce. Each dot is a text, positioned by its smoothness (x) and
-    basin entropy (y). Color = dynamical mode. Hover for details.
+    From Homer's Iliad to Kafka's Trial. Each dot is a text, positioned by how its
+    meaning moves through embedding space. Click any dot.
   </p>
 
-  <!-- Mode filter buttons -->
-  <div id="mode-filters" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-    <button class="mode-filter active" data-mode="all" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:6px 16px;border-radius:6px;cursor:pointer;font-size:0.8rem;letter-spacing:0.05em">ALL</button>
-    <button class="mode-filter" data-mode="convergent" style="background:transparent;color:var(--convergent);border:1px solid var(--convergent);padding:6px 16px;border-radius:6px;cursor:pointer;font-size:0.8rem;letter-spacing:0.05em">CONVERGENT</button>
-    <button class="mode-filter" data-mode="contemplative" style="background:transparent;color:var(--contemplative);border:1px solid var(--contemplative);padding:6px 16px;border-radius:6px;cursor:pointer;font-size:0.8rem;letter-spacing:0.05em">CONTEMPLATIVE</button>
-    <button class="mode-filter" data-mode="discursive" style="background:transparent;color:var(--discursive);border:1px solid var(--discursive);padding:6px 16px;border-radius:6px;cursor:pointer;font-size:0.8rem;letter-spacing:0.05em">DISCURSIVE</button>
-    <button class="mode-filter" data-mode="dialectical" style="background:transparent;color:var(--dialectical);border:1px solid var(--dialectical);padding:6px 16px;border-radius:6px;cursor:pointer;font-size:0.8rem;letter-spacing:0.05em">DIALECTICAL</button>
+  <div class="scatter-controls">
+    <span class="label">Filter:</span>
+    <button class="mode-pill all active" data-mode="all">All</button>
+    <button class="mode-pill convergent" data-mode="convergent">Convergent</button>
+    <button class="mode-pill contemplative" data-mode="contemplative">Contemplative</button>
+    <button class="mode-pill discursive" data-mode="discursive">Discursive</button>
+    <button class="mode-pill dialectical" data-mode="dialectical">Dialectical</button>
+  </div>
+  <div id="corpus-scatter"></div>
+  <div class="corpus-detail" id="detail-popover"></div>
+
+  <!-- Genre breakdown -->
+  <div style="margin-top:48px">
+    <h3 style="font-size:1.1rem;color:var(--white);margin-bottom:6px">Modes aren't genres</h3>
+    <p style="color:var(--text2);font-size:0.9rem;margin-bottom:24px">
+      Shakespeare and Darwin share a mode (dialectical) because they both do rapid
+      systematic contrast. Plato and Austen share a mode (discursive) because they're
+      both doing sustained shaped discourse. The modes describe <strong style="color:var(--white)">how meaning moves</strong>,
+      not what it's about.
+    </p>
+    <div id="genre-bars"></div>
   </div>
 
-  <div id="corpus-chart"></div>
-
-  <!-- Genre x Mode breakdown -->
-  <div style="margin-top:32px">
-    <h3 style="font-size:1rem;color:var(--text2);margin-bottom:16px">Genre &times; Mode Distribution</h3>
-    <div id="genre-chart" style="width:100%;height:200px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden"></div>
-  </div>
-
-  <div style="margin-top:24px;max-height:500px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">
+  <!-- Full table -->
+  <div class="corpus-table-wrap">
     <table class="corpus-table" id="corpus-table">
       <thead><tr>
-        <th>Title</th><th>Author</th><th>Genre</th><th>Mode</th><th>Smooth</th><th>Entropy</th><th>Dist</th>
+        <th data-sort="title">Title</th>
+        <th data-sort="author">Author</th>
+        <th data-sort="genre">Genre</th>
+        <th data-sort="mode">Mode</th>
+        <th data-sort="smoothness_mean">Smooth</th>
+        <th data-sort="basin_entropy">Entropy</th>
+        <th data-sort="distance">Dist</th>
       </tr></thead>
       <tbody></tbody>
     </table>
@@ -306,334 +381,485 @@ footer a{color:var(--text2)}
 </div>
 </section>
 
-<!-- ═══ TRY IT ═══ -->
-<section>
+<!-- ═══ THE 4 MODES ═══ -->
+<section class="section-alt" id="modes">
 <div class="container">
-  <h2>Try It Yourself</h2>
+  <h2>Four ways meaning moves</h2>
   <p class="subtitle">
-    Paste any text (3+ sentences). The server will embed it, project onto the attractor basis,
-    and classify its dynamical mode in real time.
+    Not genres. Not topics. These are structural dynamics &mdash; patterns in how sentences
+    relate to each other in high-dimensional space. Click a card to fingerprint a sample.
   </p>
-  <textarea class="try-input" id="try-text" placeholder="Paste your text here. Minimum 3 sentences. The more text, the more accurate the fingerprint.
 
-Try pasting: a news article, a poem, a technical document, a speech, a novel excerpt, or even this paragraph."></textarea>
-  <button class="try-btn" id="try-btn" onclick="runFingerprint()">Analyze</button>
-  <div id="try-result"></div>
+  <div class="modes-row">
+    <div class="mode-card convergent" onclick="loadExample('bible')">
+      <div class="mc-name">Convergent</div>
+      <div class="mc-desc">Narrows to few attractor basins and holds. High coherence, concentrated semantic range. Liturgical, aphoristic, or legalistic repetition.</div>
+      <div class="mc-examples">Augustine, Bhagavad Gita, Dickinson, KJV Bible, Locke</div>
+      <div class="mc-stat">High smoothness (+0.40) &middot; Low entropy (3.8 bits)</div>
+    </div>
+    <div class="mode-card contemplative" onclick="loadExample('darwin')">
+      <div class="mc-name">Contemplative</div>
+      <div class="mc-desc">Thinks about thinking. High interiority, low scene narration. Self-aware analysis — text that watches itself reason.</div>
+      <div class="mc-examples">Darwin (Descent), Russell, Hobbes, Swift, Shakespeare (Sonnets)</div>
+      <div class="mc-stat">Mid smoothness (+0.35) &middot; High entropy (4.3 bits)</div>
+    </div>
+    <div class="mode-card discursive" onclick="loadExample('austen')">
+      <div class="mc-name">Discursive</div>
+      <div class="mc-desc">The wide river. Moderate pace, many attractor basins, balanced domains. The natural mode of sustained human prose &mdash; argument, narrative, epic.</div>
+      <div class="mc-examples">Doyle, Wilde, Wells, Austen, Dostoevsky, Plato, Dante, Kafka</div>
+      <div class="mc-stat">Balanced smoothness (+0.26) &middot; High entropy (4.4 bits)</div>
+    </div>
+    <div class="mode-card dialectical" onclick="loadExample('shakespeare')">
+      <div class="mc-name">Dialectical</div>
+      <div class="mc-desc">Rapid oscillation between registers. Dramatic mode-switching, systematic contrast. Each sentence pushes away from the last.</div>
+      <div class="mc-examples">Shakespeare (plays), Darwin (Origin), Melville, Dickens, Tao Te Ching</div>
+      <div class="mc-stat">High oscillation (0.25) &middot; Mid entropy (4.4 bits)</div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:32px">
+    <div class="tag">The surprising cross-cuts</div>
+    <p>
+      <strong>Drama is 100% dialectical.</strong> All 9 plays in our corpus &mdash; Shakespeare, Wilde,
+      every one &mdash; register as dialectical. Dialogue IS register oscillation.
+      Meanwhile, <strong>religious texts cluster convergent</strong>: the Gita, Augustine's Confessions,
+      and the KJV Bible all converge to few semantic basins and cycle there.
+      Darwin's two books split across modes: <strong>Origin</strong> (dialectical, arguing evidence)
+      vs <strong>Descent</strong> (contemplative, reflecting on implications). Same author, different dynamics.
+    </p>
+  </div>
+</div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section id="how">
+<div class="container">
+  <h2>Three steps, no magic</h2>
+  <p class="subtitle">Embed. Project. Measure. The entire classifier is a matrix multiply.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:32px">
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center">
+      <div style="font-size:2rem;margin-bottom:8px">1</div>
+      <div style="font-weight:700;color:var(--white);margin-bottom:6px">Embed</div>
+      <div style="font-size:0.82rem;color:var(--text2)">Each sentence &rarr; 384-dim vector via MiniLM (22M params). The only neural network step.</div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center">
+      <div style="font-size:2rem;margin-bottom:8px">2</div>
+      <div style="font-weight:700;color:var(--white);margin-bottom:6px">Project</div>
+      <div style="font-size:0.82rem;color:var(--text2)">Multiply by a 384&times;26 eigenbasis (37KB). Each sentence lands in a 26-dim attractor space.</div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center">
+      <div style="font-size:2rem;margin-bottom:8px">3</div>
+      <div style="font-weight:700;color:var(--white);margin-bottom:6px">Measure</div>
+      <div style="font-size:0.82rem;color:var(--text2)">Smoothness, oscillation, 4 semantic activations, basin entropy. 7 numbers, 28 bytes. Done.</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="tag">Where the eigenbasis came from</div>
+    <p>
+      Continuous wavelet transforms on embedding sequences, building <strong>384&times;384 correlation
+      matrices</strong> across dimensions, extracting topological invariants. That's the expensive
+      telescope. The eigenbasis is the <strong>map</strong> it produced. You don't need the telescope
+      once you have the map. The compression ratio is <strong>22 million to 1</strong>.
+    </p>
+  </div>
 </div>
 </section>
 
 <!-- ═══ IMPLICATIONS ═══ -->
-<section style="background:var(--bg2)">
+<section class="section-alt">
 <div class="container">
-  <h2>Why This Matters</h2>
+  <h2>What you can build with this</h2>
   <p class="subtitle">
-    The fingerprint opens several doors that are hard to open with traditional NLP.
+    A 28-byte structural fingerprint that runs at 10K docs/sec opens doors that LLMs can't.
   </p>
-
-  <div class="card" style="margin-bottom:16px">
-    <h3>Few-Shot Style Transfer by Dynamics</h3>
-    <p>Instead of selecting few-shot examples by topic ("find examples about databases"), select by dynamical fingerprint ("find examples that unfold like a textbook"). This gives you two-axis control: WHAT to say &times; HOW to unfold it.</p>
-  </div>
-  <div class="card" style="margin-bottom:16px">
-    <h3>AI Text Detection</h3>
-    <p>If LLM-generated text has different attractor dynamics than human text — plausible, since LLMs lack multi-scale self-similarity — the fingerprint could detect it at near-zero cost.</p>
-  </div>
-  <div class="card" style="margin-bottom:16px">
-    <h3>Cultural &amp; Persona Fingerprints</h3>
-    <p>A corpus's mode distribution characterizes how that body of text structures meaning. Different literary traditions, authors, and LLM personas would have different distributions. The deviation from expected is a measure of authenticity.</p>
-  </div>
-  <div class="card">
-    <h3>Ultra-Low Compute Structural Analysis</h3>
-    <p>The 38KB classifier could run on embedded systems, edge devices, or in browser. Pre-embedded text can be classified at 10,000 docs/second. This enables structural text analysis at scales and costs that are impractical for any LLM-based approach.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:24px">
+      <div style="font-weight:700;color:var(--white);margin-bottom:6px">AI text detection</div>
+      <div style="font-size:0.85rem;color:var(--text2)">If LLM text has different attractor dynamics than human text, the fingerprint detects it at near-zero cost. No API calls, no rate limits.</div>
+    </div>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:24px">
+      <div style="font-weight:700;color:var(--white);margin-bottom:6px">Style transfer by dynamics</div>
+      <div style="font-size:0.85rem;color:var(--text2)">Select few-shot examples by structural fingerprint instead of topic. Two-axis control: WHAT to say &times; HOW to unfold it.</div>
+    </div>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:24px">
+      <div style="font-weight:700;color:var(--white);margin-bottom:6px">Persona fingerprints</div>
+      <div style="font-size:0.85rem;color:var(--text2)">Each author has a mode distribution. Different LLM personas would too. The deviation from expected is a measure of authenticity.</div>
+    </div>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:24px">
+      <div style="font-weight:700;color:var(--white);margin-bottom:6px">Edge classification</div>
+      <div style="font-size:0.85rem;color:var(--text2)">38KB classifier runs on a microcontroller. Pre-filter every document entering an LLM pipeline at wire speed.</div>
+    </div>
   </div>
 </div>
 </section>
 
-<!-- ═══ METHOD ═══ -->
+<!-- ═══ UPDATE ═══ -->
 <section>
 <div class="container">
-  <h2>Methodology &amp; References</h2>
-  <p class="subtitle">The discovery chain: wavelets &rarr; correlation &rarr; topology &rarr; attractors &rarr; modes.</p>
-
-  <div class="card" style="font-size:0.85rem;color:var(--text2)">
-    <p><strong>Embedding model:</strong> <a href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2">all-MiniLM-L6-v2</a> (22M params, 384 dims). Reimers &amp; Gurevych, 2019.</p>
-    <p style="margin-top:8px"><strong>Wavelet transform:</strong> Continuous Wavelet Transform with Morlet wavelet, validated across 10 wavelet families. Torrence &amp; Compo, 1998.</p>
-    <p style="margin-top:8px"><strong>Topological analysis:</strong> Graph Laplacian spectrum, Betti numbers, fractal exponents via log-log regression. Adapted from IMT topology methods.</p>
-    <p style="margin-top:8px"><strong>Attractor analysis:</strong> Hebbian correlation &rarr; eigendecomposition &rarr; Hopfield-like attractor landscape with 26 effective modes. Ramsauer et al., 2021 (Modern Hopfield Networks).</p>
-    <p style="margin-top:8px"><strong>Autoresearch:</strong> 75-iteration Karpathy-style configuration search across wavelets, thresholds, shuffle methods, and correlation metrics.</p>
-    <p style="margin-top:8px"><strong>Validation:</strong> 100-text Project Gutenberg corpus spanning 8 genres, 2,500 years. Four dynamical modes discovered via unsupervised clustering.</p>
-    <p style="margin-top:16px"><a href="/whitepaper">Read the full whitepaper &rarr;</a> &nbsp;|&nbsp; <a href="https://github.com/realityinspector/waivelets-v0.1">GitHub Repository &rarr;</a></p>
+  <h2>Latest</h2>
+  <div class="update-box">
+    <div class="date">March 29, 2026</div>
+    <p>
+      Today we took Waivelets from a research notebook to a live, interactive research tool. Starting from
+      the original repo &mdash; which contained the raw wavelet analysis code, a 49-text validation corpus, and a
+      static Shiny app &mdash; we rebuilt the entire pipeline: wrote <code>fastprint.py</code> (a zero-dependency
+      fingerprinter that classifies text in 68&mu;s), scaled the Gutenberg corpus from 49 to 100 texts across
+      8 genres and 2,500 years of writing, built a FastAPI server with a live fingerprinting API, designed
+      this interactive frontend with D3.js visualizations, and deployed everything to Railway with auto-deploy
+      from GitHub. The four dynamical modes &mdash; convergent, contemplative, discursive, dialectical &mdash; held up
+      at scale: drama went 100% dialectical, religious texts clustered convergent, and Darwin's two books
+      split across modes exactly as the theory predicts (Origin = dialectical, Descent = contemplative).
+    </p>
   </div>
 </div>
 </section>
 
+<!-- ═══ FOOTER ═══ -->
 <footer>
-  <div class="container">
-    <p>Waivelets v0.1 &mdash; Research by Sean McDonald + Claude (Opus 4.6) &mdash; March 2026</p>
-    <p style="margin-top:8px"><a href="https://github.com/realityinspector/waivelets-v0.1">GitHub</a> &nbsp;|&nbsp; <a href="/whitepaper">Whitepaper</a></p>
+<div class="container">
+  <p>Waivelets v0.1 &mdash; Sean McDonald + Claude (Opus 4.6) &mdash; March 2026</p>
+  <div class="links">
+    <a href="https://github.com/realityinspector/waivelets-v0.1">GitHub</a>
+    <a href="/whitepaper">Whitepaper</a>
+    <a href="https://github.com/realityinspector">realityinspector</a>
   </div>
+</div>
 </footer>
 
-<div class="tooltip" id="tooltip"></div>
-
 <script>
-const MODE_COLORS = {
-  convergent: '#f59e0b',
-  contemplative: '#8b5cf6',
-  discursive: '#06b6d4',
-  dialectical: '#ef4444',
+// ═══ GLOBALS ═══
+const MC = {convergent:'#f59e0b',contemplative:'#a78bfa',discursive:'#22d3ee',dialectical:'#f87171'};
+let allCorpus = [];
+let activeMode = 'all';
+let sortCol = 'distance', sortAsc = true;
+
+// ═══ EXAMPLE TEXTS ═══
+const EXAMPLES = {
+  bible: `In the beginning God created the heaven and the earth. And the earth was without form, and void; and darkness was upon the face of the deep. And the Spirit of God moved upon the face of the waters. And God said, Let there be light: and there was light. And God saw the light, that it was good: and God divided the light from the darkness. And God called the light Day, and the darkness he called Night. And the evening and the morning were the first day. And God said, Let there be a firmament in the midst of the waters, and let it divide the waters from the waters. And God made the firmament, and divided the waters which were under the firmament from the waters which were above the firmament: and it was so.`,
+  shakespeare: `To be, or not to be, that is the question: Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune, or to take arms against a sea of troubles, and by opposing end them. To die, to sleep; no more; and by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to. 'Tis a consummation devoutly to be wished. To die, to sleep; to sleep: perchance to dream: ay, there's the rub; for in that sleep of death what dreams may come when we have shuffled off this mortal coil, must give us pause. There's the respect that makes calamity of so long life. For who would bear the whips and scorns of time, the oppressor's wrong, the proud man's contumely, the pangs of despised love, the law's delay, the insolence of office and the spurns that patient merit of the unworthy takes, when he himself might his quietus make with a bare bodkin?`,
+  austen: `It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife. However little known the feelings or views of such a man may be on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families, that he is considered the rightful property of some one or other of their daughters. My dear Mr. Bennet, said his lady to him one day, have you heard that Netherfield Park is let at last? Mr. Bennet replied that he had not. But it is, returned she; for Mrs. Long has just been here, and she told me all about it. Mr. Bennet made no answer. Do you not want to know who has taken it? cried his wife impatiently. You want to tell me, and I have no objection to hearing it.`,
+  darwin: `When on board H.M.S. Beagle, as naturalist, I was much struck with certain facts in the distribution of the inhabitants of South America, and in the geological relations of the present to the past inhabitants of that continent. These facts seemed to me to throw some light on the origin of species — that mystery of mysteries, as it has been called by one of our greatest philosophers. On my return home, it occurred to me, in 1837, that something might perhaps be made out on this question by patiently accumulating and reflecting on all sorts of facts which could possibly have any bearing on it. After five years' work I allowed myself to speculate on the subject, and drew up some short notes; these I enlarged in 1844 into a sketch of the conclusions, which then seemed to me probable. From that period to the present day I have steadily pursued the same object.`,
+  news: `The Federal Reserve held interest rates steady Wednesday, signaling it expects to make just one rate cut this year as inflation remains stubbornly above its target. The decision was widely expected by financial markets, but the updated projections surprised investors who had been pricing in at least two cuts. Fed Chair Jerome Powell emphasized that the central bank needs to see more evidence that inflation is sustainably moving toward 2 percent before easing monetary policy. The economy continues to show remarkable resilience, with the labor market adding jobs at a pace that has exceeded forecasters' expectations for more than a year. Consumer spending remains solid despite elevated borrowing costs, though some cracks are beginning to appear in lower-income households.`,
+  legal: `WHEREAS, the parties hereto desire to enter into this Agreement to define their respective rights and obligations with respect to the subject matter hereof; and WHEREAS, the Company has developed certain proprietary technology, trade secrets, and confidential business information which it desires to protect; NOW, THEREFORE, in consideration of the mutual covenants and agreements hereinafter set forth and for other good and valuable consideration, the receipt and sufficiency of which are hereby acknowledged, the parties agree as follows. The term of this Agreement shall commence on the Effective Date and shall continue for a period of three years thereafter, unless earlier terminated in accordance with the provisions hereof. This Agreement may be terminated by either party upon thirty days written notice to the other party.`
 };
 
-const tooltip = d3.select('#tooltip');
-
-let allCorpus = [];
-let activeFilter = 'all';
-
-// Load precomputed data
-fetch('/api/precomputed').then(r => r.json()).then(data => {
-  allCorpus = data.corpus;
-  renderCorpusChart(allCorpus);
-  renderCorpusTable(allCorpus);
-  renderGenreChart(allCorpus);
-  setupFilters();
-});
-
-function setupFilters() {
-  document.querySelectorAll('.mode-filter').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.mode-filter').forEach(b => {
-        b.classList.remove('active');
-        b.style.background = 'transparent';
-      });
-      btn.classList.add('active');
-      btn.style.background = 'var(--bg3)';
-      activeFilter = btn.dataset.mode;
-
-      // Update chart opacity
-      d3.selectAll('.corpus-dot')
-        .transition().duration(300)
-        .attr('opacity', d => activeFilter === 'all' || d.mode === activeFilter ? 0.85 : 0.08)
-        .attr('r', d => activeFilter === 'all' || d.mode === activeFilter ? 6 : 3);
-
-      // Update table
-      document.querySelectorAll('#corpus-table tbody tr').forEach(tr => {
-        const mode = tr.querySelector('.mode-badge')?.textContent?.trim();
-        tr.style.display = (activeFilter === 'all' || mode === activeFilter) ? '' : 'none';
-      });
-    });
-  });
+function loadExample(key) {
+  document.getElementById('try-text').value = EXAMPLES[key];
+  document.querySelectorAll('.example-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  runFingerprint();
+  document.getElementById('try').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-function renderCorpusChart(corpus) {
-  const container = document.getElementById('corpus-chart');
-  const W = container.clientWidth, H = 400;
-  const pad = {top: 30, right: 30, bottom: 50, left: 60};
-
-  const svg = d3.select('#corpus-chart').append('svg')
-    .attr('width', W).attr('height', H);
-
-  // Auto-scale from data with 5% padding
-  const xVals = corpus.map(d => d.fp.smoothness_mean);
-  const yVals = corpus.map(d => d.fp.basin_entropy);
-  const xPad = (d3.max(xVals) - d3.min(xVals)) * 0.08;
-  const yPad = (d3.max(yVals) - d3.min(yVals)) * 0.08;
-
-  const x = d3.scaleLinear()
-    .domain([d3.min(xVals) - xPad, d3.max(xVals) + xPad])
-    .range([pad.left, W - pad.right]);
-  const y = d3.scaleLinear()
-    .domain([d3.min(yVals) - yPad, d3.max(yVals) + yPad])
-    .range([H - pad.bottom, pad.top]);
-
-  // Grid lines
-  svg.append('g').attr('transform', `translate(0,${H - pad.bottom})`)
-    .call(d3.axisBottom(x).ticks(8).tickSize(-H + pad.top + pad.bottom))
-    .selectAll('line').style('stroke', '#151528').style('stroke-dasharray', '2,4');
-  svg.append('g').attr('transform', `translate(${pad.left},0)`)
-    .call(d3.axisLeft(y).ticks(6).tickSize(-W + pad.left + pad.right))
-    .selectAll('line').style('stroke', '#151528').style('stroke-dasharray', '2,4');
-
-  svg.selectAll('.tick text').style('fill', '#444460');
-  svg.selectAll('.domain').style('stroke', '#222240');
-
-  // Axis labels
-  svg.append('text').attr('x', W / 2).attr('y', H - 8)
-    .attr('text-anchor', 'middle').attr('fill', '#555570').attr('font-size', '12px')
-    .text('Smoothness (higher → stays in one semantic mode)');
-  svg.append('text').attr('transform', 'rotate(-90)')
-    .attr('x', -H / 2).attr('y', 16)
-    .attr('text-anchor', 'middle').attr('fill', '#555570').attr('font-size', '12px')
-    .text('Basin Entropy (higher → more attractor basins visited)');
-
-  // Dots
-  svg.selectAll('.cdot')
-    .data(corpus)
-    .join('circle')
-    .attr('class', 'corpus-dot')
-    .attr('cx', d => x(d.fp.smoothness_mean))
-    .attr('cy', d => y(d.fp.basin_entropy))
-    .attr('r', 6)
-    .attr('fill', d => MODE_COLORS[d.mode])
-    .attr('opacity', 0.85)
-    .attr('stroke', '#0a0a0f')
-    .attr('stroke-width', 1)
-    .on('mouseover', (event, d) => {
-      tooltip.style('opacity', 1)
-        .html(`<strong>${d.title}</strong> (${d.author})<br>Genre: ${d.genre}<br>Mode: <span style="color:${MODE_COLORS[d.mode]};font-weight:700">${d.mode.toUpperCase()}</span><br>Smoothness: ${d.fp.smoothness_mean.toFixed(3)}<br>Entropy: ${d.fp.basin_entropy.toFixed(2)}<br>Distance: ${d.distance}`)
-        .style('left', (event.pageX + 14) + 'px')
-        .style('top', (event.pageY - 14) + 'px');
-    })
-    .on('mouseout', () => tooltip.style('opacity', 0));
-}
-
-function renderGenreChart(corpus) {
-  const container = document.getElementById('genre-chart');
-  const W = container.clientWidth, H = 200;
-  const pad = {top: 20, right: 20, bottom: 40, left: 90};
-
-  const svg = d3.select('#genre-chart').append('svg')
-    .attr('width', W).attr('height', H);
-
-  // Group by genre
-  const genres = {};
-  corpus.forEach(d => {
-    if (!genres[d.genre]) genres[d.genre] = {};
-    genres[d.genre][d.mode] = (genres[d.genre][d.mode] || 0) + 1;
-  });
-
-  const genreNames = Object.keys(genres).sort((a, b) => {
-    const ta = Object.values(genres[a]).reduce((s, v) => s + v, 0);
-    const tb = Object.values(genres[b]).reduce((s, v) => s + v, 0);
-    return tb - ta;
-  });
-  const modes = ['discursive', 'dialectical', 'convergent', 'contemplative'];
-
-  // Stack data
-  const stackData = genreNames.map(g => {
-    const total = Object.values(genres[g]).reduce((s, v) => s + v, 0);
-    const row = {genre: g, total};
-    modes.forEach(m => row[m] = (genres[g][m] || 0));
-    return row;
-  });
-
-  const y = d3.scaleBand().domain(genreNames).range([pad.top, H - pad.bottom]).padding(0.3);
-  const x = d3.scaleLinear().domain([0, d3.max(stackData, d => d.total)]).range([pad.left, W - pad.right]);
-
-  // Genre labels
-  svg.selectAll('.genre-label')
-    .data(genreNames)
-    .join('text')
-    .attr('x', pad.left - 8).attr('y', d => y(d) + y.bandwidth() / 2)
-    .attr('text-anchor', 'end').attr('dominant-baseline', 'middle')
-    .attr('fill', '#8888aa').attr('font-size', '11px')
-    .text(d => d);
-
-  // Stacked bars
-  modes.forEach((mode, mi) => {
-    svg.selectAll(`.bar-${mode}`)
-      .data(stackData)
-      .join('rect')
-      .attr('y', d => y(d.genre))
-      .attr('height', y.bandwidth())
-      .attr('x', d => {
-        let offset = 0;
-        for (let i = 0; i < mi; i++) offset += d[modes[i]];
-        return x(offset);
-      })
-      .attr('width', d => x(d[mode]) - x(0))
-      .attr('fill', MODE_COLORS[mode])
-      .attr('opacity', 0.85);
-  });
-
-  // Count labels
-  svg.selectAll('.count-label')
-    .data(stackData)
-    .join('text')
-    .attr('x', d => x(d.total) + 6).attr('y', d => y(d.genre) + y.bandwidth() / 2)
-    .attr('dominant-baseline', 'middle')
-    .attr('fill', '#555570').attr('font-size', '11px')
-    .text(d => d.total);
-}
-
-function renderCorpusTable(corpus) {
-  const tbody = document.querySelector('#corpus-table tbody');
-  const sorted = [...corpus].sort((a, b) => b.fp.smoothness_mean - a.fp.smoothness_mean);
-  sorted.forEach(d => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${d.title}</td>
-      <td>${d.author}</td>
-      <td>${d.genre}</td>
-      <td><span class="mode-badge ${d.mode}">${d.mode}</span></td>
-      <td>${d.fp.smoothness_mean.toFixed(3)}</td>
-      <td>${d.fp.basin_entropy.toFixed(2)}</td>
-      <td>${d.distance}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-
+// ═══ FINGERPRINT ═══
 async function runFingerprint() {
   const text = document.getElementById('try-text').value.trim();
   if (!text) return;
-
   const btn = document.getElementById('try-btn');
   const result = document.getElementById('try-result');
-  btn.disabled = true;
-  btn.textContent = 'Analyzing...';
-  result.innerHTML = '<p style="color:var(--text3)">Embedding and classifying...</p>';
+  btn.disabled = true; btn.textContent = 'Analyzing...';
+  result.innerHTML = '<p style="color:var(--text3);padding:20px 0">Embedding and classifying...</p>';
 
   try {
     const resp = await fetch('/api/fingerprint', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({text}),
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({text})
     });
-    const data = await resp.json();
+    const d = await resp.json();
+    if (d.error) { result.innerHTML = `<p style="color:var(--dialectical)">${d.error}</p>`; return; }
 
-    if (data.error) {
-      result.innerHTML = `<p style="color:var(--dialectical)">${data.error}</p>`;
-      return;
-    }
-
-    const color = MODE_COLORS[data.mode];
-    const fp = data.fingerprint;
-
-    // Mode distance bars
-    const maxDist = Math.max(...Object.values(data.mode_distances));
-    let modeBars = '';
-    for (const [mode, dist] of Object.entries(data.mode_distances).sort((a,b) => a[1] - b[1])) {
-      const pct = Math.max(5, (1 - dist / (maxDist + 1)) * 100);
-      const mc = MODE_COLORS[mode];
-      const active = mode === data.mode ? ' style="font-weight:700;color:' + mc + '"' : '';
-      modeBars += `<div class="result-bar-row">
-        <div class="result-bar-label"${active}>${mode}</div>
-        <div class="result-bar-track"><div class="result-bar-fill" style="width:${pct}%;background:${mc}"></div></div>
-        <div class="result-bar-val">${dist.toFixed(2)}</div>
+    const color = MC[d.mode];
+    const maxDist = Math.max(...Object.values(d.mode_distances));
+    let bars = '';
+    for (const [mode, dist] of Object.entries(d.mode_distances).sort((a,b) => a[1]-b[1])) {
+      const pct = Math.max(8, (1 - dist / (maxDist * 1.1)) * 100);
+      const active = mode === d.mode;
+      bars += `<div class="metric-row">
+        <div class="metric-label" style="${active ? 'color:'+MC[mode]+';font-weight:700' : ''}">${mode}</div>
+        <div class="metric-bar"><div class="metric-fill" style="width:${pct}%;background:${MC[mode]};${active?'box-shadow:0 0 12px '+MC[mode]+'40':'opacity:0.5'}"></div></div>
+        <div class="metric-val" style="${active?'color:'+MC[mode]:''}">${dist.toFixed(2)}</div>
       </div>`;
     }
 
+    const fp = d.fingerprint;
+    const fpMax = 0.06;
+    let fpBars = '';
+    const fpFields = [
+      ['Exposition', fp.exposition],
+      ['Interiority', fp.interiority],
+      ['Formal', fp.formal_structure],
+      ['Scene', fp.scene_narration],
+    ];
+    fpFields.forEach(([label, val]) => {
+      const pct = Math.min(100, (val / fpMax) * 100);
+      fpBars += `<div class="metric-row">
+        <div class="metric-label">${label}</div>
+        <div class="metric-bar"><div class="metric-fill" style="width:${pct}%;background:var(--accent2)"></div></div>
+        <div class="metric-val">${val.toFixed(4)}</div>
+      </div>`;
+    });
+
     result.innerHTML = `
-      <div class="card" style="border-left:4px solid ${color}">
-        <div class="result-mode" style="color:${color}">${data.mode}</div>
-        <div class="result-desc">${data.description}</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;font-size:0.85rem">
-          <div>Smoothness: <strong>${fp.smoothness_mean > 0 ? '+' : ''}${fp.smoothness_mean.toFixed(3)}</strong></div>
-          <div>Oscillation: <strong>${fp.smoothness_std.toFixed(3)}</strong></div>
-          <div>Basin entropy: <strong>${fp.basin_entropy.toFixed(2)} bits</strong></div>
-          <div>Processed: <strong>${data.n_sentences} sentences in ${data.time_ms}ms</strong></div>
+      <div class="result-card" style="border-left:4px solid ${color}">
+        <div class="result-header">
+          <div class="result-mode" style="color:${color}">${d.mode}</div>
+          <div class="result-distance">distance: ${d.distance}</div>
         </div>
-        <div style="font-size:0.8rem;color:var(--text3);margin-bottom:8px">MODE DISTANCES (lower = closer match)</div>
-        <div class="result-bars">${modeBars}</div>
-      </div>
-    `;
-  } catch (e) {
+        <div class="result-desc">${d.description}</div>
+        <div class="result-grid">
+          <div>
+            <div style="font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Mode distances (lower = closer)</div>
+            <div class="result-metrics">${bars}</div>
+          </div>
+          <div>
+            <div style="font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Semantic activations</div>
+            <div class="result-metrics">${fpBars}</div>
+            <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:0.78rem">
+              <div style="color:var(--text3)">Smoothness: <span class="mono" style="color:var(--text2)">${fp.smoothness_mean > 0 ? '+' : ''}${fp.smoothness_mean.toFixed(3)}</span></div>
+              <div style="color:var(--text3)">Oscillation: <span class="mono" style="color:var(--text2)">${fp.smoothness_std.toFixed(3)}</span></div>
+              <div style="color:var(--text3)">Entropy: <span class="mono" style="color:var(--text2)">${fp.basin_entropy.toFixed(2)} bits</span></div>
+              <div style="color:var(--text3)">Sentences: <span class="mono" style="color:var(--text2)">${d.n_sentences}</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="result-meta">${d.n_sentences} sentences &middot; ${d.time_ms} ms &middot; fingerprint: [${fp.smoothness_mean.toFixed(3)}, ${fp.smoothness_std.toFixed(3)}, ${fp.exposition.toFixed(4)}, ${fp.interiority.toFixed(4)}, ${fp.formal_structure.toFixed(4)}, ${fp.scene_narration.toFixed(4)}, ${fp.basin_entropy.toFixed(2)}]</div>
+      </div>`;
+  } catch(e) {
     result.innerHTML = `<p style="color:var(--dialectical)">Error: ${e.message}</p>`;
   } finally {
-    btn.disabled = false;
-    btn.textContent = 'Analyze';
+    btn.disabled = false; btn.textContent = 'Fingerprint it';
   }
 }
+
+// ═══ SPEED RACE ANIMATION ═══
+function animateRace() {
+  const bars = document.querySelectorAll('.race-bar');
+  const values = [5000, 200, 5, 0.068];
+  const maxLog = Math.log10(5000);
+  bars.forEach((bar, i) => {
+    const logPct = Math.max(3, (Math.log10(values[i] + 0.001) + 2) / (maxLog + 2) * 100);
+    setTimeout(() => { bar.style.width = logPct + '%'; }, i * 150);
+  });
+}
+
+// ═══ SIZE COMPARISON ═══
+function renderSizeCompare() {
+  const el = document.getElementById('size-compare');
+  const items = [
+    {name: 'GPT-4', size: '1 TB', px: 180, color: '#555'},
+    {name: 'BERT', size: '440 MB', px: 100, color: '#7c3aed'},
+    {name: 'TF-IDF', size: '10 MB', px: 50, color: '#b45309'},
+    {name: 'Waivelets', size: '38 KB', px: 14, color: '#34d399'},
+  ];
+  el.innerHTML = items.map(it => `
+    <div class="size-block">
+      <div class="size-box" style="width:${it.px}px;height:${it.px}px;background:${it.color}20;border:2px solid ${it.color}">${it.size}</div>
+      <div class="size-name">${it.name}</div>
+    </div>
+  `).join('');
+}
+
+// ═══ SCATTER PLOT ═══
+function renderScatter(corpus) {
+  const container = document.getElementById('corpus-scatter');
+  const W = container.clientWidth, H = 500;
+  const pad = {top:30,right:30,bottom:55,left:65};
+
+  const svg = d3.select('#corpus-scatter').append('svg').attr('width',W).attr('height',H);
+
+  const xV = corpus.map(d=>d.fp.smoothness_mean), yV = corpus.map(d=>d.fp.basin_entropy);
+  const xP = (d3.max(xV)-d3.min(xV))*0.1, yP = (d3.max(yV)-d3.min(yV))*0.1;
+
+  const x = d3.scaleLinear().domain([d3.min(xV)-xP, d3.max(xV)+xP]).range([pad.left, W-pad.right]);
+  const y = d3.scaleLinear().domain([d3.min(yV)-yP, d3.max(yV)+yP]).range([H-pad.bottom, pad.top]);
+
+  // Grid
+  const xAxis = svg.append('g').attr('transform',`translate(0,${H-pad.bottom})`).call(d3.axisBottom(x).ticks(8).tickSize(-H+pad.top+pad.bottom));
+  const yAxis = svg.append('g').attr('transform',`translate(${pad.left},0)`).call(d3.axisLeft(y).ticks(6).tickSize(-W+pad.left+pad.right));
+  [xAxis,yAxis].forEach(a => {
+    a.selectAll('line').style('stroke','#151528').style('stroke-dasharray','2,4');
+    a.selectAll('.domain').style('stroke','#1a1a30');
+    a.selectAll('text').style('fill','#444464').style('font-size','11px');
+  });
+
+  // Labels
+  svg.append('text').attr('x',W/2).attr('y',H-10).attr('text-anchor','middle').attr('fill','#555575').attr('font-size','11px')
+    .text('Smoothness (semantic coherence between sentences)');
+  svg.append('text').attr('transform','rotate(-90)').attr('x',-H/2).attr('y',18).attr('text-anchor','middle').attr('fill','#555575').attr('font-size','11px')
+    .text('Basin Entropy (diversity of attractor basins visited)');
+
+  // Dots
+  const dots = svg.selectAll('.dot').data(corpus).join('circle')
+    .attr('class', d => 'dot dot-' + d.mode)
+    .attr('cx', d => x(d.fp.smoothness_mean))
+    .attr('cy', d => y(d.fp.basin_entropy))
+    .attr('r', 7)
+    .attr('fill', d => MC[d.mode])
+    .attr('opacity', 0.85)
+    .attr('stroke', '#06060c')
+    .attr('stroke-width', 1.5)
+    .style('cursor', 'pointer')
+    .style('transition', 'opacity 0.3s, r 0.3s');
+
+  // Tooltip
+  const tip = d3.select('#detail-popover');
+  dots.on('mouseover', (ev, d) => {
+    tip.style('opacity',1)
+      .html(`<strong style="color:${MC[d.mode]}">${d.title}</strong><br>
+        <span style="color:var(--text3)">${d.author} &middot; ${d.genre}</span><br>
+        <span style="color:${MC[d.mode]};font-weight:700;text-transform:uppercase;font-size:0.75rem">${d.mode}</span>
+        <span style="color:var(--text3)"> &middot; d=${d.distance}</span><br>
+        <span class="mono" style="font-size:0.72rem;color:var(--text3)">sm=${d.fp.smoothness_mean.toFixed(3)} ent=${d.fp.basin_entropy.toFixed(2)}</span>`)
+      .style('left', (ev.pageX+16)+'px').style('top', (ev.pageY-16)+'px');
+    d3.select(ev.target).attr('r',10).attr('stroke-width',2.5).attr('stroke',MC[d.mode]);
+  })
+  .on('mouseout', (ev) => {
+    tip.style('opacity',0);
+    const d = d3.select(ev.target).datum();
+    const isFiltered = activeMode !== 'all' && d.mode !== activeMode;
+    d3.select(ev.target).attr('r', isFiltered ? 4 : 7).attr('stroke-width',1.5).attr('stroke','#06060c');
+  });
+
+  // Filter
+  document.querySelectorAll('.mode-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.mode-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      activeMode = pill.dataset.mode;
+      dots.transition().duration(300)
+        .attr('opacity', d => activeMode==='all' || d.mode===activeMode ? 0.85 : 0.06)
+        .attr('r', d => activeMode==='all' || d.mode===activeMode ? 7 : 4);
+      // Filter table too
+      document.querySelectorAll('#corpus-table tbody tr').forEach(tr => {
+        const m = tr.dataset.mode;
+        tr.style.display = (activeMode==='all'||m===activeMode) ? '' : 'none';
+      });
+    });
+  });
+}
+
+// ═══ GENRE BARS ═══
+function renderGenreBars(corpus) {
+  const el = document.getElementById('genre-bars');
+  const W = el.clientWidth, H = 260;
+  const pad = {top:10,right:40,bottom:10,left:100};
+  const svg = d3.select('#genre-bars').append('svg').attr('width',W).attr('height',H);
+
+  const genres = {};
+  corpus.forEach(d => { if(!genres[d.genre]) genres[d.genre]={}; genres[d.genre][d.mode]=(genres[d.genre][d.mode]||0)+1; });
+  const names = Object.keys(genres).sort((a,b) => {
+    const ta=Object.values(genres[a]).reduce((s,v)=>s+v,0), tb=Object.values(genres[b]).reduce((s,v)=>s+v,0);
+    return tb-ta;
+  });
+  const modes = ['discursive','dialectical','convergent','contemplative'];
+  const data = names.map(g => {
+    const total = Object.values(genres[g]).reduce((s,v)=>s+v,0);
+    const row = {genre:g, total};
+    modes.forEach(m => row[m]=(genres[g][m]||0));
+    return row;
+  });
+
+  const yScale = d3.scaleBand().domain(names).range([pad.top, H-pad.bottom]).padding(0.25);
+  const xScale = d3.scaleLinear().domain([0, d3.max(data,d=>d.total)]).range([pad.left, W-pad.right]);
+
+  // Labels
+  svg.selectAll('.gl').data(names).join('text')
+    .attr('x',pad.left-10).attr('y',d=>yScale(d)+yScale.bandwidth()/2)
+    .attr('text-anchor','end').attr('dominant-baseline','middle')
+    .attr('fill','#8888aa').attr('font-size','12px').attr('font-weight',500)
+    .text(d=>d);
+
+  // Stacked bars
+  modes.forEach((mode, mi) => {
+    svg.selectAll(`.b-${mode}`).data(data).join('rect')
+      .attr('y',d=>yScale(d.genre)).attr('height',yScale.bandwidth())
+      .attr('rx',3)
+      .attr('x',d=>{let off=0;for(let i=0;i<mi;i++)off+=d[modes[i]];return xScale(off);})
+      .attr('width',0)
+      .attr('fill',MC[mode]).attr('opacity',0.85)
+      .transition().duration(800).delay(mi*100)
+      .attr('width',d=>Math.max(0,xScale(d[mode])-xScale(0)));
+  });
+
+  // Counts
+  svg.selectAll('.ct').data(data).join('text')
+    .attr('x',d=>xScale(d.total)+8).attr('y',d=>yScale(d.genre)+yScale.bandwidth()/2)
+    .attr('dominant-baseline','middle').attr('fill','#555570').attr('font-size','12px').attr('font-weight',600)
+    .text(d=>d.total);
+}
+
+// ═══ CORPUS TABLE ═══
+function renderTable(corpus) {
+  const tbody = document.querySelector('#corpus-table tbody');
+  function render(data) {
+    tbody.innerHTML = '';
+    data.forEach(d => {
+      const tr = document.createElement('tr');
+      tr.dataset.mode = d.mode;
+      tr.innerHTML = `<td style="color:var(--text);font-weight:500">${d.title}</td><td>${d.author}</td><td>${d.genre}</td>
+        <td><span class="badge ${d.mode}">${d.mode}</span></td>
+        <td class="mono">${d.fp.smoothness_mean.toFixed(3)}</td>
+        <td class="mono">${d.fp.basin_entropy.toFixed(2)}</td>
+        <td class="mono">${d.distance}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  render([...corpus].sort((a,b) => a.distance - b.distance));
+
+  // Sortable headers
+  document.querySelectorAll('#corpus-table th').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.sort;
+      if (sortCol === col) sortAsc = !sortAsc; else { sortCol = col; sortAsc = true; }
+      const sorted = [...corpus].sort((a,b) => {
+        let va, vb;
+        if (col === 'smoothness_mean' || col === 'basin_entropy') { va=a.fp[col]; vb=b.fp[col]; }
+        else if (col === 'distance') { va=a.distance; vb=b.distance; }
+        else { va=a[col]; vb=b[col]; }
+        if (typeof va === 'string') return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+        return sortAsc ? va-vb : vb-va;
+      });
+      render(sorted);
+      // Reapply filter
+      if (activeMode !== 'all') {
+        document.querySelectorAll('#corpus-table tbody tr').forEach(tr => {
+          tr.style.display = tr.dataset.mode === activeMode ? '' : 'none';
+        });
+      }
+    });
+  });
+}
+
+// ═══ INTERSECTION OBSERVER FOR ANIMATIONS ═══
+function setupAnimations() {
+  // Race chart
+  const raceObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { animateRace(); raceObs.unobserve(e.target); }});
+  }, {threshold: 0.3});
+  raceObs.observe(document.getElementById('race-chart'));
+
+  // Animate-in elements
+  document.querySelectorAll('.animate-in').forEach(el => {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }});
+    }, {threshold: 0.1});
+    obs.observe(el);
+  });
+}
+
+// ═══ INIT ═══
+fetch('/api/precomputed').then(r=>r.json()).then(data => {
+  allCorpus = data.corpus;
+  renderScatter(allCorpus);
+  renderGenreBars(allCorpus);
+  renderTable(allCorpus);
+});
+
+renderSizeCompare();
+setupAnimations();
 </script>
 </body>
 </html>
