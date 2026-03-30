@@ -214,12 +214,13 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
 <div class="hero">
 <div class="container">
   <div class="kicker">Research Preview</div>
-  <h1>Every text has a <span>structural fingerprint</span>. We found it.</h1>
+  <h1>Does text have measurable <span>dynamical structure</span>?</h1>
   <p class="lead">
-    A 38KB classifier built on a small sentence embedder (MiniLM, 22M params) and
-    linear algebra. Seven numbers that capture how meaning moves through embedding
-    space over time. Tested on 100 texts from Homer to Kafka. Four structural modes
-    emerge that cut across genre boundaries. Also detects AI-generated text at 93.7%.
+    Embed sentences with a small transformer (MiniLM, 22M params), project onto
+    a wavelet-derived eigenbasis (38KB), measure how the trajectory unfolds.
+    Seven numbers come out. On a 100-text Gutenberg corpus from Homer to Kafka,
+    four structural modes emerge — and they separate AI-generated text from human
+    writing at 93.7% on a 79-sample eval. A research prototype worth tinkering with.
   </p>
   <div class="cta-row">
     <a href="#try" class="btn btn-primary">Try it live</a>
@@ -244,11 +245,11 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
 <!-- ═══ TRY IT ═══ -->
 <section class="try-section" id="try">
 <div class="container">
-  <h2>Fingerprint any text in real time</h2>
+  <h2>Run it on your own text</h2>
   <p class="subtitle">
-    Paste anything — a news article, a poem, a legal brief, your own writing.
-    The server embeds it with MiniLM, projects onto the attractor basis, and
-    measures its structural dynamics.
+    The best way to judge this is to try it. Paste anything — a news article, a poem,
+    a legal brief, your own writing. The server embeds it with MiniLM, projects onto
+    the attractor basis, and measures how meaning unfolds over the sentence sequence.
   </p>
 
   <div class="try-card">
@@ -271,11 +272,12 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
 <!-- ═══ AI DETECTION ═══ -->
 <section class="section-alt" id="detect">
 <div class="container">
-  <h2>AI or human? 93.7% accuracy.</h2>
+  <h2>AI detection: a signal, not a verdict</h2>
   <p class="subtitle">
-    AI text visits fewer attractor basins and has lower structural complexity.
-    The fingerprint catches it — even when the AI is trying to sound human.
-    Tested on 39 AI samples (including adversarial) vs 40 Gutenberg texts.
+    LLMs produce more "average" or convergent text — smoother transitions, less extreme
+    semantic jumps, more predictable trajectories in embedding space. The fingerprint
+    catches some of that signal. 93.7% on a small eval (39 AI vs 40 human). Useful as
+    one lightweight signal among many, not as a standalone detector.
   </p>
 
   <div class="try-card">
@@ -324,14 +326,13 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
   </div>
 
   <div class="callout" style="margin-top:32px">
-    <div class="tag">Why this works</div>
+    <div class="tag">What the numbers show</div>
     <p>
-      AI text is structurally <strong>convergent</strong> — it narrows to fewer semantic basins
-      and stays there. 49% of AI samples classify as convergent mode vs 42% of human samples.
-      But the real signal is <strong>basin entropy</strong>: AI averages 2.77 bits vs human's 3.61 bits.
-      AI text explores less of the attractor landscape even when it's trying to be varied.
-      This is a <strong>dynamical property</strong> that's hard to game because it emerges from
-      how meaning unfolds over dozens of sentences, not from individual word choices.
+      <strong>Basin entropy</strong> is the strongest single signal: AI averages 2.77 bits vs human's 3.61 bits
+      (Cohen's d = 1.79). AI text visits fewer semantic regions and stays in more predictable
+      trajectories through embedding space. This echoes known observations that LLMs produce
+      statistically smoother, more "average" text — the fingerprint quantifies that effect
+      as a dynamical property of the sentence-to-sentence trajectory.
     </p>
   </div>
 
@@ -497,10 +498,12 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
 <!-- ═══ THE 4 MODES ═══ -->
 <section class="section-alt" id="modes">
 <div class="container">
-  <h2>Four ways meaning moves</h2>
+  <h2>Four modes emerged from clustering</h2>
   <p class="subtitle">
-    Not genres. Not topics. These are structural dynamics &mdash; patterns in how sentences
-    relate to each other in high-dimensional space. Click a card to fingerprint a sample.
+    These aren't genre labels — they describe how embedding trajectories unfold over
+    sentence sequences. The modes emerge from hierarchical clustering of attractor-space
+    features, and they cut across traditional genre boundaries in interesting ways.
+    Click a card to fingerprint a sample.
   </p>
 
   <div class="modes-row">
@@ -547,7 +550,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
 <!-- ═══ HOW IT WORKS ═══ -->
 <section id="how">
 <div class="container">
-  <h2>Three steps, no magic</h2>
+  <h2>Embed, project, measure</h2>
   <p class="subtitle">Embed. Project. Measure. The entire classifier is a matrix multiply.</p>
 
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:32px">
@@ -583,14 +586,15 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
 <!-- ═══ IMPLICATIONS ═══ -->
 <section class="section-alt">
 <div class="container">
-  <h2>What you can build with this</h2>
+  <h2>Possible applications</h2>
   <p class="subtitle">
-    A 28-byte structural fingerprint that runs at 10K docs/sec opens doors that LLMs can't.
+    These are directions worth exploring, not production-ready features. The fingerprint
+    is cheap enough to add to existing pipelines as an additional signal.
   </p>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:24px">
-      <div style="font-weight:700;color:var(--white);margin-bottom:6px">AI text detection</div>
-      <div style="font-size:0.85rem;color:var(--text2)">If LLM text has different attractor dynamics than human text, the fingerprint detects it at near-zero cost. No API calls, no rate limits.</div>
+      <div style="font-weight:700;color:var(--white);margin-bottom:6px">AI text detection (one signal among many)</div>
+      <div style="font-size:0.85rem;color:var(--text2)">Basin entropy separates AI from human text on our eval. Lightweight enough to add alongside perplexity, burstiness, or watermarking signals.</div>
     </div>
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:24px">
       <div style="font-weight:700;color:var(--white);margin-bottom:6px">Style transfer by dynamics</div>

@@ -1,8 +1,8 @@
 # Waivelets
 
-**Text has measurable structural dynamics in embedding space.**
+**Does text have measurable dynamical structure in embedding space?**
 
-A 38KB classifier built on MiniLM (22M param sentence embedder) and linear algebra. Embed sentences, project onto a wavelet-derived eigenbasis, measure 7 scalar statistics. Four structural modes emerge from a 100-text Gutenberg corpus spanning Homer to Kafka. The same fingerprint detects AI-generated text at 93.7% on a 79-sample eval.
+A research prototype exploring that question. Embed sentences with MiniLM (22M param sentence transformer), project onto a wavelet-derived eigenbasis (38KB), measure 7 scalar statistics about how the trajectory unfolds. On a 100-text Gutenberg corpus from Homer to Kafka, four structural modes emerge from clustering — and they separate AI-generated text from human writing at 93.7% on a 79-sample eval. A neat hack worth tinkering with.
 
 **[Live demo](https://waivelets-production.up.railway.app)** | **[Whitepaper](https://waivelets-production.up.railway.app/whitepaper)**
 
