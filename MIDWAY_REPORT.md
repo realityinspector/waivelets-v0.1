@@ -1,7 +1,7 @@
 # Waivelets v0.1 — Research Report
 
 **Date:** 2026-03-29
-**Researchers:** Sean McDonald + Claude (Opus 4.6)
+**Researcher:** Sean McDonald
 **Status:** Active research — dynamical mode taxonomy validated on 49-text corpus
 
 ---

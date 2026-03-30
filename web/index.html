@@ -340,7 +340,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
     <p>
       This is a research preview, not a production detector. <strong>Short texts (&lt;5 sentences) are unreliable.</strong>
       Adversarial AI text (casual tone, style mimicry) evades detection ~29% of the time.
-      The eval corpus is 79 samples — not thousands. The classifier was trained on Claude-generated text
+      The eval corpus is 79 samples — not thousands. The classifier was trained on LLM-generated text
       and may not generalize to all LLMs. Human text from unusual genres (legal boilerplate, liturgical repetition)
       can false-positive as AI. <strong>Use this as a signal, not a verdict.</strong>
     </p>
@@ -371,7 +371,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
   <div class="race-chart" id="race-chart">
     <div style="font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">End-to-end: raw text in, classification out</div>
     <div class="race-row">
-      <div class="race-label">GPT-4 / Claude<br><span style="font-size:0.68rem;color:var(--text3)">(generative, different task)</span></div>
+      <div class="race-label">LLM inference<br><span style="font-size:0.68rem;color:var(--text3)">(generative, different task)</span></div>
       <div class="race-track"><div class="race-bar" data-width="100" style="width:0;background:linear-gradient(90deg,#555,#777)">~5,000 ms</div></div>
       <div class="race-note">~$0.03 / text</div>
     </div>
@@ -632,7 +632,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
 <!-- ═══ FOOTER ═══ -->
 <footer>
 <div class="container">
-  <p>Waivelets v0.1 &mdash; Sean McDonald + Claude (Opus 4.6) &mdash; March 2026</p>
+  <p>Waivelets v0.1 &mdash; Sean McDonald &mdash; March 2026</p>
   <div class="links">
     <a href="https://github.com/realityinspector/waivelets-v0.1">GitHub</a>
     <a href="/whitepaper">Whitepaper</a>

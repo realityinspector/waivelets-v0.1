@@ -130,9 +130,9 @@ curl -X POST https://waivelets-production.up.railway.app/api/detect \
 | Best single feature (basin entropy) | **86.1%** |
 | Adversarial detection (AI told to sound human) | **71%** |
 | Strongest signal | Basin entropy (d=1.79) |
-| Training set | 39 AI (Claude) + 40 Gutenberg texts |
+| Training set | 39 LLM-generated + 40 Gutenberg texts |
 
-**Honest limitations:** Short texts (<15 sentences) are unreliable. Adversarial AI evades ~29% of the time. Trained on Claude output only. Human text from unusual genres (legal, liturgical) can false-positive. Use as signal, not verdict.
+**Honest limitations:** Short texts (<15 sentences) are unreliable. Adversarial AI evades ~29% of the time. Trained on LLM output only — may not generalize across all models. Human text from unusual genres (legal, liturgical) can false-positive. Use as signal, not verdict.
 
 ## What you can build with this
 
@@ -153,7 +153,7 @@ Took Waivelets from a research notebook to a live, interactive research tool. St
 
 ## Credits
 
-Research by Sean McDonald + Claude (Opus 4.6) — March 2026
+Research by Sean McDonald — March 2026
 
 Built with: [sentence-transformers](https://www.sbert.net/), [FastAPI](https://fastapi.tiangolo.com/), [D3.js](https://d3js.org/), [Railway](https://railway.app/)
 
