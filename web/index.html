@@ -1000,12 +1000,14 @@ async function runDetection() {
     const label = isAI ? 'LIKELY AI-GENERATED' : 'LIKELY HUMAN-WRITTEN';
     const confPct = Math.round(d.confidence * 100);
     const entColor = d.signals.basin_entropy < 3.38 ? 'var(--dialectical)' : 'var(--green)';
+    const warning = d.warning ? `<div style="background:rgba(245,158,11,0.1);border:1px solid var(--convergent);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.82rem;color:var(--convergent)">&#9888; ${d.warning}</div>` : '';
 
     // Gauge visualization
     const gaugePos = Math.max(0, Math.min(100, 50 + (d.score - d.threshold) * 12));
 
     result.innerHTML = `
       <div class="result-card" style="border-left:4px solid ${color};margin-top:20px">
+        ${warning}
         <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px">
           <div style="font-size:1.8rem;font-weight:800;color:${color}">${label}</div>
         </div>

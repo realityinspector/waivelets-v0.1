@@ -139,6 +139,18 @@ async def api_detect(body: TextInput):
     dist_ai = float(np.linalg.norm(fp_arr - _DET_AI_CENT))
     dist_human = float(np.linalg.norm(fp_arr - _DET_HUM_CENT))
 
+    # Short-text penalty: basin entropy is naturally lower with fewer sentences
+    # The classifier was calibrated on ~30-50 sentence passages
+    # Reduce confidence for short texts, never increase it
+    n_sent = len(sentences)
+    short_text_warning = None
+    if n_sent < 15:
+        short_text_warning = f"Only {n_sent} sentences — detection is unreliable below ~15 sentences. Add more text for better accuracy."
+    if n_sent < 30:
+        # Shift score toward threshold (reduce certainty)
+        damping = max(0.3, n_sent / 30.0)
+        score = _DET_THRESH + (score - _DET_THRESH) * damping
+
     # Classification
     is_ai = score > _DET_THRESH
     # Confidence: how far past the threshold (scaled to 0-1)
@@ -167,6 +179,7 @@ async def api_detect(body: TextInput):
         "mode": mode,
         "mode_distance": round(dist, 2),
         "fingerprint": {k: round(v, 4) for k, v in fp.to_dict().items()},
+        "warning": short_text_warning,
         "n_sentences": len(sentences),
         "time_ms": round(fp_time * 1000, 1),
     }
