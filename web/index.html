@@ -370,10 +370,16 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
     <div class="tag">Honest limitations</div>
     <p>
       This is a research preview, not a production detector. <strong>Short texts (&lt;15 sentences) are unreliable.</strong>
-      Adversarial AI text (casual tone, style mimicry) evades detection ~29% of the time.
-      The eval corpus is 169 samples with 5-fold cross-validation. The classifier was trained on LLM-generated text
-      and may not generalize to all LLMs. Human text from unusual genres (legal boilerplate, liturgical repetition)
-      can false-positive as AI. <strong>Use this as a signal, not a verdict.</strong>
+      The eval corpus is 169 samples with 5-fold cross-validation. The classifier was trained on one LLM family's
+      output and may not generalize to all models. Human text from unusual genres (legal boilerplate, liturgical
+      repetition) can false-positive as AI. <strong>Use this as a signal, not a verdict.</strong>
+    </p>
+    <p style="margin-top:10px">
+      <strong>Known blind spot (partially addressed):</strong> Educational/explanatory AI text with numbered lists,
+      bold definitions, and parenthetical asides produces high basin entropy (structurally diverse from register shifts)
+      despite being AI-generated. As of March 30, 2026, the detector includes a <em>formatting boost</em> that catches
+      heavy markdown formatting as an independent AI signal. This is a heuristic, not a trained feature &mdash; it
+      catches the most obvious cases but won't detect AI educational text written without markdown formatting.
     </p>
   </div>
 </div>
@@ -1105,6 +1111,20 @@ function renderDetectionResult(d) {
           <div style="color:var(--text3);font-size:0.75rem">${d.signals.formal_structure < 0.043 ? 'Below human average' : 'In human range'}</div>
         </div>
       </div>
+      ${d.surface && d.surface.formatting_score > 0.05 ? `
+      <div style="margin-top:16px;background:rgba(245,158,11,0.08);border:1px solid var(--convergent);border-radius:8px;padding:14px">
+        <div style="font-size:0.72rem;color:var(--convergent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Surface formatting signals</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;font-size:0.82rem">
+          <div><span style="color:var(--text3)">Lists:</span> <span class="mono" style="color:var(--convergent)">${(d.surface.list_ratio*100).toFixed(0)}%</span></div>
+          <div><span style="color:var(--text3)">Bold:</span> <span class="mono" style="color:var(--convergent)">${(d.surface.bold_ratio*100).toFixed(0)}%</span></div>
+          <div><span style="color:var(--text3)">Parens:</span> <span class="mono" style="color:var(--convergent)">${(d.surface.paren_ratio*100).toFixed(0)}%</span></div>
+          <div><span style="color:var(--text3)">Score:</span> <span class="mono" style="font-weight:700;color:var(--convergent)">${d.surface.formatting_score.toFixed(2)}</span></div>
+        </div>
+        <div style="font-size:0.75rem;color:var(--text3);margin-top:6px">
+          Heavy markdown formatting (numbered lists + bold definitions + parenthetical asides) is a strong AI signal.
+          ${d.formatting_boost > 0 ? 'Score boosted by <span class="mono" style="color:var(--convergent)">+' + d.formatting_boost.toFixed(2) + '</span> from formatting.' : ''}
+        </div>
+      </div>` : ''}
     </div>`;
 }
 

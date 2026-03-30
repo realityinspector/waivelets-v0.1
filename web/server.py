@@ -63,6 +63,10 @@ class TextInput(BaseModel):
 _TAG_RE = re.compile(r'<[^>]+>')
 _MULTI_SPACE = re.compile(r'[ \t]+')
 _MULTI_NL = re.compile(r'\n{3,}')
+_LIST_RE = re.compile(r'^\s*(\d+[\.\):]|\*\s|\-\s|•)')
+_BOLD_RE = re.compile(r'\*\*[^*]+\*\*')
+_PAREN_RE = re.compile(r'\([^)]{5,}\)')
+_DASH_RE = re.compile(r'—| -- ')
 
 def bleach_input(text: str, max_len: int = 50000) -> str:
     """Strip HTML tags, normalize whitespace, limit length."""
@@ -116,13 +120,36 @@ async def api_fingerprint(body: TextInput):
     }
 
 
+def surface_features(raw_text: str, sentences: list) -> dict:
+    """Detect formatting patterns common in AI-generated educational/structured text.
+
+    These features are orthogonal to the embedding-based fingerprint — they
+    capture surface-level markdown/formatting habits that LLMs produce far more
+    often than human writers.  Gutenberg texts score 0 on all of these.
+    """
+    n = max(len(sentences), 1)
+    list_ratio = sum(1 for s in sentences if _LIST_RE.match(s)) / n
+    bold_ratio = sum(1 for s in sentences if _BOLD_RE.search(s)) / n
+    paren_ratio = sum(1 for s in sentences if _PAREN_RE.search(s)) / n
+    dash_ratio = sum(1 for s in sentences if _DASH_RE.search(s)) / n
+    return {
+        "list_ratio": round(list_ratio, 3),
+        "bold_ratio": round(bold_ratio, 3),
+        "paren_ratio": round(paren_ratio, 3),
+        "dash_ratio": round(dash_ratio, 3),
+        "formatting_score": round(list_ratio + bold_ratio + paren_ratio, 3),
+    }
+
+
 @app.post("/api/detect")
 async def api_detect(body: TextInput):
-    """Detect whether text is AI-generated or human-written using structural fingerprint."""
+    """Detect whether text is AI-generated or human-written using structural
+    fingerprint (7 embedding features) + surface formatting features."""
     if _DETECTOR is None:
         return JSONResponse({"error": "AI detector not configured"}, 500)
 
-    text = bleach_input(body.text)
+    raw_text = body.text
+    text = bleach_input(raw_text)
     if len(text) < 20:
         return JSONResponse({"error": "Text too short (need at least a few sentences)"}, 400)
 
@@ -139,7 +166,7 @@ async def api_detect(body: TextInput):
     mode, dist = classify(fp)
     fp_arr = fp.to_array()
 
-    # Composite weighted score
+    # Composite weighted score from embedding features
     z = (fp_arr - _DET_MEAN) / _DET_STD
     score = float(z @ _DET_WEIGHTS)
 
@@ -147,25 +174,33 @@ async def api_detect(body: TextInput):
     dist_ai = float(np.linalg.norm(fp_arr - _DET_AI_CENT))
     dist_human = float(np.linalg.norm(fp_arr - _DET_HUM_CENT))
 
-    # Short-text penalty: basin entropy is naturally lower with fewer sentences
-    # The classifier was calibrated on ~30-50 sentence passages
-    # Reduce confidence for short texts, never increase it
+    # Surface features: formatting patterns that are AI-typical
+    # Computed on the original text (before bleach strips markdown)
+    raw_sentences = split_sentences(raw_text)
+    sf = surface_features(raw_text, raw_sentences)
+    fmt_score = sf["formatting_score"]
+
+    # Formatting boost: heavy markdown formatting (lists + bold +
+    # parentheticals) is a strong independent AI signal.  Human prose
+    # almost never combines numbered lists with bold definitions and
+    # parenthetical asides.  Applied before damping.
+    formatting_boost = fmt_score * 1.5 if fmt_score > 0.15 else 0.0
+    score += formatting_boost
+
+    # Short-text damping (applied AFTER formatting boost)
     n_sent = len(sentences)
     short_text_warning = None
     if n_sent < 15:
         short_text_warning = f"Only {n_sent} sentences — detection is unreliable below ~15 sentences. Add more text for better accuracy."
     if n_sent < 30:
-        # Shift score toward threshold (reduce certainty)
         damping = max(0.3, n_sent / 30.0)
         score = _DET_THRESH + (score - _DET_THRESH) * damping
 
     # Classification
     is_ai = score > _DET_THRESH
-    # Confidence: how far past the threshold (scaled to 0-1)
     margin = abs(score - _DET_THRESH)
-    confidence = min(1.0, margin / 4.0)  # 4.0 = reasonable max margin
+    confidence = min(1.0, margin / 4.0)
 
-    # Basin entropy is the strongest single signal
     entropy_signal = "low" if fp.basin_entropy < 3.38 else "normal"
 
     return {
@@ -180,6 +215,8 @@ async def api_detect(body: TextInput):
             "smoothness_mean": round(fp.smoothness_mean, 4),
             "smoothness_std": round(fp.smoothness_std, 4),
         },
+        "surface": sf,
+        "formatting_boost": round(formatting_boost, 3),
         "centroid_distances": {
             "to_ai": round(dist_ai, 3),
             "to_human": round(dist_human, 3),

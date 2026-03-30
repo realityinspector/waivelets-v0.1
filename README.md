@@ -133,7 +133,7 @@ curl -X POST https://waivelets-production.up.railway.app/api/detect \
 | vs majority class baseline | +27.0pp |
 | Eval set | 58 LLM-generated + 111 Gutenberg texts |
 
-**Limitations:** Short texts (<15 sentences) are unreliable. Trained on one LLM family — needs multi-model validation. Human text from unusual genres (legal, liturgical) can false-positive. A strong signal, not a standalone verdict.
+**Limitations:** Short texts (<15 sentences) are unreliable. Trained on one LLM family — needs multi-model validation. Human text from unusual genres (legal, liturgical) can false-positive. Educational/explanatory AI text with numbered lists and bold formatting is a known blind spot (partially addressed via a formatting boost heuristic). A strong signal, not a standalone verdict.
 
 ## What you can build with this
 
