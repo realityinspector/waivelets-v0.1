@@ -2,13 +2,13 @@
 
 **Date:** 2026-03-29
 **Researcher:** Sean McDonald
-**Status:** Active research — dynamical mode taxonomy validated on 100-text corpus, AI detection at 93.7%
+**Status:** Active research — dynamical mode taxonomy validated on 100-text corpus, AI detection at 92.7% (5-fold CV, AUC 0.991)
 
 ---
 
 ## TL;DR
 
-Text has measurable **structural dynamics** in embedding space. Using MiniLM (22M param sentence embedder) and wavelet-derived linear algebra, we extract a **7-number fingerprint** that captures how meaning moves through a text over time. Four **dynamical structural modes** emerge from clustering — convergent, contemplative, discursive, dialectical. Validated on a 100-text Gutenberg corpus spanning 7 genres from Homer to Kafka. The same fingerprint detects AI-generated text at 93.7% on a 79-sample eval — AI text visits fewer attractor basins than human writing. This is a research preview, not a production system.
+Text has measurable **structural dynamics** in embedding space. Using MiniLM (22M param sentence embedder) and wavelet-derived linear algebra, we extract a **7-number fingerprint** that captures how meaning moves through a text over time. Four **dynamical structural modes** emerge from clustering — convergent, contemplative, discursive, dialectical. Validated on a 100-text Gutenberg corpus spanning 7 genres from Homer to Kafka. The same fingerprint detects AI-generated text at 92.7% ± 3.1% under 5-fold cross-validation (AUC 0.991, 169 samples: 58 AI + 111 human). AI text visits fewer attractor basins than human writing. This is a research preview, not a production system.
 
 The discovery chain:
 
@@ -230,11 +230,11 @@ The fingerprint finds passages where Fitzgerald writes like a textbook, like a p
 
 ### The finding
 
-The structural fingerprint separates AI-generated text from human writing at **93.7% accuracy** using a 7-feature weighted classifier. The strongest single signal is **basin entropy** (Cohen's d = 1.79).
+The structural fingerprint separates AI-generated text from human writing at **92.7% ± 3.1%** under 5-fold cross-validation (AUC 0.991). The strongest single signal is **basin entropy** (Cohen's d = 2.02).
 
 | Feature | AI mean | Human mean | Cohen's d |
 |---------|---------|------------|-----------|
-| basin_entropy | 2.77 | 3.61 | **1.79** |
+| basin_entropy | 2.77 | 3.61 | **2.02** |
 | formal_structure | 0.042 | 0.045 | **1.08** |
 | smoothness_mean | 0.221 | 0.275 | 0.55 |
 | exposition | 0.040 | 0.041 | 0.49 |
@@ -243,23 +243,24 @@ AI text is structurally **convergent** — it visits fewer attractor basins and 
 
 ### Eval methodology
 
-- **39 AI samples** across 10+ genres: novels, philosophy, science, drama, poetry, journalism, legal, memoir, essay, technical writing
-- **7 adversarial samples**: casual rants, Hemingway pastiche, diary entries, blog posts — AI told to "sound human"
-- **40 human samples**: fresh excerpts from Project Gutenberg (not the cached full-text fingerprints)
-- **Classifier**: Weighted z-score composite of all 7 fingerprint features, threshold calibrated on the eval set
+- **58 AI samples** across 10+ genres: novels, philosophy, science, drama, poetry, journalism, legal, memoir, essay, technical writing (including 7 adversarial samples — AI told to "sound human")
+- **111 human samples** from Project Gutenberg spanning 7 genres from Homer to Kafka
+- **Methodology**: 5-fold cross-validation, weighted z-score composite of all 7 fingerprint features
+- **Original eval**: 79 samples (39 AI + 40 human) at 93.7%; scaled to 169 samples with proper CV
 
 ### Results
 
 | Classifier | Accuracy |
 |-----------|----------|
-| Composite weighted (7 features) | **93.7%** |
-| Best single feature (basin_entropy < 3.38) | 86.1% |
-| Centroid distance | 81.0% |
-| Adversarial subset (7 samples) | 71% detected |
+| **5-fold CV accuracy** | **92.7% ± 3.1%** |
+| **AUC (ROC)** | **0.991 ± 0.006** |
+| Best single feature (basin_entropy) | 87.0% |
+| vs majority class baseline | +27.0pp |
+| vs sentence count baseline | +18.8pp |
 
 ### Why it works
 
-AI text explores less of the attractor landscape even when trying to be varied. This is a **dynamical property** that emerges from how meaning unfolds over dozens of sentences, not from individual word choices. The basin entropy signal (d=1.79) is hard to game because:
+AI text explores less of the attractor landscape even when trying to be varied. This is a **dynamical property** that emerges from how meaning unfolds over dozens of sentences, not from individual word choices. The basin entropy signal (d=2.02) is hard to game because:
 
 1. It requires the AI to actually visit diverse semantic regions across many sentences
 2. The attractor basins are defined by the eigenbasis (which the AI has no access to)
@@ -271,7 +272,7 @@ AI text explores less of the attractor landscape even when trying to be varied. 
 - Adversarial AI text evades detection ~29% of the time
 - Trained on output from a single LLM — may not generalize to all models
 - Human text from unusual genres (legal boilerplate, liturgical repetition) can false-positive as AI
-- 79-sample eval — not thousands. These results are directional, not production-grade.
+- 169-sample eval with 5-fold CV — directional, not production-grade. Needs multi-model validation.
 
 ---
 
@@ -338,7 +339,8 @@ The correlation matrix is literally a Hebbian weight matrix ("dimensions that fi
 | `basis.npz` | Precomputed 26-dim eigenbasis (37KB) | Production dependency |
 | `basis_clusters.json` | Semantic domain definitions (551 bytes) | Production dependency |
 | `ai_detector_params.json` | AI detection classifier weights (z-mean, z-std, weights, threshold) | Production dependency |
-| `eval_ai_human_v2.py` | **AI detection eval** — 39 AI + 40 human samples, full analysis | Eval |
+| `eval_ai_human_v2.py` | **AI detection eval** — original 79-sample eval | Eval |
+| `eval_breakthrough.py` | **Breakthrough eval** — 169 samples, 5-fold CV, AUC 0.991 | Eval |
 | `web/server.py` | FastAPI server — `/api/fingerprint`, `/api/detect`, static site | Production |
 | `web/index.html` | Interactive frontend — D3.js scatter, detection UI, speed charts | Production |
 | `web/precomputed.json` | Pre-computed 100-text corpus data for frontend | Data |
@@ -354,11 +356,11 @@ The correlation matrix is literally a Hebbian weight matrix ("dimensions that fi
 1. **Is the fingerprint stable across works by the same author?** Dickens spans discursive (Tale of Two Cities) and dialectical (Great Expectations). Is this authorial range, or measurement noise? Test with 5+ works per author.
 2. **Does the universal attractor generalize beyond English?** Test on multilingual corpora. The modes may be language-universal or language-specific.
 3. **How many modes does a larger embedding model reveal?** The 4 modes and 26 attractors may be a MiniLM-384 bottleneck. A 768-dim or 1024-dim model might decompose discursive (the big tent) further.
-4. ~~**What does LLM-generated text look like?**~~ **ANSWERED (Section 4).** LLM text is structurally convergent — low basin entropy (2.77 vs 3.61), low formal structure. The fingerprint detects it at 93.7%. The original hypothesis was wrong: LLMs aren't dialectical, they're convergent. They narrow to fewer semantic basins, not more.
+4. ~~**What does LLM-generated text look like?**~~ **ANSWERED (Section 4).** LLM text is structurally convergent — low basin entropy (2.77 vs 3.61), low formal structure. The fingerprint detects it at 92.7% under 5-fold CV (AUC 0.991). The original hypothesis was wrong: LLMs aren't dialectical, they're convergent. They narrow to fewer semantic basins, not more.
 5. **Can you synthesize novel attractor dynamics?** Transition matrices that don't correspond to any existing text — performed into being by a generative model conditioned on the seed.
 6. **Can a soft prompt encode the attractor seed?** The inverse problem: from target dynamics to token sequence. Differentiable objective, well-posed search.
 7. **Is there a fifth mode?** The discursive bucket contains 60% of texts. It may subdivide with more data or a finer embedding model — perhaps into "narrative discursive" (novels) and "argumentative discursive" (philosophy).
 
 ---
 
-*All numbers are reproducible from the code in this repository. The fast-path fingerprint (`fastprint.py`) is validated on 100 texts across 7 genres and 2,500 years of writing. The AI detection eval (`eval_ai_human_v2.py`) achieves 93.7% accuracy on 79 samples. Live demo: https://waivelets-production.up.railway.app*
+*All numbers are reproducible from the code in this repository. The fast-path fingerprint (`fastprint.py`) is validated on 100 texts across 7 genres and 2,500 years of writing. The AI detection eval (`eval_breakthrough.py`) achieves 92.7% ± 3.1% under 5-fold cross-validation (AUC 0.991) on 169 samples. Live demo: https://waivelets-production.up.railway.app*

@@ -2,7 +2,7 @@
 
 **Does text have measurable dynamical structure in embedding space?**
 
-A research prototype exploring that question. Embed sentences with MiniLM (22M param sentence transformer), project onto a wavelet-derived eigenbasis (38KB), measure 7 scalar statistics about how the trajectory unfolds. On a 100-text Gutenberg corpus from Homer to Kafka, four structural modes emerge from clustering — and they separate AI-generated text from human writing at 93.7% on a 79-sample eval. A neat hack worth tinkering with.
+A research prototype exploring that question. Embed sentences with MiniLM (22M param sentence transformer), project onto a wavelet-derived eigenbasis (38KB), measure 7 scalar statistics about how the trajectory unfolds. On a 100-text Gutenberg corpus from Homer to Kafka, four structural modes emerge from clustering — and they separate AI-generated text from human writing at 92.7% under 5-fold cross-validation (AUC 0.991, 169 samples). Clone it and try it.
 
 **[Live demo](https://waivelets-production.up.railway.app)** | **[Whitepaper](https://waivelets-production.up.railway.app/whitepaper)**
 
@@ -110,9 +110,9 @@ MIDWAY_REPORT.md          # Full research whitepaper
 
 ## AI text detection
 
-The fingerprint can detect AI-generated text with **93.7% accuracy** on a 79-sample eval (39 AI, 40 human).
+The fingerprint detects AI-generated text at **92.7% ± 3.1%** under 5-fold cross-validation (AUC 0.991, 169 samples: 58 AI + 111 human).
 
-**The signal:** AI text visits fewer attractor basins (basin entropy: AI=2.77 vs Human=3.61, Cohen's d=1.79). AI text is structurally *convergent* — it stays in more constrained semantic territory even when trying to be varied.
+**The signal:** AI text visits fewer attractor basins (basin entropy: AI=2.77 vs Human=3.61, Cohen's d=2.02). AI text is structurally *convergent* — it stays in more constrained semantic territory even when trying to be varied.
 
 ```bash
 # Run the eval yourself
@@ -137,7 +137,7 @@ curl -X POST https://waivelets-production.up.railway.app/api/detect \
 
 ## What you can build with this
 
-- **AI text detection** — 93.7% accuracy from structural dynamics alone, near-zero compute
+- **AI text detection** — 92.7% CV accuracy from structural dynamics alone, near-zero compute
 - **Style transfer by dynamics** — Select few-shot examples by fingerprint, not topic
 - **Persona fingerprints** — Each author/persona has a mode distribution
 - **Edge classification** — 38KB classifier runs on a microcontroller
@@ -146,11 +146,11 @@ curl -X POST https://waivelets-production.up.railway.app/api/detect \
 
 ### March 30, 2026 — AI Detection
 
-Built and shipped AI vs human text detection. Ran comprehensive eval: 39 AI-generated texts (including 7 adversarial samples — casual tone, Hemingway pastiche, diary entries) against 40 fresh Gutenberg excerpts. Basin entropy emerged as the killer signal (d=1.79). Composite 7-feature weighted classifier hits 93.7%. Added `/api/detect` endpoint, interactive detection UI with confidence gauge and structural signal cards, entropy distribution histogram, and honest limitations callout. Short-text damping prevents false positives on passages under 30 sentences.
+Built and shipped AI vs human text detection. Initial eval on 79 samples (93.7%), then scaled to 169-sample breakthrough eval with 5-fold cross-validation: 92.7% ± 3.1% accuracy, AUC 0.991, on 58 AI + 111 human Gutenberg texts. Basin entropy emerged as the killer signal (d=2.02). Added `/api/detect` endpoint, interactive detection UI with confidence gauge and structural signal cards, entropy distribution histogram, and honest limitations callout. Short-text damping prevents false positives on passages under 30 sentences.
 
 ### March 29, 2026 — Launch
 
-Took Waivelets from a research notebook to a live, interactive research tool. Starting from the original repo — which contained the raw wavelet analysis code, a 49-text validation corpus, and a static Shiny app — we rebuilt the entire pipeline: wrote `fastprint.py` (a zero-dependency fingerprinter), scaled the Gutenberg corpus from 49 to 100 texts across 7 genres and 2,500 years of writing, built a FastAPI server with a live fingerprinting API, designed an interactive frontend with D3.js visualizations, and deployed everything to Railway with auto-deploy from GitHub. The four dynamical modes held up at scale: drama went 100% dialectical, religious texts clustered convergent, and Darwin's two books split across modes exactly as the theory predicts.
+Took Waivelets from a research notebook to a live, interactive research tool. Starting from the original repo — which contained the raw wavelet analysis code, a 49-text validation corpus, and a static Shiny app — we rebuilt the entire pipeline: wrote `fastprint.py` (a zero-dependency fingerprinter), scaled the Gutenberg corpus from 49 to 100 texts across 7 genres and 2,500 years of writing, built a FastAPI server with a live fingerprinting API, designed an interactive frontend with D3.js visualizations, and deployed everything to Railway with auto-deploy from GitHub. The four dynamical modes held up at scale: drama went overwhelmingly dialectical (7 of 9), religious texts clustered convergent, and Darwin's two books split across modes exactly as the theory predicts.
 
 ## Credits
 
