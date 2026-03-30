@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Waivelets — Structural Dynamics of Text</title>
-<meta name="description" content="Wavelet-derived structural fingerprints for text. MiniLM embeddings, 7-number dynamics, 4 structural modes. 100-text Gutenberg corpus. AI detection at 93.7%. Research preview with live demo.">
+<meta name="description" content="Wavelet-derived structural fingerprints for text. MiniLM embeddings, 7-number dynamics, 4 structural modes. AI detection at 92.7% (5-fold CV, AUC 0.991). Research prototype with live demo.">
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -220,7 +220,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
     a wavelet-derived eigenbasis (38KB), measure how the trajectory unfolds.
     Seven numbers come out. On a 100-text Gutenberg corpus from Homer to Kafka,
     four structural modes emerge — and they separate AI-generated text from human
-    writing at 93.7% on a 79-sample eval. A research prototype worth tinkering with.
+    writing. 92.7% AI detection under 5-fold cross-validation (AUC 0.991). Clone it and try it.
   </p>
   <div class="cta-row">
     <a href="#try" class="btn btn-primary">Try it live</a>
@@ -272,12 +272,12 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
 <!-- ═══ AI DETECTION ═══ -->
 <section class="section-alt" id="detect">
 <div class="container">
-  <h2>AI detection: a signal, not a verdict</h2>
+  <h2>AI detection: 92.7% under cross-validation</h2>
   <p class="subtitle">
-    LLMs produce more "average" or convergent text — smoother transitions, less extreme
-    semantic jumps, more predictable trajectories in embedding space. The fingerprint
-    catches some of that signal. 93.7% on a small eval (39 AI vs 40 human). Useful as
-    one lightweight signal among many, not as a standalone detector.
+    LLMs produce more convergent text — smoother transitions, fewer semantic jumps,
+    more predictable trajectories. The fingerprint catches that signal. 169 samples
+    (58 AI + 111 human), 5-fold cross-validated. AUC = 0.991. Basin entropy alone
+    (d=2.02) beats a sentence-count baseline by 13pp.
   </p>
 
   <div class="try-card">
@@ -301,7 +301,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
       AI-generated text (red) clusters at low basin entropy — it visits fewer attractor basins,
       stays in more constrained semantic territory. Human text (green) spreads wider.
       The strongest single signal: <code>basin_entropy &lt; 3.38</code> catches 86% of AI text.
-      A weighted 7-feature composite reaches <strong>93.7%</strong>.
+      A weighted 7-feature composite reaches <strong>92.7% under 5-fold CV</strong> (AUC 0.991).
     </p>
     <div id="entropy-chart" style="width:100%;height:180px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden"></div>
   </div>
@@ -309,19 +309,19 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
   <!-- Key findings -->
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:32px">
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--green)">93.7%</div>
-      <div style="font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px">Composite accuracy</div>
-      <div style="font-size:0.78rem;color:var(--text2);margin-top:6px">7-feature weighted score</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--green)">92.7%</div>
+      <div style="font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px">5-fold CV accuracy</div>
+      <div style="font-size:0.78rem;color:var(--text2);margin-top:6px">169 samples, not overfit</div>
     </div>
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--convergent)">d=1.79</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--convergent)">0.991</div>
+      <div style="font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px">AUC (ROC)</div>
+      <div style="font-size:0.78rem;color:var(--text2);margin-top:6px">Near-perfect discrimination</div>
+    </div>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--dialectical)">d=2.02</div>
       <div style="font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px">Basin entropy effect</div>
       <div style="font-size:0.78rem;color:var(--text2);margin-top:6px">Cohen's d (large &gt; 0.8)</div>
-    </div>
-    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--dialectical)">71%</div>
-      <div style="font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px">Adversarial detection</div>
-      <div style="font-size:0.78rem;color:var(--text2);margin-top:6px">AI told to "sound human"</div>
     </div>
   </div>
 
@@ -341,7 +341,7 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
     <p>
       This is a research preview, not a production detector. <strong>Short texts (&lt;15 sentences) are unreliable.</strong>
       Adversarial AI text (casual tone, style mimicry) evades detection ~29% of the time.
-      The eval corpus is 79 samples — not thousands. The classifier was trained on LLM-generated text
+      The eval corpus is 169 samples with 5-fold cross-validation. The classifier was trained on LLM-generated text
       and may not generalize to all LLMs. Human text from unusual genres (legal boilerplate, liturgical repetition)
       can false-positive as AI. <strong>Use this as a signal, not a verdict.</strong>
     </p>

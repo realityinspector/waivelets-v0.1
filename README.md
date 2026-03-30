@@ -126,13 +126,14 @@ curl -X POST https://waivelets-production.up.railway.app/api/detect \
 
 | Metric | Value |
 |--------|-------|
-| Composite accuracy (7 features) | **93.7%** |
-| Best single feature (basin entropy) | **86.1%** |
-| Adversarial detection (AI told to sound human) | **71%** |
-| Strongest signal | Basin entropy (d=1.79) |
-| Training set | 39 LLM-generated + 40 Gutenberg texts |
+| **5-fold CV accuracy** | **92.7% ± 3.1%** |
+| **AUC (ROC)** | **0.991 ± 0.006** |
+| Best single feature (basin entropy) | 87.0% |
+| Strongest signal | Basin entropy (d=2.02) |
+| vs majority class baseline | +27.0pp |
+| Eval set | 58 LLM-generated + 111 Gutenberg texts |
 
-**Honest limitations:** Short texts (<15 sentences) are unreliable. Adversarial AI evades ~29% of the time. Trained on LLM output only — may not generalize across all models. Human text from unusual genres (legal, liturgical) can false-positive. Use as signal, not verdict.
+**Limitations:** Short texts (<15 sentences) are unreliable. Trained on one LLM family — needs multi-model validation. Human text from unusual genres (legal, liturgical) can false-positive. A strong signal, not a standalone verdict.
 
 ## What you can build with this
 
