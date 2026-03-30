@@ -337,6 +337,36 @@ footer .links{display:flex;gap:24px;justify-content:center;margin-top:12px}
   </div>
 
   <div class="callout">
+    <div class="tag">How 92.7% was derived</div>
+    <p>
+      <strong>Dataset:</strong> 169 text samples &mdash; 58 AI-generated (from a single LLM, including 7 adversarial
+      samples told to "sound human") and 111 human texts freshly pulled from Project Gutenberg across 7 genres
+      (novels, drama, philosophy, science, religion, poetry, reference).
+    </p>
+    <p>
+      <strong>Features:</strong> Each text is embedded with MiniLM, projected onto the wavelet-derived eigenbasis,
+      and measured as 7 scalars: smoothness mean, smoothness std, 4 semantic activations (exposition, interiority,
+      formal structure, scene narration), and basin entropy. These 7 numbers are z-scored against corpus statistics
+      and combined as a weighted sum. The weights and threshold were optimized on the training folds.
+    </p>
+    <p>
+      <strong>Method:</strong> 5-fold stratified cross-validation. Each fold trains on 80% of the data and tests
+      on the held-out 20%. The classifier is a weighted z-score composite &mdash; no neural network, no gradient descent,
+      just a linear combination of the 7 features with a scalar threshold. AUC is computed from the continuous score,
+      not the binary prediction.
+    </p>
+    <p>
+      <strong>Results:</strong> 92.7% &plusmn; 3.1% accuracy across folds (range: 87.9%&ndash;97.0%). AUC = 0.991 &plusmn; 0.006.
+      Basin entropy alone achieves 87.0% (threshold at 3.38 bits). The full 7-feature composite adds +5.7pp over the best
+      single feature. Beats majority-class baseline by +27pp and sentence-count baseline by +18.8pp.
+    </p>
+    <p>
+      <strong>Reproduce it:</strong> <code>python eval_breakthrough.py</code> in the repo. All data, weights, and fold
+      assignments are saved in <code>eval_breakthrough_results/</code>.
+    </p>
+  </div>
+
+  <div class="callout">
     <div class="tag">Honest limitations</div>
     <p>
       This is a research preview, not a production detector. <strong>Short texts (&lt;15 sentences) are unreliable.</strong>
@@ -662,18 +692,116 @@ const EXAMPLES = {
   legal: `WHEREAS, the parties hereto desire to enter into this Agreement to define their respective rights and obligations with respect to the subject matter hereof; and WHEREAS, the Company has developed certain proprietary technology, trade secrets, and confidential business information which it desires to protect; NOW, THEREFORE, in consideration of the mutual covenants and agreements hereinafter set forth and for other good and valuable consideration, the receipt and sufficiency of which are hereby acknowledged, the parties agree as follows. The term of this Agreement shall commence on the Effective Date and shall continue for a period of three years thereafter, unless earlier terminated in accordance with the provisions hereof. This Agreement may be terminated by either party upon thirty days written notice to the other party.`
 };
 
+// ═══ PRECOMPUTED DEMO RESULTS (real data from full-text corpus) ═══
+const PRECOMPUTED_FINGERPRINTS = {
+  bible: {"mode":"convergent","distance":3.72,"description":"Text that narrows to few attractor basins and holds. High coherence, concentrated semantic range. Liturgical, aphoristic, legalistic, or meditative structure.","fingerprint":{"smoothness_mean":0.5483,"smoothness_std":0.2151,"exposition":0.0436,"interiority":0.0372,"formal_structure":0.0483,"scene_narration":0.0392,"basin_entropy":3.7956},"mode_distances":{"convergent":3.72,"contemplative":6.88,"discursive":6.33,"dialectical":6.43},"n_sentences":500,"time_ms":0,"precomputed":true,"source":"Bible (KJV) \u2014 full text, 500 sentences from corpus"},
+  shakespeare: {"mode":"dialectical","distance":1.28,"description":"Rapid oscillation between registers. High rhythmic variation, high formal structure. Dramatic mode-switching \u2014 dialogue, confrontation, or systematic contrast.","fingerprint":{"smoothness_mean":0.209,"smoothness_std":0.2423,"exposition":0.0399,"interiority":0.0373,"formal_structure":0.0459,"scene_narration":0.0418,"basin_entropy":4.3524},"mode_distances":{"convergent":4.35,"contemplative":5.15,"discursive":2.23,"dialectical":1.28},"n_sentences":500,"time_ms":0,"precomputed":true,"source":"Hamlet \u2014 full text, 500 sentences from corpus"},
+  austen: {"mode":"discursive","distance":1.68,"description":"The wide river of extended prose. Moderate pace, many attractor basins visited, balanced semantic domains. Sustained shaped discourse \u2014 narrative, argument, or epic.","fingerprint":{"smoothness_mean":0.2756,"smoothness_std":0.2149,"exposition":0.0392,"interiority":0.0391,"formal_structure":0.0442,"scene_narration":0.0434,"basin_entropy":4.4381},"mode_distances":{"convergent":4.55,"contemplative":4.09,"discursive":1.68,"dialectical":2.65},"n_sentences":500,"time_ms":0,"precomputed":true,"source":"Pride and Prejudice \u2014 full text, 500 sentences from corpus"},
+  darwin: {"mode":"dialectical","distance":1.42,"description":"Rapid oscillation between registers. High rhythmic variation, high formal structure. Dramatic mode-switching \u2014 dialogue, confrontation, or systematic contrast.","fingerprint":{"smoothness_mean":0.2953,"smoothness_std":0.2386,"exposition":0.039,"interiority":0.0395,"formal_structure":0.046,"scene_narration":0.0409,"basin_entropy":4.4275},"mode_distances":{"convergent":4.18,"contemplative":3.71,"discursive":2.28,"dialectical":1.42},"n_sentences":427,"time_ms":0,"precomputed":true,"source":"Origin of Species \u2014 full text, 427 sentences from corpus"},
+};
+
+const PRECOMPUTED_DETECTIONS = {
+  ai_essay: {"prediction":"human","confidence":0.078,"score":0.493,"threshold":0.803,"signals":{"basin_entropy":3.835,"basin_entropy_signal":"normal","formal_structure":0.0402,"smoothness_mean":0.2568,"smoothness_std":0.2654},"centroid_distances":{"to_ai":0.935,"to_human":0.11},"mode":"contemplative","mode_distance":5.0,"fingerprint":{"smoothness_mean":0.2568,"smoothness_std":0.2654,"exposition":0.0369,"interiority":0.0423,"formal_structure":0.0402,"scene_narration":0.0395,"basin_entropy":3.835},"warning":null,"n_sentences":24,"time_ms":0,"precomputed":true},
+  ai_casual: {"prediction":"ai","confidence":0.061,"score":1.048,"threshold":0.803,"signals":{"basin_entropy":3.309,"basin_entropy_signal":"low","formal_structure":0.0454,"smoothness_mean":0.1384,"smoothness_std":0.2117},"centroid_distances":{"to_ai":0.414,"to_human":0.465},"mode":"contemplative","mode_distance":4.89,"fingerprint":{"smoothness_mean":0.1384,"smoothness_std":0.2117,"exposition":0.0403,"interiority":0.0428,"formal_structure":0.0454,"scene_narration":0.0392,"basin_entropy":3.3087},"warning":null,"n_sentences":20,"time_ms":0,"precomputed":true},
+  human_austen: {"prediction":"human","confidence":0.48,"score":-1.116,"threshold":0.803,"signals":{"basin_entropy":3.778,"basin_entropy_signal":"normal","formal_structure":0.0496,"smoothness_mean":0.1671,"smoothness_std":0.2674},"centroid_distances":{"to_ai":0.879,"to_human":0.146},"mode":"dialectical","mode_distance":4.43,"fingerprint":{"smoothness_mean":0.1671,"smoothness_std":0.2674,"exposition":0.037,"interiority":0.0364,"formal_structure":0.0496,"scene_narration":0.0398,"basin_entropy":3.7784},"warning":null,"n_sentences":27,"time_ms":0,"precomputed":true},
+  human_shakespeare: {"prediction":"human","confidence":0.185,"score":0.064,"threshold":0.803,"signals":{"basin_entropy":3.638,"basin_entropy_signal":"normal","formal_structure":0.0447,"smoothness_mean":0.1573,"smoothness_std":0.2071},"centroid_distances":{"to_ai":0.738,"to_human":0.18},"mode":"discursive","mode_distance":3.73,"fingerprint":{"smoothness_mean":0.1573,"smoothness_std":0.2071,"exposition":0.0406,"interiority":0.0372,"formal_structure":0.0447,"scene_narration":0.0429,"basin_entropy":3.6375},"warning":null,"n_sentences":28,"time_ms":0,"precomputed":true},
+  human_frankenstein: {"prediction":"human","confidence":0.23,"score":-0.117,"threshold":0.803,"signals":{"basin_entropy":3.578,"basin_entropy_signal":"normal","formal_structure":0.0464,"smoothness_mean":0.1923,"smoothness_std":0.1663},"centroid_distances":{"to_ai":0.677,"to_human":0.207},"mode":"convergent","mode_distance":4.31,"fingerprint":{"smoothness_mean":0.1923,"smoothness_std":0.1663,"exposition":0.0421,"interiority":0.0403,"formal_structure":0.0464,"scene_narration":0.0422,"basin_entropy":3.5778},"warning":null,"n_sentences":16,"time_ms":0,"precomputed":true},
+};
+
+// Track whether current text is a precomputed demo
+let _activeDemo = null;
+
 function loadExample(key) {
   document.getElementById('try-text').value = EXAMPLES[key];
   document.querySelectorAll('.example-btn').forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
-  runFingerprint();
+  if (PRECOMPUTED_FINGERPRINTS[key]) {
+    _activeDemo = key;
+    renderFingerprintResult(PRECOMPUTED_FINGERPRINTS[key]);
+  } else {
+    _activeDemo = null;
+    runFingerprint();
+  }
   document.getElementById('try').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
+// ═══ SANITIZE ═══
+function sanitizeText(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
 // ═══ FINGERPRINT ═══
+function renderFingerprintResult(d) {
+  const result = document.getElementById('try-result');
+  const color = MC[d.mode];
+  const maxDist = Math.max(...Object.values(d.mode_distances));
+  let bars = '';
+  for (const [mode, dist] of Object.entries(d.mode_distances).sort((a,b) => a[1]-b[1])) {
+    const pct = Math.max(8, (1 - dist / (maxDist * 1.1)) * 100);
+    const active = mode === d.mode;
+    bars += `<div class="metric-row">
+      <div class="metric-label" style="${active ? 'color:'+MC[mode]+';font-weight:700' : ''}">${sanitizeText(mode)}</div>
+      <div class="metric-bar"><div class="metric-fill" style="width:${pct}%;background:${MC[mode]};${active?'box-shadow:0 0 12px '+MC[mode]+'40':'opacity:0.5'}"></div></div>
+      <div class="metric-val" style="${active?'color:'+MC[mode]:''}">${dist.toFixed(2)}</div>
+    </div>`;
+  }
+
+  const fp = d.fingerprint;
+  const fpMax = 0.06;
+  let fpBars = '';
+  const fpFields = [
+    ['Exposition', fp.exposition],
+    ['Interiority', fp.interiority],
+    ['Formal', fp.formal_structure],
+    ['Scene', fp.scene_narration],
+  ];
+  fpFields.forEach(([label, val]) => {
+    const pct = Math.min(100, (val / fpMax) * 100);
+    fpBars += `<div class="metric-row">
+      <div class="metric-label">${sanitizeText(label)}</div>
+      <div class="metric-bar"><div class="metric-fill" style="width:${pct}%;background:var(--accent2)"></div></div>
+      <div class="metric-val">${val.toFixed(4)}</div>
+    </div>`;
+  });
+
+  const sourceNote = d.precomputed && d.source
+    ? `<div style="background:rgba(34,211,238,0.08);border:1px solid var(--discursive);border-radius:8px;padding:8px 12px;margin-bottom:14px;font-size:0.78rem;color:var(--discursive)">Precomputed from ${sanitizeText(d.source)}. Paste your own text and click &ldquo;Fingerprint it&rdquo; to run live.</div>`
+    : '';
+
+  result.innerHTML = `
+    <div class="result-card" style="border-left:4px solid ${color}">
+      ${sourceNote}
+      <div class="result-header">
+        <div class="result-mode" style="color:${color}">${sanitizeText(d.mode)}</div>
+        <div class="result-distance">distance: ${d.distance}</div>
+      </div>
+      <div class="result-desc">${sanitizeText(d.description)}</div>
+      <div class="result-grid">
+        <div>
+          <div style="font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Mode distances (lower = closer)</div>
+          <div class="result-metrics">${bars}</div>
+        </div>
+        <div>
+          <div style="font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Semantic activations</div>
+          <div class="result-metrics">${fpBars}</div>
+          <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:0.78rem">
+            <div style="color:var(--text3)">Smoothness: <span class="mono" style="color:var(--text2)">${fp.smoothness_mean > 0 ? '+' : ''}${fp.smoothness_mean.toFixed(3)}</span></div>
+            <div style="color:var(--text3)">Oscillation: <span class="mono" style="color:var(--text2)">${fp.smoothness_std.toFixed(3)}</span></div>
+            <div style="color:var(--text3)">Entropy: <span class="mono" style="color:var(--text2)">${fp.basin_entropy.toFixed(2)} bits</span></div>
+            <div style="color:var(--text3)">Sentences: <span class="mono" style="color:var(--text2)">${d.n_sentences}</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="result-meta">${d.n_sentences} sentences${d.time_ms > 0 ? ' &middot; ' + d.time_ms + ' ms' : ''} &middot; fingerprint: [${fp.smoothness_mean.toFixed(3)}, ${fp.smoothness_std.toFixed(3)}, ${fp.exposition.toFixed(4)}, ${fp.interiority.toFixed(4)}, ${fp.formal_structure.toFixed(4)}, ${fp.scene_narration.toFixed(4)}, ${fp.basin_entropy.toFixed(2)}]</div>
+    </div>`;
+}
+
 async function runFingerprint() {
   const text = document.getElementById('try-text').value.trim();
   if (!text) return;
+  _activeDemo = null;
   const btn = document.getElementById('try-btn');
   const result = document.getElementById('try-result');
   btn.disabled = true; btn.textContent = 'Analyzing...';
@@ -685,66 +813,10 @@ async function runFingerprint() {
       body: JSON.stringify({text})
     });
     const d = await resp.json();
-    if (d.error) { result.innerHTML = `<p style="color:var(--dialectical)">${d.error}</p>`; return; }
-
-    const color = MC[d.mode];
-    const maxDist = Math.max(...Object.values(d.mode_distances));
-    let bars = '';
-    for (const [mode, dist] of Object.entries(d.mode_distances).sort((a,b) => a[1]-b[1])) {
-      const pct = Math.max(8, (1 - dist / (maxDist * 1.1)) * 100);
-      const active = mode === d.mode;
-      bars += `<div class="metric-row">
-        <div class="metric-label" style="${active ? 'color:'+MC[mode]+';font-weight:700' : ''}">${mode}</div>
-        <div class="metric-bar"><div class="metric-fill" style="width:${pct}%;background:${MC[mode]};${active?'box-shadow:0 0 12px '+MC[mode]+'40':'opacity:0.5'}"></div></div>
-        <div class="metric-val" style="${active?'color:'+MC[mode]:''}">${dist.toFixed(2)}</div>
-      </div>`;
-    }
-
-    const fp = d.fingerprint;
-    const fpMax = 0.06;
-    let fpBars = '';
-    const fpFields = [
-      ['Exposition', fp.exposition],
-      ['Interiority', fp.interiority],
-      ['Formal', fp.formal_structure],
-      ['Scene', fp.scene_narration],
-    ];
-    fpFields.forEach(([label, val]) => {
-      const pct = Math.min(100, (val / fpMax) * 100);
-      fpBars += `<div class="metric-row">
-        <div class="metric-label">${label}</div>
-        <div class="metric-bar"><div class="metric-fill" style="width:${pct}%;background:var(--accent2)"></div></div>
-        <div class="metric-val">${val.toFixed(4)}</div>
-      </div>`;
-    });
-
-    result.innerHTML = `
-      <div class="result-card" style="border-left:4px solid ${color}">
-        <div class="result-header">
-          <div class="result-mode" style="color:${color}">${d.mode}</div>
-          <div class="result-distance">distance: ${d.distance}</div>
-        </div>
-        <div class="result-desc">${d.description}</div>
-        <div class="result-grid">
-          <div>
-            <div style="font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Mode distances (lower = closer)</div>
-            <div class="result-metrics">${bars}</div>
-          </div>
-          <div>
-            <div style="font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Semantic activations</div>
-            <div class="result-metrics">${fpBars}</div>
-            <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:0.78rem">
-              <div style="color:var(--text3)">Smoothness: <span class="mono" style="color:var(--text2)">${fp.smoothness_mean > 0 ? '+' : ''}${fp.smoothness_mean.toFixed(3)}</span></div>
-              <div style="color:var(--text3)">Oscillation: <span class="mono" style="color:var(--text2)">${fp.smoothness_std.toFixed(3)}</span></div>
-              <div style="color:var(--text3)">Entropy: <span class="mono" style="color:var(--text2)">${fp.basin_entropy.toFixed(2)} bits</span></div>
-              <div style="color:var(--text3)">Sentences: <span class="mono" style="color:var(--text2)">${d.n_sentences}</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="result-meta">${d.n_sentences} sentences &middot; ${d.time_ms} ms &middot; fingerprint: [${fp.smoothness_mean.toFixed(3)}, ${fp.smoothness_std.toFixed(3)}, ${fp.exposition.toFixed(4)}, ${fp.interiority.toFixed(4)}, ${fp.formal_structure.toFixed(4)}, ${fp.scene_narration.toFixed(4)}, ${fp.basin_entropy.toFixed(2)}]</div>
-      </div>`;
+    if (d.error) { result.innerHTML = `<p style="color:var(--dialectical)">${sanitizeText(d.error)}</p>`; return; }
+    renderFingerprintResult(d);
   } catch(e) {
-    result.innerHTML = `<p style="color:var(--dialectical)">Error: ${e.message}</p>`;
+    result.innerHTML = `<p style="color:var(--dialectical)">Error: ${sanitizeText(e.message)}</p>`;
   } finally {
     btn.disabled = false; btn.textContent = 'Fingerprint it';
   }
@@ -976,11 +1048,75 @@ const DETECT_EXAMPLES = {
   human_frankenstein: `I am by birth a Genevese, and my family is one of the most distinguished of that republic. My ancestors had been for many years counsellors and syndics, and my father had filled several public situations with honour and reputation. He was respected by all who knew him for his integrity and indefatigable attention to public business. He passed his younger days perpetually occupied by the affairs of his country; a variety of circumstances had prevented his marrying early, nor was it until the decline of life that he became a husband and the father of a family. As the circumstances of his marriage illustrate his character, I cannot refrain from relating them. One of his most intimate friends was a merchant who, from a flourishing state, fell, through numerous mischances, into poverty. This man, whose name was Beaufort, was of a proud and unbending disposition and could not bear to live in poverty and oblivion in the same country where he had formerly been distinguished for his rank and magnificence. Having paid his debts, therefore, in the most honourable manner, he retreated with his daughter to the town of Lucerne, where he lived unknown and in wretchedness. My father loved Beaufort with the truest friendship and was deeply grieved by his retreat in these unfortunate circumstances. He bitterly deplored the false pride which led his friend to a conduct so little worthy of the affection that united them. He lost no time in endeavouring to seek him out, with the hope of persuading him to begin the world again through his credit and assistance. Beaufort had taken effectual measures to conceal himself, and it was ten months before my father discovered his abode. Overjoyed at this discovery, he hastened to the house, which was situated in a mean street near the Reuss. But when he entered, misery and despair alone welcomed him. Beaufort had saved but a very small sum of money from the wreck of his fortunes, but it was sufficient to provide him with sustenance for some months, and in the meantime he hoped to procure some respectable employment in a merchant's house. The interval was, consequently, spent in inaction; his grief only became more deep and rankling when he had leisure to reflect on it, and at length it took so fast hold of his mind that at the end of three months he lay on a bed of sickness, incapable of any exertion.`,
 };
 
+function renderDetectionResult(d) {
+  const result = document.getElementById('detect-result');
+  const isAI = d.prediction === 'ai';
+  const color = isAI ? 'var(--dialectical)' : 'var(--green)';
+  const label = isAI ? 'LIKELY AI-GENERATED' : 'LIKELY HUMAN-WRITTEN';
+  const confPct = Math.round(d.confidence * 100);
+  const entColor = d.signals.basin_entropy < 3.38 ? 'var(--dialectical)' : 'var(--green)';
+  const warning = d.warning ? `<div style="background:rgba(245,158,11,0.1);border:1px solid var(--convergent);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.82rem;color:var(--convergent)">&#9888; ${sanitizeText(d.warning)}</div>` : '';
+  const preNote = d.precomputed ? `<div style="background:rgba(34,211,238,0.08);border:1px solid var(--discursive);border-radius:8px;padding:8px 12px;margin-bottom:14px;font-size:0.78rem;color:var(--discursive)">Precomputed result. Paste your own text and click &ldquo;Analyze&rdquo; to run live.</div>` : '';
+  const gaugePos = Math.max(0, Math.min(100, 50 + (d.score - d.threshold) * 12));
+  const timeStr = d.time_ms > 0 ? ` in ${d.time_ms}ms` : '';
+
+  result.innerHTML = `
+    <div class="result-card" style="border-left:4px solid ${color};margin-top:20px">
+      ${preNote}${warning}
+      <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px">
+        <div style="font-size:1.8rem;font-weight:800;color:${color}">${label}</div>
+      </div>
+      <div style="font-size:0.85rem;color:var(--text2);margin-bottom:20px">
+        Confidence: <strong style="color:${color}">${confPct}%</strong> &middot;
+        Score: <span class="mono">${d.score.toFixed(3)}</span> (threshold: ${d.threshold}) &middot;
+        ${d.n_sentences} sentences${timeStr}
+      </div>
+      <div style="margin-bottom:24px">
+        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text3);margin-bottom:4px">
+          <span>&larr; MORE HUMAN</span><span>MORE AI &rarr;</span>
+        </div>
+        <div style="position:relative;height:28px;background:linear-gradient(90deg,var(--green)20,var(--bg3) 45%,var(--bg3) 55%,var(--dialectical)20 100%);border-radius:6px;overflow:hidden">
+          <div style="position:absolute;top:0;bottom:0;left:${gaugePos}%;width:3px;background:var(--white);border-radius:2px;box-shadow:0 0 8px rgba(255,255,255,0.5)"></div>
+          <div style="position:absolute;top:0;bottom:0;left:50%;width:1px;background:var(--text3);opacity:0.3"></div>
+        </div>
+      </div>
+      <div style="font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Key structural signals</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.85rem">
+        <div style="background:var(--bg2);padding:12px;border-radius:8px">
+          <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;margin-bottom:4px">Basin Entropy</div>
+          <div class="mono" style="font-size:1.2rem;font-weight:700;color:${entColor}">${d.signals.basin_entropy.toFixed(2)} bits</div>
+          <div style="color:var(--text3);font-size:0.75rem">${d.signals.basin_entropy < 3.38 ? 'Low — fewer attractor basins visited (AI pattern)' : 'Normal range — diverse basin exploration (human pattern)'}</div>
+        </div>
+        <div style="background:var(--bg2);padding:12px;border-radius:8px">
+          <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;margin-bottom:4px">Structural Mode</div>
+          <div style="font-size:1.2rem;font-weight:700;color:${MC[d.mode]};text-transform:uppercase">${sanitizeText(d.mode)}</div>
+          <div style="color:var(--text3);font-size:0.75rem">Distance: ${d.mode_distance} &middot; Centroid: AI=${d.centroid_distances.to_ai.toFixed(2)}, Human=${d.centroid_distances.to_human.toFixed(2)}</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;font-size:0.85rem">
+        <div style="background:var(--bg2);padding:12px;border-radius:8px">
+          <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;margin-bottom:4px">Smoothness</div>
+          <div class="mono" style="font-weight:600">${d.signals.smoothness_mean > 0 ? '+' : ''}${d.signals.smoothness_mean.toFixed(3)}</div>
+          <div style="color:var(--text3);font-size:0.75rem">Oscillation: ${d.signals.smoothness_std.toFixed(3)}</div>
+        </div>
+        <div style="background:var(--bg2);padding:12px;border-radius:8px">
+          <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;margin-bottom:4px">Formal Structure</div>
+          <div class="mono" style="font-weight:600">${d.signals.formal_structure.toFixed(4)}</div>
+          <div style="color:var(--text3);font-size:0.75rem">${d.signals.formal_structure < 0.043 ? 'Below human average' : 'In human range'}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
 function loadDetectExample(key) {
   document.getElementById('detect-text').value = DETECT_EXAMPLES[key];
   document.querySelectorAll('#detect .example-btn').forEach(b => b.classList.remove('active'));
   if (event && event.target) event.target.classList.add('active');
-  runDetection();
+  if (PRECOMPUTED_DETECTIONS[key]) {
+    renderDetectionResult(PRECOMPUTED_DETECTIONS[key]);
+  } else {
+    runDetection();
+  }
 }
 
 async function runDetection() {
@@ -997,70 +1133,10 @@ async function runDetection() {
       body: JSON.stringify({text})
     });
     const d = await resp.json();
-    if (d.error) { result.innerHTML = `<p style="color:var(--dialectical)">${d.error}</p>`; return; }
-
-    const isAI = d.prediction === 'ai';
-    const color = isAI ? 'var(--dialectical)' : 'var(--green)';
-    const label = isAI ? 'LIKELY AI-GENERATED' : 'LIKELY HUMAN-WRITTEN';
-    const confPct = Math.round(d.confidence * 100);
-    const entColor = d.signals.basin_entropy < 3.38 ? 'var(--dialectical)' : 'var(--green)';
-    const warning = d.warning ? `<div style="background:rgba(245,158,11,0.1);border:1px solid var(--convergent);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.82rem;color:var(--convergent)">&#9888; ${d.warning}</div>` : '';
-
-    // Gauge visualization
-    const gaugePos = Math.max(0, Math.min(100, 50 + (d.score - d.threshold) * 12));
-
-    result.innerHTML = `
-      <div class="result-card" style="border-left:4px solid ${color};margin-top:20px">
-        ${warning}
-        <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px">
-          <div style="font-size:1.8rem;font-weight:800;color:${color}">${label}</div>
-        </div>
-        <div style="font-size:0.85rem;color:var(--text2);margin-bottom:20px">
-          Confidence: <strong style="color:${color}">${confPct}%</strong> &middot;
-          Score: <span class="mono">${d.score.toFixed(3)}</span> (threshold: ${d.threshold}) &middot;
-          ${d.n_sentences} sentences in ${d.time_ms}ms
-        </div>
-
-        <!-- Score gauge -->
-        <div style="margin-bottom:24px">
-          <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text3);margin-bottom:4px">
-            <span>← MORE HUMAN</span><span>MORE AI →</span>
-          </div>
-          <div style="position:relative;height:28px;background:linear-gradient(90deg,var(--green)20,var(--bg3) 45%,var(--bg3) 55%,var(--dialectical)20 100%);border-radius:6px;overflow:hidden">
-            <div style="position:absolute;top:0;bottom:0;left:${gaugePos}%;width:3px;background:var(--white);border-radius:2px;box-shadow:0 0 8px rgba(255,255,255,0.5)"></div>
-            <div style="position:absolute;top:0;bottom:0;left:50%;width:1px;background:var(--text3);opacity:0.3"></div>
-          </div>
-        </div>
-
-        <!-- Key signals -->
-        <div style="font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Key structural signals</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:0.85rem">
-          <div style="background:var(--bg2);padding:12px;border-radius:8px">
-            <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;margin-bottom:4px">Basin Entropy</div>
-            <div class="mono" style="font-size:1.2rem;font-weight:700;color:${entColor}">${d.signals.basin_entropy.toFixed(2)} bits</div>
-            <div style="color:var(--text3);font-size:0.75rem">${d.signals.basin_entropy < 3.38 ? 'Low — fewer attractor basins visited (AI pattern)' : 'Normal range — diverse basin exploration (human pattern)'}</div>
-          </div>
-          <div style="background:var(--bg2);padding:12px;border-radius:8px">
-            <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;margin-bottom:4px">Structural Mode</div>
-            <div style="font-size:1.2rem;font-weight:700;color:${MC[d.mode]};text-transform:uppercase">${d.mode}</div>
-            <div style="color:var(--text3);font-size:0.75rem">Distance: ${d.mode_distance} &middot; Centroid: AI=${d.centroid_distances.to_ai.toFixed(2)}, Human=${d.centroid_distances.to_human.toFixed(2)}</div>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;font-size:0.85rem">
-          <div style="background:var(--bg2);padding:12px;border-radius:8px">
-            <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;margin-bottom:4px">Smoothness</div>
-            <div class="mono" style="font-weight:600">${d.signals.smoothness_mean > 0 ? '+' : ''}${d.signals.smoothness_mean.toFixed(3)}</div>
-            <div style="color:var(--text3);font-size:0.75rem">Oscillation: ${d.signals.smoothness_std.toFixed(3)}</div>
-          </div>
-          <div style="background:var(--bg2);padding:12px;border-radius:8px">
-            <div style="color:var(--text3);font-size:0.72rem;text-transform:uppercase;margin-bottom:4px">Formal Structure</div>
-            <div class="mono" style="font-weight:600">${d.signals.formal_structure.toFixed(4)}</div>
-            <div style="color:var(--text3);font-size:0.75rem">${d.signals.formal_structure < 0.043 ? 'Below human average' : 'In human range'}</div>
-          </div>
-        </div>
-      </div>`;
+    if (d.error) { result.innerHTML = `<p style="color:var(--dialectical)">${sanitizeText(d.error)}</p>`; return; }
+    renderDetectionResult(d);
   } catch(e) {
-    result.innerHTML = `<p style="color:var(--dialectical)">Error: ${e.message}</p>`;
+    result.innerHTML = `<p style="color:var(--dialectical)">Error: ${sanitizeText(e.message)}</p>`;
   } finally {
     btn.disabled = false; btn.textContent = 'Detect AI / Human';
   }

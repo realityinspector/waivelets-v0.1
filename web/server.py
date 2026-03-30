@@ -9,6 +9,7 @@ Lightweight FastAPI server:
 
 import json
 import os
+import re
 import time
 import html as html_lib
 from pathlib import Path
@@ -59,17 +60,28 @@ class TextInput(BaseModel):
     text: str
 
 
+_TAG_RE = re.compile(r'<[^>]+>')
+_MULTI_SPACE = re.compile(r'[ \t]+')
+_MULTI_NL = re.compile(r'\n{3,}')
+
+def bleach_input(text: str, max_len: int = 50000) -> str:
+    """Strip HTML tags, normalize whitespace, limit length."""
+    text = _TAG_RE.sub(' ', text)           # strip all HTML tags
+    text = html_lib.unescape(text)          # decode &amp; etc before re-escaping
+    text = _MULTI_SPACE.sub(' ', text)      # collapse spaces
+    text = _MULTI_NL.sub('\n\n', text)      # collapse excessive newlines
+    text = text.strip()
+    if len(text) > max_len:
+        text = text[:max_len]
+    return text
+
+
 @app.post("/api/fingerprint")
 async def api_fingerprint(body: TextInput):
     """Fingerprint arbitrary text. Returns mode + 7-number signature."""
-    text = body.text.strip()
+    text = bleach_input(body.text)
     if len(text) < 20:
         return JSONResponse({"error": "Text too short (need at least a few sentences)"}, 400)
-
-    # Sanitize — strip HTML, limit length
-    text = html_lib.escape(text)
-    if len(text) > 50000:
-        text = text[:50000]
 
     sentences = split_sentences(text)
     if len(sentences) < 3:
@@ -110,13 +122,9 @@ async def api_detect(body: TextInput):
     if _DETECTOR is None:
         return JSONResponse({"error": "AI detector not configured"}, 500)
 
-    text = body.text.strip()
+    text = bleach_input(body.text)
     if len(text) < 20:
         return JSONResponse({"error": "Text too short (need at least a few sentences)"}, 400)
-
-    text = html_lib.escape(text)
-    if len(text) > 50000:
-        text = text[:50000]
 
     sentences = split_sentences(text)
     if len(sentences) < 3:
