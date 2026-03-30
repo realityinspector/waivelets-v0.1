@@ -134,7 +134,7 @@ footer a{color:var(--text2)}
     <div class="stats">
       <div class="stat"><div class="val">4</div><div class="label">Dynamical Modes</div></div>
       <div class="stat"><div class="val">94.1%</div><div class="label">Accuracy</div></div>
-      <div class="stat"><div class="val">49</div><div class="label">Texts Tested</div></div>
+      <div class="stat"><div class="val">100</div><div class="label">Texts Tested</div></div>
       <div class="stat"><div class="val">&lt;1ms</div><div class="label">Classification</div></div>
       <div class="stat"><div class="val">28</div><div class="label">Bytes</div></div>
     </div>
@@ -156,22 +156,22 @@ footer a{color:var(--text2)}
     <div class="card mode-card convergent">
       <div class="mode-name">Convergent</div>
       <div class="mode-desc">Narrows to few attractor basins and holds. High coherence, concentrated semantic range. Liturgical, aphoristic, legalistic, or meditative structure.</div>
-      <div class="mode-examples">KJV Bible, Bhagavad Gita, Dickinson, Locke</div>
+      <div class="mode-examples">Augustine, Bhagavad Gita, Dickinson, Locke, KJV Bible</div>
     </div>
     <div class="card mode-card contemplative">
       <div class="mode-name">Contemplative</div>
       <div class="mode-desc">Thinks about thinking. High interiority, low scene narration. Self-aware analysis — text that reflects on its own process.</div>
-      <div class="mode-examples">Russell, Hobbes, Darwin (Descent of Man), Swift</div>
+      <div class="mode-examples">Darwin, Dickens (Pickwick), Shakespeare (Tempest), Swift, Russell</div>
     </div>
     <div class="card mode-card discursive">
       <div class="mode-name">Discursive</div>
       <div class="mode-desc">The wide river. Moderate pace, many attractor basins visited, balanced semantic domains. Sustained shaped discourse — narrative, argument, or epic.</div>
-      <div class="mode-examples">Austen, Dostoevsky, Whitman, Plato, Dante, Kafka</div>
+      <div class="mode-examples">Doyle, Wilde, Wells, Twain, Austen, Dostoevsky, Plato, Dante</div>
     </div>
     <div class="card mode-card dialectical">
       <div class="mode-name">Dialectical</div>
       <div class="mode-desc">Rapid oscillation between registers. Dramatic mode-switching, systematic contrast. Each sentence pushes away from the last.</div>
-      <div class="mode-examples">Shakespeare, Dickens, Melville, Darwin (Origin), Tao Te Ching</div>
+      <div class="mode-examples">Shakespeare (plays), Darwin (Origin), Melville, Dickens, Tao Te Ching</div>
     </div>
   </div>
 
@@ -272,12 +272,28 @@ footer a{color:var(--text2)}
 <!-- ═══ CORPUS ═══ -->
 <section style="background:var(--bg2)">
 <div class="container">
-  <h2>49 Texts Across 2,500 Years</h2>
+  <h2>100 Texts Across 2,500 Years</h2>
   <p class="subtitle">
     From Homer to Joyce. Each dot is a text, positioned by its smoothness (x) and
     basin entropy (y). Color = dynamical mode. Hover for details.
   </p>
+
+  <!-- Mode filter buttons -->
+  <div id="mode-filters" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+    <button class="mode-filter active" data-mode="all" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:6px 16px;border-radius:6px;cursor:pointer;font-size:0.8rem;letter-spacing:0.05em">ALL</button>
+    <button class="mode-filter" data-mode="convergent" style="background:transparent;color:var(--convergent);border:1px solid var(--convergent);padding:6px 16px;border-radius:6px;cursor:pointer;font-size:0.8rem;letter-spacing:0.05em">CONVERGENT</button>
+    <button class="mode-filter" data-mode="contemplative" style="background:transparent;color:var(--contemplative);border:1px solid var(--contemplative);padding:6px 16px;border-radius:6px;cursor:pointer;font-size:0.8rem;letter-spacing:0.05em">CONTEMPLATIVE</button>
+    <button class="mode-filter" data-mode="discursive" style="background:transparent;color:var(--discursive);border:1px solid var(--discursive);padding:6px 16px;border-radius:6px;cursor:pointer;font-size:0.8rem;letter-spacing:0.05em">DISCURSIVE</button>
+    <button class="mode-filter" data-mode="dialectical" style="background:transparent;color:var(--dialectical);border:1px solid var(--dialectical);padding:6px 16px;border-radius:6px;cursor:pointer;font-size:0.8rem;letter-spacing:0.05em">DIALECTICAL</button>
+  </div>
+
   <div id="corpus-chart"></div>
+
+  <!-- Genre x Mode breakdown -->
+  <div style="margin-top:32px">
+    <h3 style="font-size:1rem;color:var(--text2);margin-bottom:16px">Genre &times; Mode Distribution</h3>
+    <div id="genre-chart" style="width:100%;height:200px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden"></div>
+  </div>
 
   <div style="margin-top:24px;max-height:500px;overflow-y:auto;border:1px solid var(--border);border-radius:8px">
     <table class="corpus-table" id="corpus-table">
@@ -345,7 +361,7 @@ Try pasting: a news article, a poem, a technical document, a speech, a novel exc
     <p style="margin-top:8px"><strong>Topological analysis:</strong> Graph Laplacian spectrum, Betti numbers, fractal exponents via log-log regression. Adapted from IMT topology methods.</p>
     <p style="margin-top:8px"><strong>Attractor analysis:</strong> Hebbian correlation &rarr; eigendecomposition &rarr; Hopfield-like attractor landscape with 26 effective modes. Ramsauer et al., 2021 (Modern Hopfield Networks).</p>
     <p style="margin-top:8px"><strong>Autoresearch:</strong> 75-iteration Karpathy-style configuration search across wavelets, thresholds, shuffle methods, and correlation metrics.</p>
-    <p style="margin-top:8px"><strong>Validation:</strong> 49-text Project Gutenberg corpus spanning 8 traditional genres, 2,500 years. 94.1% accuracy on dynamical mode classification.</p>
+    <p style="margin-top:8px"><strong>Validation:</strong> 100-text Project Gutenberg corpus spanning 8 genres, 2,500 years. Four dynamical modes discovered via unsupervised clustering.</p>
     <p style="margin-top:16px"><a href="/whitepaper">Read the full whitepaper &rarr;</a> &nbsp;|&nbsp; <a href="https://github.com/realityinspector/waivelets-v0.1">GitHub Repository &rarr;</a></p>
   </div>
 </div>
@@ -370,11 +386,43 @@ const MODE_COLORS = {
 
 const tooltip = d3.select('#tooltip');
 
+let allCorpus = [];
+let activeFilter = 'all';
+
 // Load precomputed data
 fetch('/api/precomputed').then(r => r.json()).then(data => {
-  renderCorpusChart(data.corpus);
-  renderCorpusTable(data.corpus);
+  allCorpus = data.corpus;
+  renderCorpusChart(allCorpus);
+  renderCorpusTable(allCorpus);
+  renderGenreChart(allCorpus);
+  setupFilters();
 });
+
+function setupFilters() {
+  document.querySelectorAll('.mode-filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.mode-filter').forEach(b => {
+        b.classList.remove('active');
+        b.style.background = 'transparent';
+      });
+      btn.classList.add('active');
+      btn.style.background = 'var(--bg3)';
+      activeFilter = btn.dataset.mode;
+
+      // Update chart opacity
+      d3.selectAll('.corpus-dot')
+        .transition().duration(300)
+        .attr('opacity', d => activeFilter === 'all' || d.mode === activeFilter ? 0.85 : 0.08)
+        .attr('r', d => activeFilter === 'all' || d.mode === activeFilter ? 6 : 3);
+
+      // Update table
+      document.querySelectorAll('#corpus-table tbody tr').forEach(tr => {
+        const mode = tr.querySelector('.mode-badge')?.textContent?.trim();
+        tr.style.display = (activeFilter === 'all' || mode === activeFilter) ? '' : 'none';
+      });
+    });
+  });
+}
 
 function renderCorpusChart(corpus) {
   const container = document.getElementById('corpus-chart');
@@ -384,31 +432,38 @@ function renderCorpusChart(corpus) {
   const svg = d3.select('#corpus-chart').append('svg')
     .attr('width', W).attr('height', H);
 
+  // Auto-scale from data with 5% padding
+  const xVals = corpus.map(d => d.fp.smoothness_mean);
+  const yVals = corpus.map(d => d.fp.basin_entropy);
+  const xPad = (d3.max(xVals) - d3.min(xVals)) * 0.08;
+  const yPad = (d3.max(yVals) - d3.min(yVals)) * 0.08;
+
   const x = d3.scaleLinear()
-    .domain([0.1, 0.6])
+    .domain([d3.min(xVals) - xPad, d3.max(xVals) + xPad])
     .range([pad.left, W - pad.right]);
   const y = d3.scaleLinear()
-    .domain([3.0, 4.8])
+    .domain([d3.min(yVals) - yPad, d3.max(yVals) + yPad])
     .range([H - pad.bottom, pad.top]);
 
-  // Axes
+  // Grid lines
   svg.append('g').attr('transform', `translate(0,${H - pad.bottom})`)
-    .call(d3.axisBottom(x).ticks(6))
-    .selectAll('text').style('fill', '#444460');
+    .call(d3.axisBottom(x).ticks(8).tickSize(-H + pad.top + pad.bottom))
+    .selectAll('line').style('stroke', '#151528').style('stroke-dasharray', '2,4');
   svg.append('g').attr('transform', `translate(${pad.left},0)`)
-    .call(d3.axisLeft(y).ticks(5))
-    .selectAll('text').style('fill', '#444460');
+    .call(d3.axisLeft(y).ticks(6).tickSize(-W + pad.left + pad.right))
+    .selectAll('line').style('stroke', '#151528').style('stroke-dasharray', '2,4');
 
-  svg.selectAll('.axis line, .axis path').style('stroke', '#222240');
+  svg.selectAll('.tick text').style('fill', '#444460');
+  svg.selectAll('.domain').style('stroke', '#222240');
 
   // Axis labels
   svg.append('text').attr('x', W / 2).attr('y', H - 8)
     .attr('text-anchor', 'middle').attr('fill', '#555570').attr('font-size', '12px')
-    .text('Smoothness (higher = stays in one mode)');
+    .text('Smoothness (higher → stays in one semantic mode)');
   svg.append('text').attr('transform', 'rotate(-90)')
     .attr('x', -H / 2).attr('y', 16)
     .attr('text-anchor', 'middle').attr('fill', '#555570').attr('font-size', '12px')
-    .text('Basin Entropy (higher = more modes visited)');
+    .text('Basin Entropy (higher → more attractor basins visited)');
 
   // Dots
   svg.selectAll('.cdot')
@@ -419,16 +474,85 @@ function renderCorpusChart(corpus) {
     .attr('cy', d => y(d.fp.basin_entropy))
     .attr('r', 6)
     .attr('fill', d => MODE_COLORS[d.mode])
-    .attr('opacity', 0.8)
+    .attr('opacity', 0.85)
     .attr('stroke', '#0a0a0f')
     .attr('stroke-width', 1)
     .on('mouseover', (event, d) => {
       tooltip.style('opacity', 1)
-        .html(`<strong>${d.title}</strong> (${d.author})<br>Genre: ${d.genre}<br>Mode: <span style="color:${MODE_COLORS[d.mode]}">${d.mode}</span><br>Smoothness: ${d.fp.smoothness_mean.toFixed(3)}<br>Entropy: ${d.fp.basin_entropy.toFixed(2)}`)
+        .html(`<strong>${d.title}</strong> (${d.author})<br>Genre: ${d.genre}<br>Mode: <span style="color:${MODE_COLORS[d.mode]};font-weight:700">${d.mode.toUpperCase()}</span><br>Smoothness: ${d.fp.smoothness_mean.toFixed(3)}<br>Entropy: ${d.fp.basin_entropy.toFixed(2)}<br>Distance: ${d.distance}`)
         .style('left', (event.pageX + 14) + 'px')
         .style('top', (event.pageY - 14) + 'px');
     })
     .on('mouseout', () => tooltip.style('opacity', 0));
+}
+
+function renderGenreChart(corpus) {
+  const container = document.getElementById('genre-chart');
+  const W = container.clientWidth, H = 200;
+  const pad = {top: 20, right: 20, bottom: 40, left: 90};
+
+  const svg = d3.select('#genre-chart').append('svg')
+    .attr('width', W).attr('height', H);
+
+  // Group by genre
+  const genres = {};
+  corpus.forEach(d => {
+    if (!genres[d.genre]) genres[d.genre] = {};
+    genres[d.genre][d.mode] = (genres[d.genre][d.mode] || 0) + 1;
+  });
+
+  const genreNames = Object.keys(genres).sort((a, b) => {
+    const ta = Object.values(genres[a]).reduce((s, v) => s + v, 0);
+    const tb = Object.values(genres[b]).reduce((s, v) => s + v, 0);
+    return tb - ta;
+  });
+  const modes = ['discursive', 'dialectical', 'convergent', 'contemplative'];
+
+  // Stack data
+  const stackData = genreNames.map(g => {
+    const total = Object.values(genres[g]).reduce((s, v) => s + v, 0);
+    const row = {genre: g, total};
+    modes.forEach(m => row[m] = (genres[g][m] || 0));
+    return row;
+  });
+
+  const y = d3.scaleBand().domain(genreNames).range([pad.top, H - pad.bottom]).padding(0.3);
+  const x = d3.scaleLinear().domain([0, d3.max(stackData, d => d.total)]).range([pad.left, W - pad.right]);
+
+  // Genre labels
+  svg.selectAll('.genre-label')
+    .data(genreNames)
+    .join('text')
+    .attr('x', pad.left - 8).attr('y', d => y(d) + y.bandwidth() / 2)
+    .attr('text-anchor', 'end').attr('dominant-baseline', 'middle')
+    .attr('fill', '#8888aa').attr('font-size', '11px')
+    .text(d => d);
+
+  // Stacked bars
+  modes.forEach((mode, mi) => {
+    svg.selectAll(`.bar-${mode}`)
+      .data(stackData)
+      .join('rect')
+      .attr('y', d => y(d.genre))
+      .attr('height', y.bandwidth())
+      .attr('x', d => {
+        let offset = 0;
+        for (let i = 0; i < mi; i++) offset += d[modes[i]];
+        return x(offset);
+      })
+      .attr('width', d => x(d[mode]) - x(0))
+      .attr('fill', MODE_COLORS[mode])
+      .attr('opacity', 0.85);
+  });
+
+  // Count labels
+  svg.selectAll('.count-label')
+    .data(stackData)
+    .join('text')
+    .attr('x', d => x(d.total) + 6).attr('y', d => y(d.genre) + y.bandwidth() / 2)
+    .attr('dominant-baseline', 'middle')
+    .attr('fill', '#555570').attr('font-size', '11px')
+    .text(d => d.total);
 }
 
 function renderCorpusTable(corpus) {
