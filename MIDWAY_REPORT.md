@@ -8,7 +8,7 @@
 
 ## TL;DR
 
-Text has a measurable **shape** in embedding space. We discovered four **dynamical structural modes** — convergent, contemplative, discursive, dialectical — that describe HOW meaning unfolds over time, independent of content or genre. These modes are computed from 7 numbers in <1ms after embedding, validated on a 100-text Gutenberg corpus spanning 7 genres and 2,500 years. The same fingerprint detects AI-generated text at 93.7% accuracy — AI text is structurally convergent, visiting fewer attractor basins than human writing.
+Text has measurable **structural dynamics** in embedding space. Using MiniLM (22M param sentence embedder) and wavelet-derived linear algebra, we extract a **7-number fingerprint** that captures how meaning moves through a text over time. Four **dynamical structural modes** emerge from clustering — convergent, contemplative, discursive, dialectical. Validated on a 100-text Gutenberg corpus spanning 7 genres from Homer to Kafka. The same fingerprint detects AI-generated text at 93.7% on a 79-sample eval — AI text visits fewer attractor basins than human writing. This is a research preview, not a production system.
 
 The discovery chain:
 

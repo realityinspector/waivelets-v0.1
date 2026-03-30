@@ -1,8 +1,8 @@
 # Waivelets
 
-**Every text has a structural fingerprint. We found it.**
+**Text has measurable structural dynamics in embedding space.**
 
-7 numbers. 68 microseconds. 28 bytes. That's all it takes to classify 2,500 years of human writing into four dynamical modes that cut across every genre boundary. No LLM. No fine-tuning. Just linear algebra on embeddings.
+A 38KB classifier built on MiniLM (22M param sentence embedder) and linear algebra. Embed sentences, project onto a wavelet-derived eigenbasis, measure 7 scalar statistics. Four structural modes emerge from a 100-text Gutenberg corpus spanning Homer to Kafka. The same fingerprint detects AI-generated text at 93.7% on a 79-sample eval.
 
 **[Live demo](https://waivelets-production.up.railway.app)** | **[Whitepaper](https://waivelets-production.up.railway.app/whitepaper)**
 
