@@ -246,6 +246,11 @@ async def magnifica():
     return FileResponse(WEB_DIR / "magnifica.html")
 
 
+@app.get("/psyllium", response_class=HTMLResponse)
+async def psyllium():
+    return FileResponse(WEB_DIR / "psyllium.html")
+
+
 @app.get("/whitepaper", response_class=HTMLResponse)
 async def whitepaper():
     # Serve the MIDWAY_REPORT as rendered HTML
