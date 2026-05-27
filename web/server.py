@@ -241,6 +241,11 @@ async def index():
     return FileResponse(WEB_DIR / "index.html")
 
 
+@app.get("/magnifica", response_class=HTMLResponse)
+async def magnifica():
+    return FileResponse(WEB_DIR / "magnifica.html")
+
+
 @app.get("/whitepaper", response_class=HTMLResponse)
 async def whitepaper():
     # Serve the MIDWAY_REPORT as rendered HTML
