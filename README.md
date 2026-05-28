@@ -2,9 +2,13 @@
 
 **Does text have measurable dynamical structure in embedding space?**
 
-A research prototype exploring that question. Embed sentences with MiniLM (22M param sentence transformer), project onto a wavelet-derived eigenbasis (38KB), measure 7 scalar statistics about how the trajectory unfolds. On a 100-text Gutenberg corpus from Homer to Kafka, four structural modes emerge from clustering — and they separate AI-generated text from human writing at 92.7% under 5-fold cross-validation (AUC 0.991, 169 samples). Clone it and try it.
+Built by **[Sean McDonald](https://x.com/seanmcdonaldxyz)** ([@seanmcdonaldxyz](https://x.com/seanmcdonaldxyz)).
 
-**[Live demo](https://waivelets-production.up.railway.app)** | **[Whitepaper](https://waivelets-production.up.railway.app/whitepaper)**
+A research prototype exploring that question. Embed sentences with MiniLM (22M param sentence transformer), project onto a wavelet-derived eigenbasis (38KB), measure 7 scalar statistics about how the trajectory unfolds. On a 100-text Gutenberg corpus from Homer to Kafka, four structural modes emerge from clustering — and they separate AI-generated text from human writing at 92.7% under 5-fold cross-validation (AUC 0.991, 169 samples). v0.3 extends this to **8-way model identification at 88.5%** via an adversarial topic-debiased basis. Clone it and try it.
+
+**[Live demo](https://waivelets-production.up.railway.app)** | **[Try /identify](https://waivelets-production.up.railway.app/identify)** | **[Model-ID experiment](https://waivelets-production.up.railway.app/models)** | **[Whitepaper](https://waivelets-production.up.railway.app/whitepaper)**
+
+**License:** Apache 2.0 + Commons Clause (non-commercial use only). See [LICENSE](./LICENSE).
 
 ---
 
