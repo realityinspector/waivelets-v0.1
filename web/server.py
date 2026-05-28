@@ -268,10 +268,11 @@ def _identify_model(sentences: list) -> dict:
     # LDA decision function: scores = X @ coef.T + intercept
     scores = feat_std @ _IDENTIFY["lda_coef"].T + _IDENTIFY["lda_intercept"]
     # Softmax with temperature so probabilities spread sensibly instead of
-    # collapsing to {1.0, ~0} from raw LDA decision-function magnitudes.
-    # T chosen by inspection; not Platt-calibrated. Confidence is rank-order,
-    # not a calibrated probability — see /identify note.
-    LDA_TEMP = 8.0
+    # collapsing to {1.0, ~0} from raw LDA decision-function magnitudes
+    # (training-set median top-vs-next margin is ~33, so T=30 puts most
+    # confident-but-not-extreme calls in the 0.5-0.8 range).
+    # Not Platt-calibrated — see /identify note.
+    LDA_TEMP = 30.0
     scaled = scores / LDA_TEMP
     scaled = scaled - scaled.max()  # numerical stability
     exp_s = np.exp(scaled)
