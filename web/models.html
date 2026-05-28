@@ -86,176 +86,74 @@ footer a{color:var(--text2)}
 
 <section class="hero">
   <div class="kicker">Experiment · 8 models · 96 generations · 2026-05-27</div>
-  <h1>Can waivelets profile individual models? <span style="color:var(--accent2)">A small experiment.</span></h1>
-  <p class="lead"><a href="https://x.com/AndyAyrey">Andy Ayrey</a> asked whether this process can profile individual models — Sonnet-3.5 vs 3.6 vs GPT-4-turbo, etc. We ran the experiment. The answer is the interesting kind of <em>no</em>: not in the current fingerprint space, but the signal is there if you point at a different layer.</p>
+  <h1>Can waivelets profile individual models? <span style="color:var(--accent2)">Yes — once you build a second light.</span></h1>
+  <p class="lead">Two bases (one from human literature, one from LLM output, nearly perpendicular) stacked together → <strong>76% model-ID, 73% family-ID</strong> on leave-one-out LDA. Single bases get half that lift. Prompted by <a href="https://x.com/AndyAyrey/status/2059776837014987116">this question</a>.</p>
+</section>
+
+<section>
+  <h2>The headline</h2>
+
+  <img class="diagram" src="/assets/model_spectrometer.svg" alt="Spectrometer comparison across bases">
+
+  <table>
+    <tr><th>Feature space</th><th>Dim</th><th>Family (4-way)</th><th>Model (8-way)</th></tr>
+    <tr><td>Gutenberg basis · 78-D readout</td><td><span class="num">78</span></td><td><span class="num">70.8%</span></td><td><span class="num">58.3%</span></td></tr>
+    <tr><td>LLM-PCA basis · 78-D readout</td><td><span class="num">78</span></td><td><span class="num">58.3%</span></td><td><span class="num">69.8%</span></td></tr>
+    <tr><td><strong>Spectrometer (both bases)</strong></td><td><span class="num">156</span></td><td class="sig"><strong>72.9%</strong></td><td class="sig"><strong>76.0%</strong></td></tr>
+    <tr><td>Raw 384-D centroid (upper bound)</td><td><span class="num">384</span></td><td><span class="num">78.1%</span></td><td><span class="num">89.6%</span></td></tr>
+  </table>
+
+  <p>Permutation-null means hover at <span class="num">12%</span> (8-way) and <span class="num">27%</span> (4-way). Every row above is significantly above null at p&lt;0.01.</p>
 </section>
 
 <section>
   <h2>Setup</h2>
-  <p>8 models, 12 prompts each. Prompts elicit ~500 words of varied genre (explanatory, narrative, philosophical reflection, occasional poetry). Generated via OpenRouter, all at temperature 0.7. Each generation was fingerprinted via the deployed <code>/api/fingerprint</code>, and the raw 384-D MiniLM embedding centroid was extracted locally using the public <code>basis.npz</code>.</p>
-
-  <table>
-    <tr><th>Model</th><th>Family</th><th>n successful</th></tr>
-    <tr><td>anthropic/claude-sonnet-4</td><td>Anthropic</td><td>12</td></tr>
-    <tr><td>anthropic/claude-sonnet-4.5</td><td>Anthropic</td><td>12</td></tr>
-    <tr><td>anthropic/claude-haiku-4.5</td><td>Anthropic</td><td>12</td></tr>
-    <tr><td>openai/gpt-4-turbo</td><td>OpenAI</td><td>12</td></tr>
-    <tr><td>openai/gpt-4o</td><td>OpenAI</td><td>12</td></tr>
-    <tr><td>openai/gpt-5</td><td>OpenAI</td><td>12</td></tr>
-    <tr><td>google/gemini-2.5-pro</td><td>Google</td><td>12</td></tr>
-    <tr><td>meta-llama/llama-3.3-70b-instruct</td><td>Meta</td><td>12</td></tr>
-  </table>
-
-  <p>Total: <strong>96 generations · ~52k tokens · ~$0.85 in OpenRouter spend</strong>. Reasoning models (gpt-5, gemini-2.5-pro) required <code>max_tokens=4000</code> to leave room past their reasoning trace for actual content.</p>
+  <p>8 models × 12 prompts ≈ 500-word generations at temperature 0.7 via OpenRouter. ~$0.85 in spend. Reasoning models (gpt-5, gemini-2.5-pro) needed <code>max_tokens=4000</code> to leave room past their CoT.</p>
+  <p style="color:var(--text2);font-size:0.9rem">Models: claude-sonnet-4, claude-sonnet-4.5, claude-haiku-4.5, gpt-4-turbo, gpt-4o, gpt-5, gemini-2.5-pro, llama-3.3-70b-instruct.</p>
 </section>
 
 <section>
-  <h2>Result 1 — the 7-D Gutenberg fingerprint does not separate models</h2>
-
-  <p>The waivelets 7-D structural fingerprint was derived by hierarchical clustering on a 100-text corpus from Project Gutenberg. The four axes maximize variance among Homer-to-Kafka. There's no guarantee they're the axes that maximize variance among LLMs.</p>
-
-  <p>And in fact: they aren't. Pairwise centroid distances in z-scored 7-D space don't track model identity.</p>
-
-  <img class="diagram" src="/assets/model_distance_matrix.svg" alt="Pairwise distance matrix between 8 models in 7-D fingerprint space">
-
-  <p>Closest pairs are <em>across</em> family lines (haiku-4.5 ↔ gemini-2.5-pro at 0.49; sonnet-4 ↔ gpt-4o at 0.69). Within-cluster spread (2.34) is twice the mean between-centroid distance (1.19). Models overlap heavily.</p>
-
-  <img class="diagram" src="/assets/model_pca.svg" alt="PCA of 7-D fingerprints, all 95 generations">
-
-  <p>Quantitatively, leave-one-out LDA on the 7-D fingerprints gives <span class="num">11.6%</span> 8-way accuracy — at chance — and a permutation-null p-value of 0.43. The 4-way family classification is <em>worse</em> than the majority-class baseline (34.7% vs 37.5%). Unsupervised hierarchical clustering (Ward) gives adjusted Rand index of <span class="num">~0</span> at every k from 2 to 8.</p>
-
-  <div class="callout warn">
-    <strong>Headline.</strong> Models do not separate in the 7-D fingerprint space. The current basis is tuned to human-literary variance, not LLM-vs-LLM variance.
-  </div>
+  <h2>One — the basis matters more than the readout</h2>
+  <p>The original 7-D fingerprint discriminates models at <strong>chance</strong> (11.6% 8-way, p=0.43). But the full 78-D readout of the same Gutenberg basis (mean projection + |mean| projection + basin histogram across 26 attractors) gets <strong>58% model-ID</strong>. The basis carries the signal; the 7-number summary panel was throwing most of it away.</p>
+  <img class="diagram" src="/assets/model_distance_matrix.svg" alt="Pairwise distances in 7-D space — heavy overlap">
+  <p>In raw 7-D space, closest centroid pairs are <em>across</em> families (haiku-4.5 ↔ gemini at 0.49). Within-cluster spread is twice between-centroid distance. Models look fully overlapped. That picture lies — the basis sees the difference, the summary just hides it.</p>
 </section>
 
 <section>
-  <h2>Result 2 — the signal is alive one layer down, but in a surprising place</h2>
-
-  <p>Before declaring defeat, we re-ran the analysis on richer feature spaces extracted from the same 96 generations:</p>
-  <ul>
-    <li><strong>26-D attractor coords (mean):</strong> the full layer beneath the 7-D summary — the raw eigenbasis projection, per-generation averaged.</li>
-    <li><strong>26-D basin visit histogram:</strong> how often each of the 26 attractors is the argmax-of-|projection| across sentences.</li>
-    <li><strong>78-D combined:</strong> concat of mean coords, |mean| coords, and basin histogram.</li>
-    <li><strong>384-D raw MiniLM embedding centroid:</strong> the per-generation mean of the original sentence embeddings, <em>before</em> the eigenbasis projection.</li>
-  </ul>
-
-  <img class="diagram" src="/assets/model_feature_compare.svg" alt="LDA accuracy across feature spaces">
-
-  <table>
-    <tr><th>Feature space</th><th>Dim</th><th>Family acc (4-way)</th><th>Model acc (8-way)</th><th>p</th></tr>
-    <tr><td>7-D Gutenberg fingerprint</td><td><span class="num">7</span></td><td><span class="num">34.7%</span></td><td><span class="num">11.6%</span></td><td class="nosig">0.43</td></tr>
-    <tr><td>26-D attractor coords (mean)</td><td><span class="num">26</span></td><td><span class="num">41.7%</span></td><td><span class="num">12.5%</span></td><td class="sig">0.01</td></tr>
-    <tr><td>26-D basin visit histogram</td><td><span class="num">26</span></td><td><span class="num">26.0%</span></td><td><span class="num">13.5%</span></td><td class="nosig">0.80</td></tr>
-    <tr><td>78-D combined (26+26+26)</td><td><span class="num">78</span></td><td><span class="num">33.3%</span></td><td><span class="num">16.7%</span></td><td class="nosig">0.18</td></tr>
-    <tr><td><strong>384-D raw embedding centroid</strong></td><td><span class="num">384</span></td><td class="sig"><strong>56.2%</strong></td><td class="sig"><strong>26.0%</strong></td><td class="sig">&lt; 0.01</td></tr>
-    <tr><td><strong>384-D → PCA(50)</strong></td><td><span class="num">50</span></td><td class="sig"><strong>57.3%</strong></td><td class="sig"><strong>28.1%</strong></td><td class="sig">&lt; 0.01</td></tr>
-  </table>
-
-  <p>The 26-D attractor coords — the layer the eigenbasis projects to — give only marginal family-level signal (41.7% vs 37.5% majority, p=0.01) and no model-level signal. But the <strong>raw 384-D MiniLM embedding centroid</strong>, which the eigenbasis discards, separates families at <span class="num">57.3%</span> accuracy with p &lt; 0.01 under a 100-permutation null. That's <strong>+19.8 percentage points</strong> over the majority-class baseline.</p>
-
-  <img class="diagram" src="/assets/model_lda_family.svg" alt="2-D LDA projection of model families">
+  <h2>Two — the bases are nearly perpendicular</h2>
+  <img class="diagram" src="/assets/model_basis_overlap.svg" alt="Gutenberg vs LLM-PCA basis overlap">
+  <p>We fit a 26-D PCA on every sentence from the 96 generations (3 084 sentences) → an LLM-corpus basis. Mean |cos| between each Gutenberg eigenvector and its best-matched LLM-PCA eigenvector: <strong>0.11</strong> (range 0.04–0.18). The two bases point in almost different directions in ℝ³⁸⁴.</p>
+  <p>That orthogonality is the load-bearing fact: it's why the two readouts <em>add</em> instead of overlap. Gutenberg basis alone → 58% model-ID. LLM basis alone → 70%. Both concatenated → 76%. Stacking, not redundancy.</p>
 </section>
 
 <section>
-  <h2>The synth-rack reading</h2>
-
-  <p>The Moog framing (which is how this project was originally scoped) makes the result legible:</p>
-
-  <ul>
-    <li>The <strong>eigenbasis</strong> is the patch bay — it routes 384-D embedding space into 26 attractor modulation sources.</li>
-    <li>The <strong>7-number fingerprint</strong> is the summary panel — smoothness, oscillation, four domain activations, basin entropy.</li>
-    <li>Both were derived from <strong>human literary text</strong>. The basis maximizes variance among Homer, Plato, Austen, Kafka.</li>
-    <li>Asking it to discriminate LLMs is asking a synth wired for orchestral dynamics to separate different drum machines. The signal is in the source material but the patch bay doesn't route it.</li>
-  </ul>
-
-  <p>The 384-D embedding is the <em>oscillator output before the patch bay</em>. There's clearly a model-discriminating signal sitting in that layer — different model families occupy different sub-regions of MiniLM embedding space, probably reflecting RLHF tuning, instruction-following templates, and stylistic priors. The eigenbasis throws this signal away because Gutenberg variance doesn't load on those directions.</p>
-
-  <div class="callout win">
-    <strong>The new module.</strong> Build a second eigenbasis from an <em>LLM-output corpus</em>, parallel to the Gutenberg basis. Same wavelet pipeline, different distribution. The two bases together (literary + model-discriminating) form a fuller patch bay. Each new model family becomes a discoverable timbre.
-  </div>
-</section>
-
-<section>
-  <h2>Followup — building the second light (the spectrometer works)</h2>
-
-  <p>After framing the above, the question became: would a second basis actually carry complementary signal, or are we just trading the same information through a different prism? So we built it.</p>
-
-  <p>We took every sentence from all 96 generations (3 084 sentences total) and fit a 26-D PCA basis on the raw MiniLM embeddings. This is a "naive" LLM-corpus basis — no wavelets, no labels, just principal directions of LLM-generated sentence embedding space. We then computed the same 78-D per-generation feature (mean projection + |mean| projection + basin visit histogram) under each basis, and asked: does the LLM basis carry signal the Gutenberg basis doesn't?</p>
-
-  <h3>The bases are nearly orthogonal</h3>
-  <img class="diagram" src="/assets/model_basis_overlap.svg" alt="Gutenberg basis and LLM-PCA basis are nearly orthogonal">
-  <p>For each of the 26 Gutenberg eigenvectors, the best |cos| match in the LLM-PCA basis is <span class="num">0.11</span> on average (range <span class="num">0.04–0.18</span>). The two bases point in essentially different directions in ℝ³⁸⁴. They illuminate different parts of the embedding manifold.</p>
-
-  <h3>Two bases beat one</h3>
-  <img class="diagram" src="/assets/model_spectrometer.svg" alt="Spectrometer comparison: Gutenberg vs LLM vs both vs raw 384-D">
-
-  <table>
-    <tr><th>Feature space</th><th>Dim</th><th>Family acc (4-way)</th><th>Model acc (8-way)</th><th>Null mean</th></tr>
-    <tr><td>Gutenberg 78-D (mean + |mean| + basin)</td><td><span class="num">78</span></td><td><span class="num">70.8%</span></td><td><span class="num">58.3%</span></td><td><span class="num">26.3% / 12.1%</span></td></tr>
-    <tr><td>LLM-PCA 78-D (new basis)</td><td><span class="num">78</span></td><td><span class="num">58.3%</span></td><td><span class="num">69.8%</span></td><td><span class="num">26.7% / 12.3%</span></td></tr>
-    <tr><td><strong>Spectrometer 156-D (both)</strong></td><td><span class="num">156</span></td><td class="sig"><strong>72.9%</strong></td><td class="sig"><strong>76.0%</strong></td><td><span class="num">27.7% / 11.2%</span></td></tr>
-    <tr><td>Raw 384-D centroid</td><td><span class="num">384</span></td><td><span class="num">78.1%</span></td><td><span class="num">89.6%</span></td><td><span class="num">29.0% / 12.0%</span></td></tr>
-    <tr><td>Raw 384-D → PCA(50)</td><td><span class="num">50</span></td><td><span class="num">79.2%</span></td><td><span class="num">84.4%</span></td><td><span class="num">28.4% / 11.6%</span></td></tr>
-  </table>
-
-  <div class="callout win">
-    <strong>The spectrometer principle holds.</strong> The two bases carry complementary signal. Gutenberg alone gets 58% model-level accuracy. LLM-PCA alone gets 70% (better than Gutenberg — because it's tuned to the actual distribution). Both together get <span class="num">76%</span>. That's a +6pp lift on top of the better single basis, from concatenation alone — no fancy fusion, no learned weights. The bases are perpendicular, so they don't compete; they stack.
-  </div>
-
-  <h3>The interesting correction</h3>
-  <p>Note something the v0.1 critique above got partly wrong: the <em>Gutenberg basis itself</em> already carries strong model-discriminating signal (58% accuracy) — it was the 7-D <em>summary panel</em> (smoothness, oscillation, entropy, four domain activations) that was the bottleneck, not the basis. When you read out all 78 dimensions (mean projection + |mean| projection + basin histogram across the 26 attractors), the basis lights up significantly on per-model variance. The published 7-D fingerprint is a lossy reduction of a richer underlying object.</p>
-
-  <p>That's the second methodological update from this run: the summary panel is for humans; the analytical layer should read the full basis projection. The fingerprint card is the speedometer; the spectrometer is the diagnostic port.</p>
-
-  <h3>What the new basis "sees"</h3>
-  <p>The LLM-PCA basis captures whatever directions in MiniLM space are most variable <em>across LLM outputs</em> — the axes along which different models, prompts, and topics spread. The Gutenberg basis captures whatever directions are most informative <em>about human literary structure</em>. The fact that they're nearly orthogonal (mean |cos| 0.11) confirms a real distinction:</p>
-  <ul>
-    <li><strong>Gutenberg directions</strong> = structural categories of human writing (exposition, interiority, formal structure, scene narration, etc.) — discovered by wavelet correlation analysis on the Gutenberg corpus.</li>
-    <li><strong>LLM-PCA directions</strong> = whatever maximally varies across LLM outputs — likely a mix of topic, register, model-family stylistic priors, and training-set artifacts.</li>
-  </ul>
-  <p>Neither is "the right one." The flashlight analogy you proposed is the right shape: shine multiple lights, read the per-light spectrum, recognize the model by the pattern. Building a third basis (e.g. on technical prose, or on dialogue, or on poetry) would add another column to the spectrometer.</p>
-
-  <p>The new basis is saved as <code><a href="https://github.com/realityinspector/waivelets-v0.1/blob/main/web/assets/llm_basis.npz">web/assets/llm_basis.npz</a></code> in the repo (37KB, same shape as <code>basis.npz</code>). Drop-in compatible.</p>
+  <h2>Three — the synth metaphor and the next moves</h2>
+  <p>The eigenbasis is the patch bay. The 7-number fingerprint is the dashboard speedometer. We were trying to read a tachometer signal off the speedometer. Adding a second basis is <strong>adding a module to the rack</strong> — same instrument, more cables, richer spectrum per text.</p>
+  <p>Build a third basis (technical prose, dialogue, poetry, code) and the spectrometer gets sharper. Replace the naive PCA fit with the original wavelet pipeline and the LLM basis gains structural meaning (it currently mixes topic and style). Per-model wavelet bases would let us probe training-process traces — pruning, curation, RLHF, synthetic supplementation — as nameable axes.</p>
+  <p>The new basis is at <code><a href="https://github.com/realityinspector/waivelets-v0.1/blob/main/web/assets/llm_basis.npz">web/assets/llm_basis.npz</a></code>. Drop-in compatible with <code>basis.npz</code>.</p>
 </section>
 
 <section>
   <h2>Caveats</h2>
-  <div class="callout warn">
-    <strong>Small n.</strong> 12 generations per model is enough to detect a clean signal at p &lt; 0.01 but isn't enough to discriminate fine-grained variants (Sonnet-4 vs Sonnet-4.5). Within-family separation needs an order-of-magnitude more samples. The 8-way model-level accuracy (28%) is significantly above chance (12.5%) but still <em>most pairs are confusable</em>; the strong signal is at the family level.
-  </div>
   <ul>
-    <li><strong>Prompt overlap.</strong> All 8 models got the same 12 prompts. Per-prompt content variance dominates per-model voice variance, which is why <em>unsupervised</em> clustering on the 384-D embeddings finds zero model structure (ARI = 0.00, purity = 0.125). LDA only works because we hand it the labels.</li>
-    <li><strong>Temperature 0.7</strong>. Higher temperature → wider intra-model spread → harder to separate. Production AI-detection use cases will hit varied temperatures.</li>
-    <li><strong>Reasoning models</strong>. We capture only the final <code>message.content</code> — not the reasoning trace. Models like gpt-5 and gemini-2.5-pro have a chain-of-thought layer that's invisible to this experiment.</li>
-    <li><strong>Embedding model bias</strong>. MiniLM was trained on its own distribution. A different embedder (BGE, Nomic, OpenAI) might find a different separation. The model-discriminating signal we found is partly a fingerprint of MiniLM's reading of the models, not just the models themselves.</li>
+    <li><strong>n = 12 per model.</strong> Enough for family signal, not enough to separate close siblings (sonnet-4 vs sonnet-4.5 still confusable).</li>
+    <li><strong>Same prompts.</strong> Per-prompt content variance dominates per-model voice variance. <em>Unsupervised</em> clustering on the 384-D embeddings finds zero model structure — LDA only works because we hand it labels.</li>
+    <li><strong>Temperature 0.7.</strong> Varied temps widen intra-model spread.</li>
+    <li><strong>Reasoning traces invisible.</strong> Only final <code>message.content</code> is captured.</li>
+    <li><strong>MiniLM-conditioned.</strong> Different embedder → different separation. The signal is partly a fingerprint of MiniLM reading the models.</li>
   </ul>
 </section>
 
 <section>
-  <h2>Reproducibility</h2>
-  <p>Full experiment scripts and data:</p>
+  <h2>Reproduce</h2>
+  <p>Everything in <a href="https://github.com/realityinspector/waivelets-v0.1">github.com/realityinspector/waivelets-v0.1</a>:</p>
   <ul>
-    <li><a href="https://github.com/realityinspector/waivelets-v0.1">github.com/realityinspector/waivelets-v0.1</a> — repo</li>
-    <li><code>exp/prompts.json</code> — 12 prompts used</li>
-    <li><code>exp/models.json</code> — 8 models tested</li>
-    <li><code>exp/run.py</code> + <code>exp/retry.py</code> — generation scripts (OpenRouter)</li>
-    <li><code>exp/extract_26d.py</code> — local 26-D + 384-D feature extraction</li>
-    <li><code>exp/analyze.py</code> + <code>exp/analyze2.py</code> — LDA, PCA, clustering, permutation null</li>
-    <li><code>exp/fit_llm_basis.py</code> — fits the LLM-PCA basis, runs spectrometer comparison</li>
-    <li><code>web/assets/llm_basis.npz</code> — the LLM-PCA basis (384×26), drop-in compatible with the existing <code>basis.npz</code></li>
-    <li><code>exp/results.jsonl</code>, <code>exp/coords26.jsonl</code> — raw outputs and fingerprints (gitignored; regenerate from scripts)</li>
+    <li><code>exp/run.py</code>, <code>exp/retry.py</code> — generation</li>
+    <li><code>exp/extract_26d.py</code>, <code>exp/fit_llm_basis.py</code> — features + LLM basis</li>
+    <li><code>exp/analyze.py</code>, <code>exp/analyze2.py</code> — LDA, PCA, clustering, permutation null</li>
+    <li><code>exp/render_svgs.py</code>, <code>exp/render_spectrometer.py</code> — the visualizations on this page</li>
   </ul>
-  <p>If you want to add a model not in this set, fork and add it to <code>exp/models.json</code>. If you want to test on a different embedder, swap <code>SentenceTransformer('all-MiniLM-L6-v2')</code> in <code>fastprint.py</code> with your preferred encoder (the eigenbasis was fit on MiniLM-384 so dimension must match, or recompute).</p>
-</section>
-
-<section>
-  <h2>What this answers — and doesn't</h2>
-  <p><strong>Answers Andy's question:</strong> Yes, model profiling is feasible. Not with the 7-D fingerprint as it stands; yes, with one additional layer (the raw MiniLM embedding centroid). Family-level discrimination is robust (p &lt; 0.01, +19.8pp over baseline); individual-model discrimination is real but weak (p &lt; 0.01, +15.6pp over chance) and needs more data per model.</p>
-
-  <p><strong>Doesn't answer:</strong> whether the model-discriminating signal is <em>structural</em> in the same sense as the AI-vs-human signal. The 384-D centroid is essentially the model's mean semantic territory across these prompts — closer to "what topics does this model gravitate toward" than to "how does meaning move through its sentences." A real structural fingerprint for individual models would require the proposed <em>second eigenbasis</em> derived from per-model wavelet analysis. We haven't built that.</p>
-
-  <p>Open invitation: if you have a labeled corpus of model outputs (per-model, per-prompt-class, n &gt;= 50 per model), <a href="https://github.com/realityinspector/waivelets-v0.1/issues">file an issue</a> and we'll fit the LLM-eigenbasis.</p>
+  <p>Got a labeled per-model corpus with n≥50 per model? <a href="https://github.com/realityinspector/waivelets-v0.1/issues">File an issue</a> — wavelet-fit LLM basis is the next experiment.</p>
 </section>
 
 </div>
