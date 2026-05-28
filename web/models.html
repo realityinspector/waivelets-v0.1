@@ -177,6 +177,49 @@ footer a{color:var(--text2)}
 </section>
 
 <section>
+  <h2>Followup — building the second light (the spectrometer works)</h2>
+
+  <p>After framing the above, the question became: would a second basis actually carry complementary signal, or are we just trading the same information through a different prism? So we built it.</p>
+
+  <p>We took every sentence from all 96 generations (3 084 sentences total) and fit a 26-D PCA basis on the raw MiniLM embeddings. This is a "naive" LLM-corpus basis — no wavelets, no labels, just principal directions of LLM-generated sentence embedding space. We then computed the same 78-D per-generation feature (mean projection + |mean| projection + basin visit histogram) under each basis, and asked: does the LLM basis carry signal the Gutenberg basis doesn't?</p>
+
+  <h3>The bases are nearly orthogonal</h3>
+  <img class="diagram" src="/assets/model_basis_overlap.svg" alt="Gutenberg basis and LLM-PCA basis are nearly orthogonal">
+  <p>For each of the 26 Gutenberg eigenvectors, the best |cos| match in the LLM-PCA basis is <span class="num">0.11</span> on average (range <span class="num">0.04–0.18</span>). The two bases point in essentially different directions in ℝ³⁸⁴. They illuminate different parts of the embedding manifold.</p>
+
+  <h3>Two bases beat one</h3>
+  <img class="diagram" src="/assets/model_spectrometer.svg" alt="Spectrometer comparison: Gutenberg vs LLM vs both vs raw 384-D">
+
+  <table>
+    <tr><th>Feature space</th><th>Dim</th><th>Family acc (4-way)</th><th>Model acc (8-way)</th><th>Null mean</th></tr>
+    <tr><td>Gutenberg 78-D (mean + |mean| + basin)</td><td><span class="num">78</span></td><td><span class="num">70.8%</span></td><td><span class="num">58.3%</span></td><td><span class="num">26.3% / 12.1%</span></td></tr>
+    <tr><td>LLM-PCA 78-D (new basis)</td><td><span class="num">78</span></td><td><span class="num">58.3%</span></td><td><span class="num">69.8%</span></td><td><span class="num">26.7% / 12.3%</span></td></tr>
+    <tr><td><strong>Spectrometer 156-D (both)</strong></td><td><span class="num">156</span></td><td class="sig"><strong>72.9%</strong></td><td class="sig"><strong>76.0%</strong></td><td><span class="num">27.7% / 11.2%</span></td></tr>
+    <tr><td>Raw 384-D centroid</td><td><span class="num">384</span></td><td><span class="num">78.1%</span></td><td><span class="num">89.6%</span></td><td><span class="num">29.0% / 12.0%</span></td></tr>
+    <tr><td>Raw 384-D → PCA(50)</td><td><span class="num">50</span></td><td><span class="num">79.2%</span></td><td><span class="num">84.4%</span></td><td><span class="num">28.4% / 11.6%</span></td></tr>
+  </table>
+
+  <div class="callout win">
+    <strong>The spectrometer principle holds.</strong> The two bases carry complementary signal. Gutenberg alone gets 58% model-level accuracy. LLM-PCA alone gets 70% (better than Gutenberg — because it's tuned to the actual distribution). Both together get <span class="num">76%</span>. That's a +6pp lift on top of the better single basis, from concatenation alone — no fancy fusion, no learned weights. The bases are perpendicular, so they don't compete; they stack.
+  </div>
+
+  <h3>The interesting correction</h3>
+  <p>Note something the v0.1 critique above got partly wrong: the <em>Gutenberg basis itself</em> already carries strong model-discriminating signal (58% accuracy) — it was the 7-D <em>summary panel</em> (smoothness, oscillation, entropy, four domain activations) that was the bottleneck, not the basis. When you read out all 78 dimensions (mean projection + |mean| projection + basin histogram across the 26 attractors), the basis lights up significantly on per-model variance. The published 7-D fingerprint is a lossy reduction of a richer underlying object.</p>
+
+  <p>That's the second methodological update from this run: the summary panel is for humans; the analytical layer should read the full basis projection. The fingerprint card is the speedometer; the spectrometer is the diagnostic port.</p>
+
+  <h3>What the new basis "sees"</h3>
+  <p>The LLM-PCA basis captures whatever directions in MiniLM space are most variable <em>across LLM outputs</em> — the axes along which different models, prompts, and topics spread. The Gutenberg basis captures whatever directions are most informative <em>about human literary structure</em>. The fact that they're nearly orthogonal (mean |cos| 0.11) confirms a real distinction:</p>
+  <ul>
+    <li><strong>Gutenberg directions</strong> = structural categories of human writing (exposition, interiority, formal structure, scene narration, etc.) — discovered by wavelet correlation analysis on the Gutenberg corpus.</li>
+    <li><strong>LLM-PCA directions</strong> = whatever maximally varies across LLM outputs — likely a mix of topic, register, model-family stylistic priors, and training-set artifacts.</li>
+  </ul>
+  <p>Neither is "the right one." The flashlight analogy you proposed is the right shape: shine multiple lights, read the per-light spectrum, recognize the model by the pattern. Building a third basis (e.g. on technical prose, or on dialogue, or on poetry) would add another column to the spectrometer.</p>
+
+  <p>The new basis is saved as <code><a href="https://github.com/realityinspector/waivelets-v0.1/blob/main/web/assets/llm_basis.npz">web/assets/llm_basis.npz</a></code> in the repo (37KB, same shape as <code>basis.npz</code>). Drop-in compatible.</p>
+</section>
+
+<section>
   <h2>Caveats</h2>
   <div class="callout warn">
     <strong>Small n.</strong> 12 generations per model is enough to detect a clean signal at p &lt; 0.01 but isn't enough to discriminate fine-grained variants (Sonnet-4 vs Sonnet-4.5). Within-family separation needs an order-of-magnitude more samples. The 8-way model-level accuracy (28%) is significantly above chance (12.5%) but still <em>most pairs are confusable</em>; the strong signal is at the family level.
@@ -199,6 +242,8 @@ footer a{color:var(--text2)}
     <li><code>exp/run.py</code> + <code>exp/retry.py</code> — generation scripts (OpenRouter)</li>
     <li><code>exp/extract_26d.py</code> — local 26-D + 384-D feature extraction</li>
     <li><code>exp/analyze.py</code> + <code>exp/analyze2.py</code> — LDA, PCA, clustering, permutation null</li>
+    <li><code>exp/fit_llm_basis.py</code> — fits the LLM-PCA basis, runs spectrometer comparison</li>
+    <li><code>web/assets/llm_basis.npz</code> — the LLM-PCA basis (384×26), drop-in compatible with the existing <code>basis.npz</code></li>
     <li><code>exp/results.jsonl</code>, <code>exp/coords26.jsonl</code> — raw outputs and fingerprints (gitignored; regenerate from scripts)</li>
   </ul>
   <p>If you want to add a model not in this set, fork and add it to <code>exp/models.json</code>. If you want to test on a different embedder, swap <code>SentenceTransformer('all-MiniLM-L6-v2')</code> in <code>fastprint.py</code> with your preferred encoder (the eigenbasis was fit on MiniLM-384 so dimension must match, or recompute).</p>

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 580" font-family="Inter,system-ui,sans-serif">
+<rect width="1000" height="580" fill="#06060c"/>
+<text x="500.0" y="32" fill="#f0f0f8" font-size="18" font-weight="700" text-anchor="middle">Spectrometer: two bases beat one — by a lot</text>
+<text x="500.0" y="54" fill="#9090b0" font-size="11.5" text-anchor="middle">Leave-one-out LDA accuracy. Family = 4-way (Anthropic/OpenAI/Google/Meta). Model = 8-way (individual model).</text>
+<text x="500.0" y="74" fill="#9090b0" font-size="11" text-anchor="middle">Dashed lines = mean of 100-permutation null. Solid bars = observed.</text>
+<line x1="200" y1="422.0" x2="940" y2="422.0" stroke="#1e1e3a" stroke-dasharray="2 3"/>
+<text x="190" y="426.0" fill="#606080" font-size="10" text-anchor="end">0.2</text>
+<line x1="200" y1="344.0" x2="940" y2="344.0" stroke="#1e1e3a" stroke-dasharray="2 3"/>
+<text x="190" y="348.0" fill="#606080" font-size="10" text-anchor="end">0.4</text>
+<line x1="200" y1="266.0" x2="940" y2="266.0" stroke="#1e1e3a" stroke-dasharray="2 3"/>
+<text x="190" y="270.0" fill="#606080" font-size="10" text-anchor="end">0.6</text>
+<line x1="200" y1="188.0" x2="940" y2="188.0" stroke="#1e1e3a" stroke-dasharray="2 3"/>
+<text x="190" y="192.0" fill="#606080" font-size="10" text-anchor="end">0.8</text>
+<line x1="200" y1="110.0" x2="940" y2="110.0" stroke="#1e1e3a" stroke-dasharray="2 3"/>
+<text x="190" y="114.0" fill="#606080" font-size="10" text-anchor="end">1.0</text>
+<rect x="228.88888888888889" y="223.75" width="41.11111111111111" height="276.25" fill="#f59e0b" opacity="0.85"/>
+<line x1="226.88888888888889" y1="397.625" x2="272.0" y2="397.625" stroke="#f87171" stroke-width="1.5" stroke-dasharray="3 2"/>
+<text x="249.44444444444443" y="217.75" fill="#d0d0e0" font-size="10" text-anchor="middle" font-family="JetBrains Mono,monospace">0.71</text>
+<rect x="278.0" y="272.5" width="41.11111111111111" height="227.5" fill="#f59e0b" opacity="0.55"/>
+<line x1="276.0" y1="452.996875" x2="321.1111111111111" y2="452.996875" stroke="#f87171" stroke-width="1.5" stroke-dasharray="3 2"/>
+<text x="298.55555555555554" y="266.5" fill="#9090b0" font-size="10" text-anchor="middle" font-family="JetBrains Mono,monospace">0.58</text>
+<g transform="translate(274.0,518) rotate(-15)"><text fill="#d0d0e0" font-size="11" text-anchor="middle">Gutenberg basis</text></g>
+<text x="274.0" y="550" fill="#606080" font-size="10" text-anchor="middle">78-D</text>
+<rect x="376.8888888888889" y="272.5" width="41.11111111111111" height="227.5" fill="#a78bfa" opacity="0.85"/>
+<line x1="374.8888888888889" y1="395.959375" x2="420.0" y2="395.959375" stroke="#f87171" stroke-width="1.5" stroke-dasharray="3 2"/>
+<text x="397.44444444444446" y="266.5" fill="#d0d0e0" font-size="10" text-anchor="middle" font-family="JetBrains Mono,monospace">0.58</text>
+<rect x="426.0" y="227.8125" width="41.11111111111111" height="272.1875" fill="#a78bfa" opacity="0.55"/>
+<line x1="424.0" y1="452.103125" x2="469.1111111111111" y2="452.103125" stroke="#f87171" stroke-width="1.5" stroke-dasharray="3 2"/>
+<text x="446.55555555555554" y="221.8125" fill="#9090b0" font-size="10" text-anchor="middle" font-family="JetBrains Mono,monospace">0.70</text>
+<g transform="translate(422.0,518) rotate(-15)"><text fill="#d0d0e0" font-size="11" text-anchor="middle">LLM-PCA basis</text></g>
+<text x="422.0" y="550" fill="#606080" font-size="10" text-anchor="middle">78-D</text>
+<rect x="524.8888888888889" y="215.625" width="41.11111111111111" height="284.375" fill="#34d399" opacity="0.85"/>
+<line x1="522.8888888888889" y1="392.140625" x2="568.0" y2="392.140625" stroke="#f87171" stroke-width="1.5" stroke-dasharray="3 2"/>
+<text x="545.4444444444445" y="209.625" fill="#d0d0e0" font-size="10" text-anchor="middle" font-family="JetBrains Mono,monospace">0.73</text>
+<rect x="574.0" y="203.4375" width="41.11111111111111" height="296.5625" fill="#34d399" opacity="0.55"/>
+<line x1="572.0" y1="456.409375" x2="617.1111111111111" y2="456.409375" stroke="#f87171" stroke-width="1.5" stroke-dasharray="3 2"/>
+<text x="594.5555555555555" y="197.4375" fill="#9090b0" font-size="10" text-anchor="middle" font-family="JetBrains Mono,monospace">0.76</text>
+<g transform="translate(570.0,518) rotate(-15)"><text fill="#d0d0e0" font-size="11" text-anchor="middle">Spectrometer (both)</text></g>
+<text x="570.0" y="550" fill="#606080" font-size="10" text-anchor="middle">156-D</text>
+<rect x="672.8888888888889" y="195.3125" width="41.11111111111111" height="304.6875" fill="#22d3ee" opacity="0.85"/>
+<line x1="670.8888888888889" y1="386.859375" x2="716.0" y2="386.859375" stroke="#f87171" stroke-width="1.5" stroke-dasharray="3 2"/>
+<text x="693.4444444444445" y="189.3125" fill="#d0d0e0" font-size="10" text-anchor="middle" font-family="JetBrains Mono,monospace">0.78</text>
+<rect x="722.0" y="150.625" width="41.11111111111111" height="349.375" fill="#22d3ee" opacity="0.55"/>
+<line x1="720.0" y1="453.321875" x2="765.1111111111111" y2="453.321875" stroke="#f87171" stroke-width="1.5" stroke-dasharray="3 2"/>
+<text x="742.5555555555555" y="144.625" fill="#9090b0" font-size="10" text-anchor="middle" font-family="JetBrains Mono,monospace">0.90</text>
+<g transform="translate(718.0,518) rotate(-15)"><text fill="#d0d0e0" font-size="11" text-anchor="middle">Raw 384-D centroid</text></g>
+<text x="718.0" y="550" fill="#606080" font-size="10" text-anchor="middle">384-D</text>
+<rect x="820.8888888888889" y="191.25" width="41.11111111111111" height="308.75" fill="#818cf8" opacity="0.85"/>
+<line x1="818.8888888888889" y1="389.053125" x2="864.0" y2="389.053125" stroke="#f87171" stroke-width="1.5" stroke-dasharray="3 2"/>
+<text x="841.4444444444445" y="185.25" fill="#d0d0e0" font-size="10" text-anchor="middle" font-family="JetBrains Mono,monospace">0.79</text>
+<rect x="870.0" y="170.9375" width="41.11111111111111" height="329.0625" fill="#818cf8" opacity="0.55"/>
+<line x1="868.0" y1="454.946875" x2="913.1111111111111" y2="454.946875" stroke="#f87171" stroke-width="1.5" stroke-dasharray="3 2"/>
+<text x="890.5555555555555" y="164.9375" fill="#9090b0" font-size="10" text-anchor="middle" font-family="JetBrains Mono,monospace">0.84</text>
+<g transform="translate(866.0,518) rotate(-15)"><text fill="#d0d0e0" font-size="11" text-anchor="middle">Raw 384-D → PCA(50)</text></g>
+<text x="866.0" y="550" fill="#606080" font-size="10" text-anchor="middle">384-D</text>
+<rect x="220" y="82" width="14" height="14" fill="#22d3ee" opacity="0.85"/>
+<text x="242" y="93" fill="#d0d0e0" font-size="11">4-way family</text>
+<rect x="360" y="82" width="14" height="14" fill="#22d3ee" opacity="0.55"/>
+<text x="382" y="93" fill="#d0d0e0" font-size="11">8-way model</text>
+<line x1="500" y1="89" x2="520" y2="89" stroke="#f87171" stroke-width="1.5" stroke-dasharray="3 2"/>
+<text x="526" y="93" fill="#d0d0e0" font-size="11">permutation null mean</text>
+<g transform="translate(28,305.0) rotate(-90)"><text fill="#9090b0" font-size="11" text-anchor="middle">LDA leave-one-out accuracy</text></g>
+</svg>
