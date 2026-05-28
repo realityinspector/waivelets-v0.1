@@ -49,6 +49,21 @@ if _detector_path.exists():
     _DET_AI_CENT = np.array(_DETECTOR["centroid"]["ai"])
     _DET_HUM_CENT = np.array(_DETECTOR["centroid"]["human"])
 
+# Load model-identification artifacts (adversarial basis + LDA classifier).
+# Trained on 96 LLM generations from 8 frontier models. ~88.5% LOO accuracy.
+_IDENTIFY = None
+_identify_path = WEB_DIR / "assets" / "identify_artifacts.npz"
+if _identify_path.exists():
+    z = np.load(_identify_path, allow_pickle=True)
+    _IDENTIFY = {
+        "W": z["W"],                          # (384, 16) adversarial basis
+        "feat_mean": z["feat_mean"],          # (48,)
+        "feat_std": z["feat_std"],            # (48,)
+        "lda_coef": z["lda_coef"],            # (8, 48)
+        "lda_intercept": z["lda_intercept"],  # (8,)
+        "classes": list(z["lda_classes"]),    # list of 8 model id strings
+    }
+
 
 @app.on_event("startup")
 async def warmup():
@@ -235,6 +250,110 @@ async def api_detect(body: TextInput):
     }
 
 
+def _identify_model(sentences: list) -> dict:
+    """Project sentences through the adversarial basis and classify with LDA.
+    Returns top-3 model probabilities. Requires _IDENTIFY artifacts loaded."""
+    if _IDENTIFY is None:
+        return {"error": "model-identification artifacts not loaded"}
+    embedder = _get_model()
+    embs = embedder.encode(sentences, batch_size=64, show_progress_bar=False)
+    proj = embs @ _IDENTIFY["W"]  # (n, 16)
+    mean = proj.mean(axis=0)
+    amean = np.abs(proj).mean(axis=0)
+    basin = np.argmax(np.abs(proj), axis=1)
+    hist = np.bincount(basin, minlength=_IDENTIFY["W"].shape[1]).astype(np.float32)
+    hist = hist / hist.sum() if hist.sum() > 0 else hist
+    feat = np.concatenate([mean, amean, hist])
+    feat_std = (feat - _IDENTIFY["feat_mean"]) / _IDENTIFY["feat_std"]
+    # LDA decision function: scores = X @ coef.T + intercept
+    scores = feat_std @ _IDENTIFY["lda_coef"].T + _IDENTIFY["lda_intercept"]
+    # Softmax for probabilities
+    scores = scores - scores.max()  # numerical stability
+    exp_s = np.exp(scores)
+    probs = exp_s / exp_s.sum()
+    ranked = sorted(enumerate(probs), key=lambda x: -x[1])
+    top3 = [{"model": _IDENTIFY["classes"][i], "probability": float(p)} for i, p in ranked[:3]]
+    return {
+        "predicted_model": _IDENTIFY["classes"][ranked[0][0]],
+        "confidence": float(ranked[0][1]),
+        "top3": top3,
+        "all_probabilities": {_IDENTIFY["classes"][i]: float(p) for i, p in enumerate(probs)},
+    }
+
+
+@app.post("/api/identify")
+async def api_identify(body: TextInput):
+    """Unified cascade: detect AI vs human, and (if AI) identify which model.
+    Combines the v0.1 AI detector (~92.7% accuracy) and the v0.3 adversarial-basis
+    model classifier (~88.5% leave-one-out 8-way accuracy)."""
+    if _DETECTOR is None:
+        return JSONResponse({"error": "AI detector not configured"}, 500)
+    if _IDENTIFY is None:
+        return JSONResponse({"error": "Model identifier not configured"}, 500)
+
+    raw_text = body.text
+    text = bleach_input(raw_text)
+    if len(text) < 20:
+        return JSONResponse({"error": "Text too short (need at least a few sentences)"}, 400)
+
+    sentences = split_sentences(text)
+    if len(sentences) < 3:
+        return JSONResponse({"error": f"Only found {len(sentences)} sentences. Need at least 3."}, 400)
+    if len(sentences) > 500:
+        sentences = sentences[:500]
+
+    # ── Stage 1: AI/human detection (reuse existing logic) ──
+    t0 = time.time()
+    fp = fingerprint("", sentences=sentences)
+    mode, dist = classify(fp)
+    fp_arr = fp.to_array()
+
+    z = (fp_arr - _DET_MEAN) / _DET_STD
+    score = float(z @ _DET_WEIGHTS)
+    raw_sentences = split_sentences(raw_text)
+    sf = surface_features(raw_text, raw_sentences)
+    fmt_score = sf["formatting_score"]
+    formatting_boost = fmt_score * 1.5 if fmt_score > 0.15 else 0.0
+    score += formatting_boost
+    n_sent = len(sentences)
+    if n_sent < 30:
+        damping = max(0.3, n_sent / 30.0)
+        score = _DET_THRESH + (score - _DET_THRESH) * damping
+    is_ai = score > _DET_THRESH
+    ai_confidence = min(1.0, abs(score - _DET_THRESH) / 4.0)
+    stage1_time = time.time() - t0
+
+    result = {
+        "prediction": "ai" if is_ai else "human",
+        "ai_score": round(score, 3),
+        "ai_threshold": round(_DET_THRESH, 3),
+        "ai_confidence": round(ai_confidence, 3),
+        "mode": mode,
+        "mode_distance": round(dist, 2),
+        "centroid_distances": {
+            "to_ai": round(float(np.linalg.norm(fp_arr - _DET_AI_CENT)), 3),
+            "to_human": round(float(np.linalg.norm(fp_arr - _DET_HUM_CENT)), 3),
+        },
+        "n_sentences": len(sentences),
+        "stage1_ms": round(stage1_time * 1000, 1),
+        "model_identification": None,
+    }
+
+    # ── Stage 2: model identification (only if predicted AI) ──
+    if is_ai:
+        t1 = time.time()
+        mid = _identify_model(sentences)
+        stage2_time = time.time() - t1
+        if "error" not in mid:
+            mid["stage2_ms"] = round(stage2_time * 1000, 1)
+            result["model_identification"] = mid
+
+    if n_sent < 15:
+        result["warning"] = f"Only {n_sent} sentences — both stages are less reliable below ~15 sentences."
+
+    return result
+
+
 @app.get("/api/precomputed")
 async def api_precomputed():
     with open(WEB_DIR / "precomputed.json") as f:
@@ -259,6 +378,11 @@ async def psyllium():
 @app.get("/models", response_class=HTMLResponse)
 async def models():
     return FileResponse(WEB_DIR / "models.html")
+
+
+@app.get("/identify", response_class=HTMLResponse)
+async def identify_page():
+    return FileResponse(WEB_DIR / "identify.html")
 
 
 @app.get("/whitepaper", response_class=HTMLResponse)

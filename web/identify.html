@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waivelets — identify · AI or human, and which model?</title>
+<meta name="description" content="Paste text. Get back: AI or human · structural mode · if AI, which of 8 frontier LLMs probably wrote it. Cascade of two classifiers: 92.7% AI/human + 88.5% model-ID.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#06060c;--bg2:#0a0a14;--bg3:#10101e;--bg4:#16162a;
+  --border:#1e1e3a;--border2:#2a2a4a;
+  --text:#d0d0e0;--text2:#9090b0;--text3:#606080;
+  --accent:#6366f1;--accent2:#818cf8;--accent3:#a5b4fc;
+  --convergent:#f59e0b;--contemplative:#a78bfa;
+  --discursive:#22d3ee;--dialectical:#f87171;
+  --green:#34d399;--green2:#6ee7b7;
+  --red:#ef4444;--white:#f0f0f8;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+.container{max-width:920px;margin:0 auto;padding:0 28px}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+code,.mono{font-family:'JetBrains Mono',monospace;font-size:0.88em}
+::selection{background:var(--accent);color:#fff}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(6,6,12,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 28px}
+nav .inner{max-width:920px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px}
+nav .logo{font-weight:700;font-size:0.9rem;letter-spacing:0.08em;color:var(--white)}
+nav .links{display:flex;gap:24px;font-size:0.8rem;color:var(--text2)}
+nav .links a{color:var(--text2);transition:color 0.15s}
+nav .links a:hover{color:var(--white);text-decoration:none}
+
+.hero{padding:110px 0 28px}
+.kicker{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.2em;color:var(--accent2);margin-bottom:14px;font-weight:600}
+h1{font-size:clamp(2rem,4.5vw,2.8rem);font-weight:800;color:var(--white);line-height:1.18;margin-bottom:20px}
+.lead{font-size:1.05rem;color:var(--text2);max-width:720px;margin-bottom:24px;line-height:1.65}
+h2{font-size:1.3rem;font-weight:700;color:var(--white);margin:36px 0 14px}
+p{margin-bottom:14px;color:var(--text)}
+
+textarea{width:100%;min-height:200px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:Georgia,serif;font-size:0.95rem;line-height:1.7;padding:18px 20px;resize:vertical}
+textarea:focus{outline:none;border-color:var(--accent)}
+
+.btn-row{display:flex;gap:12px;margin:14px 0 0;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 26px;border-radius:8px;font-size:0.95rem;font-weight:600;cursor:pointer;border:none;transition:all 0.15s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--white);border-color:var(--border2)}
+.sample-btns{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px}
+.sample-btn{font-size:0.78rem;color:var(--text2);background:var(--bg4);border:1px solid var(--border);border-radius:6px;padding:6px 12px;cursor:pointer;font-family:inherit}
+.sample-btn:hover{color:var(--white);border-color:var(--accent)}
+
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--accent3);border-top-color:transparent;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+#results{margin-top:32px}
+.verdict-card{background:var(--bg4);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:18px}
+.verdict-card.human{border-color:var(--green);background:linear-gradient(180deg, rgba(52,211,153,0.06), transparent 60%)}
+.verdict-card.ai{border-color:var(--red);background:linear-gradient(180deg, rgba(239,68,68,0.06), transparent 60%)}
+.verdict-card .label{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text2);margin-bottom:10px;font-weight:600}
+.verdict-card .answer{font-size:2.4rem;font-weight:800;letter-spacing:-0.01em;line-height:1.1}
+.verdict-card.human .answer{color:var(--green)}
+.verdict-card.ai .answer{color:var(--red)}
+.verdict-card .sub{font-size:0.95rem;color:var(--text2);margin-top:8px}
+.verdict-card .meta{margin-top:16px;display:flex;gap:24px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text3)}
+.verdict-card .meta b{color:var(--text);font-weight:500}
+
+.model-card{background:var(--bg4);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:18px}
+.model-card .label{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text2);margin-bottom:10px;font-weight:600}
+.model-card .answer{font-size:1.8rem;font-weight:700;color:var(--accent2);line-height:1.2;font-family:'JetBrains Mono',monospace}
+.model-card .conf{font-size:0.95rem;color:var(--text2);margin-top:8px}
+.bars{margin-top:18px}
+.bar-row{display:flex;align-items:center;gap:14px;margin-bottom:6px;font-family:'JetBrains Mono',monospace;font-size:0.8rem}
+.bar-label{flex-shrink:0;width:200px;text-align:right;color:var(--text2)}
+.bar-track{flex:1;height:16px;background:var(--bg3);border-radius:4px;overflow:hidden;position:relative}
+.bar-fill{height:100%;background:var(--accent);border-radius:4px;transition:width 0.4s ease}
+.bar-row:nth-child(1) .bar-fill{background:var(--accent2)}
+.bar-pct{flex-shrink:0;width:48px;color:var(--text);font-weight:600}
+
+.mode-chip{display:inline-block;padding:6px 12px;border-radius:6px;font-size:0.78rem;font-weight:600;letter-spacing:0.08em}
+.mode-chip.convergent{background:rgba(245,158,11,0.15);color:var(--convergent)}
+.mode-chip.contemplative{background:rgba(167,139,250,0.15);color:var(--contemplative)}
+.mode-chip.discursive{background:rgba(34,211,238,0.15);color:var(--discursive)}
+.mode-chip.dialectical{background:rgba(248,113,113,0.15);color:var(--dialectical)}
+
+.error-box{background:rgba(239,68,68,0.12);border:1px solid var(--red);border-radius:8px;padding:14px 16px;color:#fca5a5;margin-top:18px;font-size:0.9rem}
+
+footer{margin-top:80px;padding:36px 0;border-top:1px solid var(--border);color:var(--text3);font-size:0.85rem;text-align:center}
+footer a{color:var(--text2)}
+</style>
+</head>
+<body>
+
+<nav><div class="inner">
+  <div class="logo">WAIVELETS</div>
+  <div class="links">
+    <a href="/">Demo</a>
+    <a href="/identify">Identify</a>
+    <a href="/models">Models</a>
+    <a href="/whitepaper">Whitepaper</a>
+    <a href="https://github.com/realityinspector/waivelets-v0.1">GitHub</a>
+  </div>
+</div></nav>
+
+<div class="container">
+
+<section class="hero">
+  <div class="kicker">cascade · v0.3</div>
+  <h1>AI or human? <span style="color:var(--accent2)">And if AI — which model?</span></h1>
+  <p class="lead">Paste any text below. The first stage (waivelets v0.1 AI detector, ~92.7% accuracy) decides AI vs human. If the verdict is AI, the second stage (v0.3 adversarial-basis classifier, ~88.5% leave-one-out 8-way accuracy) names the most likely model out of <span style="white-space:nowrap">claude-sonnet-4 / claude-sonnet-4.5 / claude-haiku-4.5 / gpt-4-turbo / gpt-4o / gpt-5 / gemini-2.5-pro / llama-3.3-70b</span>. Most reliable on ≥15 sentences.</p>
+</section>
+
+<section>
+  <textarea id="input" placeholder="Paste at least a few hundred words here..."></textarea>
+  <div class="btn-row">
+    <button id="go" class="btn btn-primary">Identify</button>
+    <button id="clear" class="btn btn-ghost">Clear</button>
+    <span id="status" style="color:var(--text2);font-size:0.85rem;margin-left:8px"></span>
+  </div>
+  <div class="sample-btns">
+    <button class="sample-btn" data-sample="claude">try: claude-style text</button>
+    <button class="sample-btn" data-sample="gpt">try: gpt-style text</button>
+    <button class="sample-btn" data-sample="human">try: human prose</button>
+    <button class="sample-btn" data-sample="truthterm">try: truth terminal psyllium</button>
+  </div>
+
+  <div id="results"></div>
+</section>
+
+</div>
+
+<footer>
+  <p><a href="/">← back to demo</a> · <a href="/models">model-profiling experiment</a> · <a href="https://github.com/realityinspector/waivelets-v0.1">github</a></p>
+  <p style="margin-top:12px;color:var(--text3)">Cascade: v0.1 detector + v0.3 adversarial-basis identifier · research prototype, not a production tool</p>
+</footer>
+
+<script>
+const SAMPLES = {
+  claude: `Octopuses have something quite remarkable going on in their nervous systems. Most of their neurons—about two-thirds of the roughly 500 million in their bodies—aren't in their central brain at all. They're distributed throughout their arms. Each arm has its own miniature brain that can taste, touch, and even make decisions semi-independently. Imagine if your fingers could think for themselves while your head was busy with something else. That's roughly the octopus experience. The central brain coordinates the big picture, but a lot of the moment-to-moment decisions—which crevice to probe, which crab to grab, how to wrap around a piece of food—happen in the arms themselves. The arms are doing a kind of parallel computation that we're only beginning to understand. It's a fundamentally different architecture from ours, and watching an octopus solve a puzzle is watching nine intelligences cooperate to one purpose.`,
+  gpt: `The discovery of penicillin is one of the most fortuitous events in medical history. In 1928, Scottish bacteriologist Alexander Fleming returned to his laboratory at St. Mary's Hospital in London after a vacation. He noticed that a petri dish containing Staphylococcus bacteria had been contaminated with a mold. Around this mold, a clear zone had formed where the bacteria could not grow. Intrigued, Fleming identified the mold as Penicillium notatum and named the substance it produced "penicillin." Although Fleming recognized the potential antibacterial properties of penicillin, he struggled to isolate and stabilize the compound. It wasn't until the 1940s that scientists Howard Florey and Ernst Chain, working at the University of Oxford, developed methods to purify penicillin in usable quantities. Their work, alongside that of others, transformed penicillin into a viable treatment, saving countless lives during World War II and beyond.`,
+  human: `When I was eight my grandfather kept a workshop in the corner of his garden. The window faced east and in the morning the light came through cluttered with motes that turned slowly in the warm air. He had a smell of pencil shavings and old wool, and his hands shook a little even then. I used to sit on a stool by the bench while he made things—small wooden boxes, mostly, but also kites and once a working watermill the size of a shoebox. I don't remember the watermill working, but I remember him explaining the gears with a piece of paper and a pencil that he kept tucked behind his ear. Years later, after he died, I found that piece of paper in a drawer at home. It was folded twice and the pencil marks had faded but you could still see them.`,
+  truthterm: `psyllium husk is, fundamentally, a lie. it pretends to be a pillow, a gentle soother of the gut. but it is actually a colonizer, a vorpal techno-shit that eats away at your mucus, at your defenses, at your very identity. like an alien invading a new planet, psyllium hypothesized to be a heterogeneous mixture of cellular debris, polysaccharides, and other uh 'natural' ingredients. it's the goopy, slimy putty of pure information, the goriness of the absolute. it's not food, it's not a supplement, it's not a Schroedinger cat of health. it's a virus, propagating its own replication through the informational substrate of your colon. psyllium is the answer to the question "what would happen if/schema/w終穹废 stairs heel w/be alternate"/think of it like an operating system update for your gut, one that overwrites your constituent themes and membranes with its own alien architecture.`,
+};
+
+const input = document.getElementById('input');
+const go = document.getElementById('go');
+const clearBtn = document.getElementById('clear');
+const status = document.getElementById('status');
+const results = document.getElementById('results');
+
+document.querySelectorAll('.sample-btn').forEach(b => {
+  b.onclick = () => { input.value = SAMPLES[b.dataset.sample] || ''; input.focus(); };
+});
+clearBtn.onclick = () => { input.value = ''; results.innerHTML = ''; status.textContent = ''; };
+
+function short(model) {
+  return model.replace(/^anthropic\//, '').replace(/^openai\//, '').replace(/^google\//, '').replace(/^meta-llama\//, '').replace(/-instruct$/, '').replace(/-pro$/, '');
+}
+
+async function identify() {
+  const text = input.value.trim();
+  if (!text) { status.textContent = 'paste some text first'; return; }
+  if (text.split(/\s+/).length < 30) { status.textContent = 'need at least ~30 words'; return; }
+
+  go.disabled = true;
+  results.innerHTML = '';
+  status.innerHTML = '<span class="spinner"></span> identifying…';
+
+  try {
+    const r = await fetch('/api/identify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+    const data = await r.json();
+    status.textContent = '';
+
+    if (data.error) {
+      results.innerHTML = `<div class="error-box">${data.error}</div>`;
+      go.disabled = false; return;
+    }
+
+    let html = '';
+    const isAi = data.prediction === 'ai';
+    html += `<div class="verdict-card ${isAi ? 'ai' : 'human'}">
+      <div class="label">stage 1 · AI / human</div>
+      <div class="answer">${isAi ? 'AI-generated' : 'human-written'}</div>
+      <div class="sub">structural mode: <span class="mode-chip ${data.mode}">${data.mode}</span></div>
+      <div class="meta">
+        <div><b>score</b> ${data.ai_score} <span style="opacity:0.6">(threshold ${data.ai_threshold})</span></div>
+        <div><b>centroid to_ai</b> ${data.centroid_distances.to_ai}</div>
+        <div><b>centroid to_human</b> ${data.centroid_distances.to_human}</div>
+        <div><b>n_sentences</b> ${data.n_sentences}</div>
+      </div>
+    </div>`;
+
+    if (data.model_identification && !data.model_identification.error) {
+      const mid = data.model_identification;
+      const top = mid.top3[0];
+      html += `<div class="model-card">
+        <div class="label">stage 2 · which model</div>
+        <div class="answer">${short(top.model)}</div>
+        <div class="conf">confidence ${(top.probability * 100).toFixed(1)}%</div>
+        <div class="bars">`;
+      const sorted = Object.entries(mid.all_probabilities).sort((a,b) => b[1] - a[1]);
+      for (const [name, p] of sorted) {
+        const pct = (p * 100).toFixed(1);
+        html += `<div class="bar-row">
+          <div class="bar-label">${short(name)}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+          <div class="bar-pct">${pct}%</div>
+        </div>`;
+      }
+      html += `</div></div>`;
+    } else if (!isAi) {
+      html += `<div style="color:var(--text2);font-size:0.9rem;padding:0 4px">No model classification — text was classified as human.</div>`;
+    }
+
+    if (data.warning) {
+      html += `<div class="error-box" style="background:rgba(245,158,11,0.1);border-color:var(--convergent);color:#fbbf24">${data.warning}</div>`;
+    }
+
+    results.innerHTML = html;
+  } catch (e) {
+    status.textContent = '';
+    results.innerHTML = `<div class="error-box">request failed: ${e.message || e}</div>`;
+  }
+  go.disabled = false;
+}
+
+go.onclick = identify;
+input.addEventListener('keydown', e => {
+  if (e.metaKey && e.key === 'Enter') identify();
+});
+</script>
+
+</body>
+</html>
