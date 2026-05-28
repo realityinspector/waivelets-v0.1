@@ -113,6 +113,7 @@ footer a{color:var(--text2)}
   <div class="kicker">cascade · v0.3</div>
   <h1>AI or human? <span style="color:var(--accent2)">And if AI — which model?</span></h1>
   <p class="lead">Paste any text below. The first stage (waivelets v0.1 AI detector, ~92.7% accuracy) decides AI vs human. If the verdict is AI, the second stage (v0.3 adversarial-basis classifier, ~88.5% leave-one-out 8-way accuracy) names the most likely model out of <span style="white-space:nowrap">claude-sonnet-4 / claude-sonnet-4.5 / claude-haiku-4.5 / gpt-4-turbo / gpt-4o / gpt-5 / gemini-2.5-pro / llama-3.3-70b</span>. Most reliable on ≥15 sentences.</p>
+  <p class="lead" style="font-size:0.92rem;color:var(--text3);border-left:2px solid var(--border2);padding-left:14px">Note on the probabilities below. The percentages express <strong>relative rank ordering</strong>, softened with a fixed temperature for legibility. They are NOT Platt-calibrated, so a "78% confident" call is not literally 78% likely to be right — it just means the top candidate is clearly preferred over the runner-up in the LDA's decision space. Treat the bars as a leaderboard, not a probability distribution.</p>
 </section>
 
 <section>

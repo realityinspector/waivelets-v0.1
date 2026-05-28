@@ -267,9 +267,14 @@ def _identify_model(sentences: list) -> dict:
     feat_std = (feat - _IDENTIFY["feat_mean"]) / _IDENTIFY["feat_std"]
     # LDA decision function: scores = X @ coef.T + intercept
     scores = feat_std @ _IDENTIFY["lda_coef"].T + _IDENTIFY["lda_intercept"]
-    # Softmax for probabilities
-    scores = scores - scores.max()  # numerical stability
-    exp_s = np.exp(scores)
+    # Softmax with temperature so probabilities spread sensibly instead of
+    # collapsing to {1.0, ~0} from raw LDA decision-function magnitudes.
+    # T chosen by inspection; not Platt-calibrated. Confidence is rank-order,
+    # not a calibrated probability — see /identify note.
+    LDA_TEMP = 8.0
+    scaled = scores / LDA_TEMP
+    scaled = scaled - scaled.max()  # numerical stability
+    exp_s = np.exp(scaled)
     probs = exp_s / exp_s.sum()
     ranked = sorted(enumerate(probs), key=lambda x: -x[1])
     top3 = [{"model": _IDENTIFY["classes"][i], "probability": float(p)} for i, p in ranked[:3]]
