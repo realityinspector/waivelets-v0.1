@@ -85,15 +85,47 @@ footer a{color:var(--text2)}
 <div class="container">
 
 <section class="hero">
-  <div class="kicker">Experiment · 8 models · 96 generations · 2026-05-27</div>
-  <h1>Can waivelets tell which model wrote this? <span style="color:var(--accent2)">Yes — 76% of the time.</span></h1>
-  <p class="lead">Show it 500 words from any of 8 frontier LLMs and it picks the right one ~3 times in 4. Random guessing would get it right ~1 in 8. Prompted by <a href="https://x.com/AndyAyrey/status/2059776837014987116">this question</a>.</p>
+  <div class="kicker">Experiment v0.3 · 8 models · 96 generations · 2026-05-27</div>
+  <h1>Can waivelets tell which model wrote this? <span style="color:var(--accent2)">Yes — 88.5% of the time.</span></h1>
+  <p class="lead">Up from 76% in the first writeup. Adding a label-aware basis trained with adversarial topic-debiasing (~48 dimensions, gradient-reversal head on prompt index) pushes the spectrometer to within 1pp of the raw-embedding upper bound (89.6%). Prompted by <a href="https://x.com/AndyAyrey/status/2059776837014987116">this question</a>.</p>
 </section>
 
 <section>
-  <h2>The headline number</h2>
-  <img class="diagram" src="/assets/model_ladder.svg" alt="76% accuracy vs 12.5% random chance">
-  <p>Leave-one-out cross-validation on 96 generations across 8 models. Permutation null mean: <span class="num">12%</span>. The spectrometer reading (the green bar above) is significantly above null at p &lt; 0.01.</p>
+  <h2>What we tried, ranked</h2>
+  <img class="diagram" src="/assets/model_ladder_final.svg" alt="All methods tried, sorted by accuracy">
+  <p>All leave-one-document-out, 8-way model identification, 50–100 permutation nulls. The blue/green chance and ceiling lines bracket the range. Every condition above 50% is significant at p&lt;0.02.</p>
+
+  <p>Five families of method, three of which beat the prior 76% spectrometer cleanly:</p>
+  <ul>
+    <li><strong>Adversarial topic-debiased basis (48-D) → 88.5%.</strong> Train a small linear projection W with two heads: predict model identity (maximize) AND predict prompt index (minimize via gradient reversal). Forces W to encode model voice without topic confound. Closest single feature space to the 89.6% ceiling, in 8× fewer dimensions.</li>
+    <li><strong>LDA basis alone (21-D) → 85.4%.</strong> Simplest label-aware move: directly find the 7 axes that maximize between-model vs within-model variance from per-sentence MiniLM embeddings. No PyTorch, no metric learning. +9.4pp over baseline for free.</li>
+    <li><strong>Wavelet-fit LLM basis stacked with Gutenberg (156-D) → 84.4%.</strong> Replaces the naive PCA-derived LLM basis with the original v0.1 wavelet methodology — continuous wavelet transform per dimension, cross-dimension correlation, null-subtracted eigendecomposition. The wavelet basis is also nearly perpendicular to the Gutenberg basis (mean |cos| 0.11) but captures multi-scale temporal coordination that PCA throws away.</li>
+    <li><strong>Contrastive triplet basis (48-D) → 83.3%.</strong> Train W with standard triplet loss so same-model sentences cluster. Worse than the adversarial cousin (no topic-debiasing head), better than pure LDA (non-linear in training, even though projection is linear).</li>
+    <li><strong>Per-sentence + majority vote → 53.1%.</strong> Each sentence gets independently classified; document prediction = majority vote. Informative — proves there IS per-sentence signal — but the document-level fingerprint is doing real work beyond averaging.</li>
+  </ul>
+
+  <div class="callout win">
+    <strong>Headline.</strong> The single best move was making the basis itself label-aware. Cross-validated supervised projection (LDA-derived) closes most of the gap; adding adversarial debiasing of the prompt confound closes the rest.
+  </div>
+</section>
+
+<section>
+  <h2>The lesson about stacking</h2>
+  <p>Concatenating bases <em>helps</em> when each basis sees something the others miss, AND we have enough samples to estimate the joint covariance. With 8 classes × 12 samples each (n=96), stacking past ~150 dimensions starts hurting — the LDA classifier's within-class covariance estimate gets ill-conditioned. We saw it three ways:</p>
+  <ul>
+    <li>Adversarial alone (48-D) → 88.5%. Adversarial + everything else (273-D) → 79.2%. The stack adds noise faster than signal.</li>
+    <li>Wavelet-spectrometer (Gut+Wavelet, 156-D) → 84.4%. Adding PCA-spectrometer too (234-D) → 82.3%. Same pattern.</li>
+    <li>Triple Gut+LLM-PCA+LDA (177-D) → 75.0%. The LDA basis is so concentrated (21-D) that the 156-D unsupervised features just dilute it.</li>
+  </ul>
+  <p>The right architectural reading: <strong>pick the best label-aware basis</strong> as the primary fingerprint, then add unsupervised bases as auxiliary "structural priors" only if dimensionality stays well under n. With more data (n=500+) the stacking story probably flips — that's a v0.4 experiment.</p>
+</section>
+
+<section>
+  <h2>How well it spots each model (the prior spectrometer's confusion matrix)</h2>
+  <p>Per-model recall from the prior 76% Gut+LLM-PCA spectrometer (we haven't yet re-run the confusion matrix for the new 88.5% adversarial result — the diagonal would be tighter and the off-diagonal smaller, but the family-confusion structure should be similar):</p>
+  <img class="diagram" src="/assets/model_confusion.svg" alt="Confusion matrix from the prior 76% spectrometer">
+  <img class="diagram" src="/assets/model_per_model.svg" alt="Per-model recall from the prior spectrometer">
+  <p style="color:var(--text2);font-size:0.9rem">Easiest models to identify: claude-sonnet-4 and gpt-4-turbo (11/12). Hardest at this point: gpt-5, gemini-2.5-pro, llama-3.3 — all confused with each other. The adversarial basis closes about half of that residual confusion (overall 88.5% vs 76% with the same models).</p>
 </section>
 
 <section>
@@ -128,8 +160,8 @@ footer a{color:var(--text2)}
 
 <section>
   <h2>Setup</h2>
-  <p>8 models × 12 prompts ≈ 500-word generations at temperature 0.7, via OpenRouter, ~$0.85 spend. Reasoning models (gpt-5, gemini-2.5-pro) needed <code>max_tokens=4000</code> to leave room past their CoT.</p>
-  <p style="color:var(--text2);font-size:0.9rem">Models tested: claude-sonnet-4, claude-sonnet-4.5, claude-haiku-4.5, gpt-4-turbo, gpt-4o, gpt-5, gemini-2.5-pro, llama-3.3-70b-instruct. The LLM-PCA basis was fit on all 3 084 sentences from the 96 generations and is saved at <code><a href="https://github.com/realityinspector/waivelets-v0.1/blob/main/web/assets/llm_basis.npz">web/assets/llm_basis.npz</a></code>.</p>
+  <p>8 models × 12 prompts ≈ 500-word generations at temperature 0.7, via OpenRouter, ~$1.50 total spend. Reasoning models (gpt-5, gemini-2.5-pro) needed <code>max_tokens=4000</code> to leave room past their CoT. We also added a small subset of OpenRouter free models (glm-4.5-air, kimi-k2.6, qwen3-next, nvidia-nemotron-3-super, nvidia-nemotron-nano, deepseek-v4-flash) for a sanity-check expansion — 14 generations across 5 free models, not in the main 8-way comparison but available in the raw data.</p>
+  <p style="color:var(--text2);font-size:0.9rem">Main models tested: claude-sonnet-4, claude-sonnet-4.5, claude-haiku-4.5, gpt-4-turbo, gpt-4o, gpt-5, gemini-2.5-pro, llama-3.3-70b-instruct. Bases saved: <a href="https://github.com/realityinspector/waivelets-v0.1/blob/main/web/assets/llm_basis.npz">llm_basis.npz</a> (PCA), <a href="https://github.com/realityinspector/waivelets-v0.1/blob/main/web/assets/llm_wavelet_basis.npz">llm_wavelet_basis.npz</a> (wavelet).</p>
 </section>
 
 <section>
