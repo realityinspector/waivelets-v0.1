@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 658 658" font-family="Inter,system-ui,sans-serif">
+<rect width="658" height="658" fill="#06060c"/>
+<text x="329.0" y="32" fill="#f0f0f8" font-size="18" font-weight="700" text-anchor="middle">Pairwise centroid distance (z-space)</text>
+<text x="329.0" y="54" fill="#9090b0" font-size="11" text-anchor="middle">Closer = more similar 7-D fingerprint. Within-cluster spread averages <tspan fill="#f87171" font-weight="600">2.34</tspan>; cross-model centroids average <tspan fill="#22d3ee" font-weight="600">1.19</tspan>.</text>
+<rect x="130" y="130" width="54" height="54" fill="#1e1e3a"/>
+<text x="158.0" y="162.0" fill="#606080" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.00</text>
+<rect x="186" y="130" width="54" height="54" fill="rgb(150,96,58)"/>
+<text x="214.0" y="162.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.10</text>
+<rect x="242" y="130" width="54" height="54" fill="rgb(199,128,33)"/>
+<text x="270.0" y="162.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.53</text>
+<rect x="298" y="130" width="54" height="54" fill="rgb(203,130,31)"/>
+<text x="326.0" y="162.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.49</text>
+<rect x="354" y="130" width="54" height="54" fill="rgb(83,52,91)"/>
+<text x="382.0" y="162.0" fill="#9090b0" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.89</text>
+<rect x="410" y="130" width="54" height="54" fill="rgb(94,60,86)"/>
+<text x="438.0" y="162.0" fill="#9090b0" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.77</text>
+<rect x="466" y="130" width="54" height="54" fill="rgb(112,71,77)"/>
+<text x="494.0" y="162.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.55</text>
+<rect x="522" y="130" width="54" height="54" fill="rgb(166,107,50)"/>
+<text x="550.0" y="162.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.92</text>
+<rect x="130" y="186" width="54" height="54" fill="rgb(150,96,58)"/>
+<text x="158.0" y="218.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.10</text>
+<rect x="186" y="186" width="54" height="54" fill="#1e1e3a"/>
+<text x="214.0" y="218.0" fill="#606080" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.00</text>
+<rect x="242" y="186" width="54" height="54" fill="rgb(177,113,44)"/>
+<text x="270.0" y="218.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.80</text>
+<rect x="298" y="186" width="54" height="54" fill="rgb(167,107,49)"/>
+<text x="326.0" y="218.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.91</text>
+<rect x="354" y="186" width="54" height="54" fill="rgb(153,98,56)"/>
+<text x="382.0" y="218.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.08</text>
+<rect x="410" y="186" width="54" height="54" fill="rgb(180,115,43)"/>
+<text x="438.0" y="218.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.76</text>
+<rect x="466" y="186" width="54" height="54" fill="rgb(185,119,40)"/>
+<text x="494.0" y="218.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.69</text>
+<rect x="522" y="186" width="54" height="54" fill="rgb(133,85,66)"/>
+<text x="550.0" y="218.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.31</text>
+<rect x="130" y="242" width="54" height="54" fill="rgb(199,128,33)"/>
+<text x="158.0" y="274.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.53</text>
+<rect x="186" y="242" width="54" height="54" fill="rgb(177,113,44)"/>
+<text x="214.0" y="274.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.80</text>
+<rect x="242" y="242" width="54" height="54" fill="#1e1e3a"/>
+<text x="270.0" y="274.0" fill="#606080" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.00</text>
+<rect x="298" y="242" width="54" height="54" fill="rgb(200,128,33)"/>
+<text x="326.0" y="274.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.53</text>
+<rect x="354" y="242" width="54" height="54" fill="rgb(104,66,81)"/>
+<text x="382.0" y="274.0" fill="#9090b0" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.65</text>
+<rect x="410" y="242" width="54" height="54" fill="rgb(127,81,69)"/>
+<text x="438.0" y="274.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.38</text>
+<rect x="466" y="242" width="54" height="54" fill="rgb(141,90,62)"/>
+<text x="494.0" y="274.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.21</text>
+<rect x="522" y="242" width="54" height="54" fill="rgb(172,111,47)"/>
+<text x="550.0" y="274.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.85</text>
+<rect x="130" y="298" width="54" height="54" fill="rgb(203,130,31)"/>
+<text x="158.0" y="330.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.49</text>
+<rect x="186" y="298" width="54" height="54" fill="rgb(167,107,49)"/>
+<text x="214.0" y="330.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.91</text>
+<rect x="242" y="298" width="54" height="54" fill="rgb(200,128,33)"/>
+<text x="270.0" y="330.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.53</text>
+<rect x="298" y="298" width="54" height="54" fill="#1e1e3a"/>
+<text x="326.0" y="330.0" fill="#606080" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.00</text>
+<rect x="354" y="298" width="54" height="54" fill="rgb(93,59,86)"/>
+<text x="382.0" y="330.0" fill="#9090b0" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.78</text>
+<rect x="410" y="298" width="54" height="54" fill="rgb(111,71,77)"/>
+<text x="438.0" y="330.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.56</text>
+<rect x="466" y="298" width="54" height="54" fill="rgb(135,86,65)"/>
+<text x="494.0" y="330.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.29</text>
+<rect x="522" y="298" width="54" height="54" fill="rgb(176,113,45)"/>
+<text x="550.0" y="330.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.80</text>
+<rect x="130" y="354" width="54" height="54" fill="rgb(83,52,91)"/>
+<text x="158.0" y="386.0" fill="#9090b0" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.89</text>
+<rect x="186" y="354" width="54" height="54" fill="rgb(153,98,56)"/>
+<text x="214.0" y="386.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.08</text>
+<rect x="242" y="354" width="54" height="54" fill="rgb(104,66,81)"/>
+<text x="270.0" y="386.0" fill="#9090b0" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.65</text>
+<rect x="298" y="354" width="54" height="54" fill="rgb(93,59,86)"/>
+<text x="326.0" y="386.0" fill="#9090b0" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.78</text>
+<rect x="354" y="354" width="54" height="54" fill="#1e1e3a"/>
+<text x="382.0" y="386.0" fill="#606080" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.00</text>
+<rect x="410" y="354" width="54" height="54" fill="rgb(177,114,44)"/>
+<text x="438.0" y="386.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.79</text>
+<rect x="466" y="354" width="54" height="54" fill="rgb(170,109,48)"/>
+<text x="494.0" y="386.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.88</text>
+<rect x="522" y="354" width="54" height="54" fill="rgb(45,28,111)"/>
+<text x="550.0" y="386.0" fill="#9090b0" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">2.34</text>
+<rect x="130" y="410" width="54" height="54" fill="rgb(94,60,86)"/>
+<text x="158.0" y="442.0" fill="#9090b0" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.77</text>
+<rect x="186" y="410" width="54" height="54" fill="rgb(180,115,43)"/>
+<text x="214.0" y="442.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.76</text>
+<rect x="242" y="410" width="54" height="54" fill="rgb(127,81,69)"/>
+<text x="270.0" y="442.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.38</text>
+<rect x="298" y="410" width="54" height="54" fill="rgb(111,71,77)"/>
+<text x="326.0" y="442.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.56</text>
+<rect x="354" y="410" width="54" height="54" fill="rgb(177,114,44)"/>
+<text x="382.0" y="442.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.79</text>
+<rect x="410" y="410" width="54" height="54" fill="#1e1e3a"/>
+<text x="438.0" y="442.0" fill="#606080" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.00</text>
+<rect x="466" y="410" width="54" height="54" fill="rgb(183,117,41)"/>
+<text x="494.0" y="442.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.72</text>
+<rect x="522" y="410" width="54" height="54" fill="rgb(79,50,93)"/>
+<text x="550.0" y="442.0" fill="#9090b0" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.94</text>
+<rect x="130" y="466" width="54" height="54" fill="rgb(112,71,77)"/>
+<text x="158.0" y="498.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.55</text>
+<rect x="186" y="466" width="54" height="54" fill="rgb(185,119,40)"/>
+<text x="214.0" y="498.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.69</text>
+<rect x="242" y="466" width="54" height="54" fill="rgb(141,90,62)"/>
+<text x="270.0" y="498.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.21</text>
+<rect x="298" y="466" width="54" height="54" fill="rgb(135,86,65)"/>
+<text x="326.0" y="498.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.29</text>
+<rect x="354" y="466" width="54" height="54" fill="rgb(170,109,48)"/>
+<text x="382.0" y="498.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.88</text>
+<rect x="410" y="466" width="54" height="54" fill="rgb(183,117,41)"/>
+<text x="438.0" y="498.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.72</text>
+<rect x="466" y="466" width="54" height="54" fill="#1e1e3a"/>
+<text x="494.0" y="498.0" fill="#606080" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.00</text>
+<rect x="522" y="466" width="54" height="54" fill="rgb(97,61,84)"/>
+<text x="550.0" y="498.0" fill="#9090b0" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.73</text>
+<rect x="130" y="522" width="54" height="54" fill="rgb(166,107,50)"/>
+<text x="158.0" y="554.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.92</text>
+<rect x="186" y="522" width="54" height="54" fill="rgb(133,85,66)"/>
+<text x="214.0" y="554.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.31</text>
+<rect x="242" y="522" width="54" height="54" fill="rgb(172,111,47)"/>
+<text x="270.0" y="554.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.85</text>
+<rect x="298" y="522" width="54" height="54" fill="rgb(176,113,45)"/>
+<text x="326.0" y="554.0" fill="#f0f0f8" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.80</text>
+<rect x="354" y="522" width="54" height="54" fill="rgb(45,28,111)"/>
+<text x="382.0" y="554.0" fill="#9090b0" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">2.34</text>
+<rect x="410" y="522" width="54" height="54" fill="rgb(79,50,93)"/>
+<text x="438.0" y="554.0" fill="#9090b0" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.94</text>
+<rect x="466" y="522" width="54" height="54" fill="rgb(97,61,84)"/>
+<text x="494.0" y="554.0" fill="#9090b0" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">1.73</text>
+<rect x="522" y="522" width="54" height="54" fill="#1e1e3a"/>
+<text x="550.0" y="554.0" fill="#606080" font-size="11" font-family="JetBrains Mono,monospace" text-anchor="middle">0.00</text>
+<text x="120" y="162.0" fill="#d0d0e0" font-size="11" text-anchor="end" font-family="JetBrains Mono,monospace">haiku-4.5</text>
+<rect x="122" y="156.0" width="4" height="4" fill="#f59e0b"/>
+<text x="120" y="218.0" fill="#d0d0e0" font-size="11" text-anchor="end" font-family="JetBrains Mono,monospace">sonnet-4</text>
+<rect x="122" y="212.0" width="4" height="4" fill="#f59e0b"/>
+<text x="120" y="274.0" fill="#d0d0e0" font-size="11" text-anchor="end" font-family="JetBrains Mono,monospace">sonnet-4.5</text>
+<rect x="122" y="268.0" width="4" height="4" fill="#f59e0b"/>
+<text x="120" y="330.0" fill="#d0d0e0" font-size="11" text-anchor="end" font-family="JetBrains Mono,monospace">gemini-2.5-pro</text>
+<rect x="122" y="324.0" width="4" height="4" fill="#a78bfa"/>
+<text x="120" y="386.0" fill="#d0d0e0" font-size="11" text-anchor="end" font-family="JetBrains Mono,monospace">llama-3.3-70b</text>
+<rect x="122" y="380.0" width="4" height="4" fill="#34d399"/>
+<text x="120" y="442.0" fill="#d0d0e0" font-size="11" text-anchor="end" font-family="JetBrains Mono,monospace">gpt-4-turbo</text>
+<rect x="122" y="436.0" width="4" height="4" fill="#22d3ee"/>
+<text x="120" y="498.0" fill="#d0d0e0" font-size="11" text-anchor="end" font-family="JetBrains Mono,monospace">gpt-4o</text>
+<rect x="122" y="492.0" width="4" height="4" fill="#22d3ee"/>
+<text x="120" y="554.0" fill="#d0d0e0" font-size="11" text-anchor="end" font-family="JetBrains Mono,monospace">gpt-5</text>
+<rect x="122" y="548.0" width="4" height="4" fill="#22d3ee"/>
+<g transform="translate(158.0,116) rotate(-45)"><text fill="#d0d0e0" font-size="11" text-anchor="start" font-family="JetBrains Mono,monospace">haiku-4.5</text></g>
+<g transform="translate(214.0,116) rotate(-45)"><text fill="#d0d0e0" font-size="11" text-anchor="start" font-family="JetBrains Mono,monospace">sonnet-4</text></g>
+<g transform="translate(270.0,116) rotate(-45)"><text fill="#d0d0e0" font-size="11" text-anchor="start" font-family="JetBrains Mono,monospace">sonnet-4.5</text></g>
+<g transform="translate(326.0,116) rotate(-45)"><text fill="#d0d0e0" font-size="11" text-anchor="start" font-family="JetBrains Mono,monospace">gemini-2.5-pro</text></g>
+<g transform="translate(382.0,116) rotate(-45)"><text fill="#d0d0e0" font-size="11" text-anchor="start" font-family="JetBrains Mono,monospace">llama-3.3-70b</text></g>
+<g transform="translate(438.0,116) rotate(-45)"><text fill="#d0d0e0" font-size="11" text-anchor="start" font-family="JetBrains Mono,monospace">gpt-4-turbo</text></g>
+<g transform="translate(494.0,116) rotate(-45)"><text fill="#d0d0e0" font-size="11" text-anchor="start" font-family="JetBrains Mono,monospace">gpt-4o</text></g>
+<g transform="translate(550.0,116) rotate(-45)"><text fill="#d0d0e0" font-size="11" text-anchor="start" font-family="JetBrains Mono,monospace">gpt-5</text></g>
+</svg>

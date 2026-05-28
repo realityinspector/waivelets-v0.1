@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waivelets — can we profile individual models? a small experiment</title>
+<meta name="description" content="96 generations, 8 frontier LLMs, leave-one-out LDA. The 7-D Gutenberg fingerprint can't separate models. The raw 384-D embedding centroid can. A new module for the synth.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#06060c;--bg2:#0a0a14;--bg3:#10101e;--bg4:#16162a;
+  --border:#1e1e3a;--border2:#2a2a4a;
+  --text:#d0d0e0;--text2:#9090b0;--text3:#606080;
+  --accent:#6366f1;--accent2:#818cf8;--accent3:#a5b4fc;
+  --convergent:#f59e0b;--contemplative:#a78bfa;
+  --discursive:#22d3ee;--dialectical:#f87171;
+  --green:#34d399;--green2:#6ee7b7;
+  --red:#ef4444;--white:#f0f0f8;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}
+.container{max-width:920px;margin:0 auto;padding:0 28px}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+code,.mono{font-family:'JetBrains Mono',monospace;font-size:0.88em}
+::selection{background:var(--accent);color:#fff}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(6,6,12,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 28px}
+nav .inner{max-width:920px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px}
+nav .logo{font-weight:700;font-size:0.9rem;letter-spacing:0.08em;color:var(--white)}
+nav .links{display:flex;gap:24px;font-size:0.8rem;color:var(--text2)}
+nav .links a{color:var(--text2);transition:color 0.15s}
+nav .links a:hover{color:var(--white);text-decoration:none}
+
+.hero{padding:120px 0 40px}
+.kicker{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.2em;color:var(--accent2);margin-bottom:16px;font-weight:600}
+h1{font-size:clamp(2rem,4.5vw,2.8rem);font-weight:800;color:var(--white);line-height:1.18;margin-bottom:24px}
+h2{font-size:1.5rem;font-weight:700;color:var(--white);margin:56px 0 16px}
+h3{font-size:1.05rem;font-weight:700;color:var(--white);margin:28px 0 12px}
+.lead{font-size:1.1rem;color:var(--text2);max-width:720px;margin-bottom:24px;line-height:1.7}
+p{margin-bottom:16px;color:var(--text)}
+strong{color:var(--white);font-weight:600}
+
+.callout{background:var(--bg4);border:1px solid var(--border2);border-left:3px solid var(--accent);border-radius:8px;padding:18px 22px;margin:24px 0;font-size:0.97rem}
+.callout.warn{border-left-color:var(--convergent)}
+.callout.win{border-left-color:var(--green)}
+.callout strong{color:var(--white)}
+.callout .quote{font-style:italic;color:var(--text2);border-left:2px solid var(--border2);padding-left:14px;margin:8px 0}
+
+img.diagram{display:block;width:100%;max-width:100%;height:auto;margin:24px 0;background:var(--bg3);border:1px solid var(--border);border-radius:10px}
+
+table{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.9rem}
+table th,table td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+table th{color:var(--text2);font-weight:600;font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase}
+table tr:last-child td{border-bottom:none}
+.num{font-family:'JetBrains Mono',monospace;color:var(--accent3)}
+.sig{color:var(--green);font-weight:600}
+.nosig{color:var(--text3)}
+
+pre{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px 18px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:var(--text);line-height:1.55;margin:16px 0}
+
+ul,ol{margin:14px 0 18px 28px;color:var(--text)}
+li{margin-bottom:8px}
+
+footer{margin-top:80px;padding:40px 0;border-top:1px solid var(--border);color:var(--text3);font-size:0.85rem;text-align:center}
+footer a{color:var(--text2)}
+</style>
+</head>
+<body>
+
+<nav><div class="inner">
+  <div class="logo">WAIVELETS</div>
+  <div class="links">
+    <a href="/">Demo</a>
+    <a href="/whitepaper">Whitepaper</a>
+    <a href="/magnifica">Magnifica</a>
+    <a href="/psyllium">Case study</a>
+    <a href="/models">Models</a>
+    <a href="https://github.com/realityinspector/waivelets-v0.1">GitHub</a>
+  </div>
+</div></nav>
+
+<div class="container">
+
+<section class="hero">
+  <div class="kicker">Experiment · 8 models · 96 generations · 2026-05-27</div>
+  <h1>Can waivelets profile individual models? <span style="color:var(--accent2)">A small experiment.</span></h1>
+  <p class="lead"><a href="https://x.com/AndyAyrey">Andy Ayrey</a> asked whether this process can profile individual models — Sonnet-3.5 vs 3.6 vs GPT-4-turbo, etc. We ran the experiment. The answer is the interesting kind of <em>no</em>: not in the current fingerprint space, but the signal is there if you point at a different layer.</p>
+</section>
+
+<section>
+  <h2>Setup</h2>
+  <p>8 models, 12 prompts each. Prompts elicit ~500 words of varied genre (explanatory, narrative, philosophical reflection, occasional poetry). Generated via OpenRouter, all at temperature 0.7. Each generation was fingerprinted via the deployed <code>/api/fingerprint</code>, and the raw 384-D MiniLM embedding centroid was extracted locally using the public <code>basis.npz</code>.</p>
+
+  <table>
+    <tr><th>Model</th><th>Family</th><th>n successful</th></tr>
+    <tr><td>anthropic/claude-sonnet-4</td><td>Anthropic</td><td>12</td></tr>
+    <tr><td>anthropic/claude-sonnet-4.5</td><td>Anthropic</td><td>12</td></tr>
+    <tr><td>anthropic/claude-haiku-4.5</td><td>Anthropic</td><td>12</td></tr>
+    <tr><td>openai/gpt-4-turbo</td><td>OpenAI</td><td>12</td></tr>
+    <tr><td>openai/gpt-4o</td><td>OpenAI</td><td>12</td></tr>
+    <tr><td>openai/gpt-5</td><td>OpenAI</td><td>12</td></tr>
+    <tr><td>google/gemini-2.5-pro</td><td>Google</td><td>12</td></tr>
+    <tr><td>meta-llama/llama-3.3-70b-instruct</td><td>Meta</td><td>12</td></tr>
+  </table>
+
+  <p>Total: <strong>96 generations · ~52k tokens · ~$0.85 in OpenRouter spend</strong>. Reasoning models (gpt-5, gemini-2.5-pro) required <code>max_tokens=4000</code> to leave room past their reasoning trace for actual content.</p>
+</section>
+
+<section>
+  <h2>Result 1 — the 7-D Gutenberg fingerprint does not separate models</h2>
+
+  <p>The waivelets 7-D structural fingerprint was derived by hierarchical clustering on a 100-text corpus from Project Gutenberg. The four axes maximize variance among Homer-to-Kafka. There's no guarantee they're the axes that maximize variance among LLMs.</p>
+
+  <p>And in fact: they aren't. Pairwise centroid distances in z-scored 7-D space don't track model identity.</p>
+
+  <img class="diagram" src="/assets/model_distance_matrix.svg" alt="Pairwise distance matrix between 8 models in 7-D fingerprint space">
+
+  <p>Closest pairs are <em>across</em> family lines (haiku-4.5 ↔ gemini-2.5-pro at 0.49; sonnet-4 ↔ gpt-4o at 0.69). Within-cluster spread (2.34) is twice the mean between-centroid distance (1.19). Models overlap heavily.</p>
+
+  <img class="diagram" src="/assets/model_pca.svg" alt="PCA of 7-D fingerprints, all 95 generations">
+
+  <p>Quantitatively, leave-one-out LDA on the 7-D fingerprints gives <span class="num">11.6%</span> 8-way accuracy — at chance — and a permutation-null p-value of 0.43. The 4-way family classification is <em>worse</em> than the majority-class baseline (34.7% vs 37.5%). Unsupervised hierarchical clustering (Ward) gives adjusted Rand index of <span class="num">~0</span> at every k from 2 to 8.</p>
+
+  <div class="callout warn">
+    <strong>Headline.</strong> Models do not separate in the 7-D fingerprint space. The current basis is tuned to human-literary variance, not LLM-vs-LLM variance.
+  </div>
+</section>
+
+<section>
+  <h2>Result 2 — the signal is alive one layer down, but in a surprising place</h2>
+
+  <p>Before declaring defeat, we re-ran the analysis on richer feature spaces extracted from the same 96 generations:</p>
+  <ul>
+    <li><strong>26-D attractor coords (mean):</strong> the full layer beneath the 7-D summary — the raw eigenbasis projection, per-generation averaged.</li>
+    <li><strong>26-D basin visit histogram:</strong> how often each of the 26 attractors is the argmax-of-|projection| across sentences.</li>
+    <li><strong>78-D combined:</strong> concat of mean coords, |mean| coords, and basin histogram.</li>
+    <li><strong>384-D raw MiniLM embedding centroid:</strong> the per-generation mean of the original sentence embeddings, <em>before</em> the eigenbasis projection.</li>
+  </ul>
+
+  <img class="diagram" src="/assets/model_feature_compare.svg" alt="LDA accuracy across feature spaces">
+
+  <table>
+    <tr><th>Feature space</th><th>Dim</th><th>Family acc (4-way)</th><th>Model acc (8-way)</th><th>p</th></tr>
+    <tr><td>7-D Gutenberg fingerprint</td><td><span class="num">7</span></td><td><span class="num">34.7%</span></td><td><span class="num">11.6%</span></td><td class="nosig">0.43</td></tr>
+    <tr><td>26-D attractor coords (mean)</td><td><span class="num">26</span></td><td><span class="num">41.7%</span></td><td><span class="num">12.5%</span></td><td class="sig">0.01</td></tr>
+    <tr><td>26-D basin visit histogram</td><td><span class="num">26</span></td><td><span class="num">26.0%</span></td><td><span class="num">13.5%</span></td><td class="nosig">0.80</td></tr>
+    <tr><td>78-D combined (26+26+26)</td><td><span class="num">78</span></td><td><span class="num">33.3%</span></td><td><span class="num">16.7%</span></td><td class="nosig">0.18</td></tr>
+    <tr><td><strong>384-D raw embedding centroid</strong></td><td><span class="num">384</span></td><td class="sig"><strong>56.2%</strong></td><td class="sig"><strong>26.0%</strong></td><td class="sig">&lt; 0.01</td></tr>
+    <tr><td><strong>384-D → PCA(50)</strong></td><td><span class="num">50</span></td><td class="sig"><strong>57.3%</strong></td><td class="sig"><strong>28.1%</strong></td><td class="sig">&lt; 0.01</td></tr>
+  </table>
+
+  <p>The 26-D attractor coords — the layer the eigenbasis projects to — give only marginal family-level signal (41.7% vs 37.5% majority, p=0.01) and no model-level signal. But the <strong>raw 384-D MiniLM embedding centroid</strong>, which the eigenbasis discards, separates families at <span class="num">57.3%</span> accuracy with p &lt; 0.01 under a 100-permutation null. That's <strong>+19.8 percentage points</strong> over the majority-class baseline.</p>
+
+  <img class="diagram" src="/assets/model_lda_family.svg" alt="2-D LDA projection of model families">
+</section>
+
+<section>
+  <h2>The synth-rack reading</h2>
+
+  <p>The Moog framing (which is how this project was originally scoped) makes the result legible:</p>
+
+  <ul>
+    <li>The <strong>eigenbasis</strong> is the patch bay — it routes 384-D embedding space into 26 attractor modulation sources.</li>
+    <li>The <strong>7-number fingerprint</strong> is the summary panel — smoothness, oscillation, four domain activations, basin entropy.</li>
+    <li>Both were derived from <strong>human literary text</strong>. The basis maximizes variance among Homer, Plato, Austen, Kafka.</li>
+    <li>Asking it to discriminate LLMs is asking a synth wired for orchestral dynamics to separate different drum machines. The signal is in the source material but the patch bay doesn't route it.</li>
+  </ul>
+
+  <p>The 384-D embedding is the <em>oscillator output before the patch bay</em>. There's clearly a model-discriminating signal sitting in that layer — different model families occupy different sub-regions of MiniLM embedding space, probably reflecting RLHF tuning, instruction-following templates, and stylistic priors. The eigenbasis throws this signal away because Gutenberg variance doesn't load on those directions.</p>
+
+  <div class="callout win">
+    <strong>The new module.</strong> Build a second eigenbasis from an <em>LLM-output corpus</em>, parallel to the Gutenberg basis. Same wavelet pipeline, different distribution. The two bases together (literary + model-discriminating) form a fuller patch bay. Each new model family becomes a discoverable timbre.
+  </div>
+</section>
+
+<section>
+  <h2>Caveats</h2>
+  <div class="callout warn">
+    <strong>Small n.</strong> 12 generations per model is enough to detect a clean signal at p &lt; 0.01 but isn't enough to discriminate fine-grained variants (Sonnet-4 vs Sonnet-4.5). Within-family separation needs an order-of-magnitude more samples. The 8-way model-level accuracy (28%) is significantly above chance (12.5%) but still <em>most pairs are confusable</em>; the strong signal is at the family level.
+  </div>
+  <ul>
+    <li><strong>Prompt overlap.</strong> All 8 models got the same 12 prompts. Per-prompt content variance dominates per-model voice variance, which is why <em>unsupervised</em> clustering on the 384-D embeddings finds zero model structure (ARI = 0.00, purity = 0.125). LDA only works because we hand it the labels.</li>
+    <li><strong>Temperature 0.7</strong>. Higher temperature → wider intra-model spread → harder to separate. Production AI-detection use cases will hit varied temperatures.</li>
+    <li><strong>Reasoning models</strong>. We capture only the final <code>message.content</code> — not the reasoning trace. Models like gpt-5 and gemini-2.5-pro have a chain-of-thought layer that's invisible to this experiment.</li>
+    <li><strong>Embedding model bias</strong>. MiniLM was trained on its own distribution. A different embedder (BGE, Nomic, OpenAI) might find a different separation. The model-discriminating signal we found is partly a fingerprint of MiniLM's reading of the models, not just the models themselves.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Reproducibility</h2>
+  <p>Full experiment scripts and data:</p>
+  <ul>
+    <li><a href="https://github.com/realityinspector/waivelets-v0.1">github.com/realityinspector/waivelets-v0.1</a> — repo</li>
+    <li><code>exp/prompts.json</code> — 12 prompts used</li>
+    <li><code>exp/models.json</code> — 8 models tested</li>
+    <li><code>exp/run.py</code> + <code>exp/retry.py</code> — generation scripts (OpenRouter)</li>
+    <li><code>exp/extract_26d.py</code> — local 26-D + 384-D feature extraction</li>
+    <li><code>exp/analyze.py</code> + <code>exp/analyze2.py</code> — LDA, PCA, clustering, permutation null</li>
+    <li><code>exp/results.jsonl</code>, <code>exp/coords26.jsonl</code> — raw outputs and fingerprints (gitignored; regenerate from scripts)</li>
+  </ul>
+  <p>If you want to add a model not in this set, fork and add it to <code>exp/models.json</code>. If you want to test on a different embedder, swap <code>SentenceTransformer('all-MiniLM-L6-v2')</code> in <code>fastprint.py</code> with your preferred encoder (the eigenbasis was fit on MiniLM-384 so dimension must match, or recompute).</p>
+</section>
+
+<section>
+  <h2>What this answers — and doesn't</h2>
+  <p><strong>Answers Andy's question:</strong> Yes, model profiling is feasible. Not with the 7-D fingerprint as it stands; yes, with one additional layer (the raw MiniLM embedding centroid). Family-level discrimination is robust (p &lt; 0.01, +19.8pp over baseline); individual-model discrimination is real but weak (p &lt; 0.01, +15.6pp over chance) and needs more data per model.</p>
+
+  <p><strong>Doesn't answer:</strong> whether the model-discriminating signal is <em>structural</em> in the same sense as the AI-vs-human signal. The 384-D centroid is essentially the model's mean semantic territory across these prompts — closer to "what topics does this model gravitate toward" than to "how does meaning move through its sentences." A real structural fingerprint for individual models would require the proposed <em>second eigenbasis</em> derived from per-model wavelet analysis. We haven't built that.</p>
+
+  <p>Open invitation: if you have a labeled corpus of model outputs (per-model, per-prompt-class, n &gt;= 50 per model), <a href="https://github.com/realityinspector/waivelets-v0.1/issues">file an issue</a> and we'll fit the LLM-eigenbasis.</p>
+</section>
+
+</div>
+
+<footer>
+  <p><a href="/">← back to demo</a> · <a href="https://github.com/realityinspector/waivelets-v0.1">github.com/realityinspector/waivelets-v0.1</a></p>
+  <p style="margin-top:12px;color:var(--text3)">Waivelets v0.1 · research prototype · n=96, draw your own conclusions</p>
+</footer>
+
+</body>
+</html>

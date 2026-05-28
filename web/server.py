@@ -251,6 +251,11 @@ async def psyllium():
     return FileResponse(WEB_DIR / "psyllium.html")
 
 
+@app.get("/models", response_class=HTMLResponse)
+async def models():
+    return FileResponse(WEB_DIR / "models.html")
+
+
 @app.get("/whitepaper", response_class=HTMLResponse)
 async def whitepaper():
     # Serve the MIDWAY_REPORT as rendered HTML
