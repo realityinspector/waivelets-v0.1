@@ -86,51 +86,50 @@ footer a{color:var(--text2)}
 
 <section class="hero">
   <div class="kicker">Experiment · 8 models · 96 generations · 2026-05-27</div>
-  <h1>Can waivelets profile individual models? <span style="color:var(--accent2)">Yes — once you build a second light.</span></h1>
-  <p class="lead">Two bases (one from human literature, one from LLM output, nearly perpendicular) stacked together → <strong>76% model-ID, 73% family-ID</strong> on leave-one-out LDA. Single bases get half that lift. Prompted by <a href="https://x.com/AndyAyrey/status/2059776837014987116">this question</a>.</p>
+  <h1>Can waivelets tell which model wrote this? <span style="color:var(--accent2)">Yes — 76% of the time.</span></h1>
+  <p class="lead">Show it 500 words from any of 8 frontier LLMs and it picks the right one ~3 times in 4. Random guessing would get it right ~1 in 8. Prompted by <a href="https://x.com/AndyAyrey/status/2059776837014987116">this question</a>.</p>
 </section>
 
 <section>
-  <h2>The headline</h2>
+  <h2>The headline number</h2>
+  <img class="diagram" src="/assets/model_ladder.svg" alt="76% accuracy vs 12.5% random chance">
+  <p>Leave-one-out cross-validation on 96 generations across 8 models. Permutation null mean: <span class="num">12%</span>. The spectrometer reading (the green bar above) is significantly above null at p &lt; 0.01.</p>
+</section>
 
-  <img class="diagram" src="/assets/model_spectrometer.svg" alt="Spectrometer comparison across bases">
+<section>
+  <h2>Where it gets things right and where it doesn't</h2>
+  <img class="diagram" src="/assets/model_confusion.svg" alt="Confusion matrix — diagonals are correct, off-diagonal cells show which models get mistaken for which">
+  <p>The diagonal is where it gets the model right. The off-diagonal cells show <em>which</em> model it mistook the text for. The pattern is informative:</p>
+  <ul>
+    <li><strong>Anthropic models are easiest.</strong> sonnet-4 and gpt-4-turbo land 11/12 correct. Internal confusion within the Anthropic family is rare.</li>
+    <li><strong>Within-family confusions cluster.</strong> The 3 GPT models overlap somewhat; gpt-4o gets mistaken for gpt-4-turbo, gpt-5, and even llama-3.3 once each.</li>
+    <li><strong>Reasoning-trained models bleed into open-source.</strong> gpt-5, gemini-2.5-pro, and llama-3.3 confuse with each other — a likely "reasoning trace + post-training distillation" signature, or maybe just the high-temperature long-output regime.</li>
+  </ul>
+  <img class="diagram" src="/assets/model_per_model.svg" alt="Per-model recall bar chart">
+</section>
+
+<section>
+  <h2>How it works — the two-light spectrometer</h2>
+  <p>The trick was to stop using one basis and use two. The Gutenberg basis (from human literary text) sees structural categories of human writing. A second basis fit on the LLM corpus sees the directions LLMs actually vary along. The two bases are nearly perpendicular — mean |cos| between best-matched eigenvectors is just <span class="num">0.11</span> — so they pick up complementary signal.</p>
+  <img class="diagram" src="/assets/model_basis_overlap.svg" alt="The two bases are nearly orthogonal">
+  <p>Stacked together (156 numbers per text instead of 78), the spectrometer lifts accuracy from 58% (Gutenberg alone) and 70% (LLM alone) to <strong>76% (both)</strong>. The bases stack instead of competing.</p>
 
   <table>
-    <tr><th>Feature space</th><th>Dim</th><th>Family (4-way)</th><th>Model (8-way)</th></tr>
-    <tr><td>Gutenberg basis · 78-D readout</td><td><span class="num">78</span></td><td><span class="num">70.8%</span></td><td><span class="num">58.3%</span></td></tr>
-    <tr><td>LLM-PCA basis · 78-D readout</td><td><span class="num">78</span></td><td><span class="num">58.3%</span></td><td><span class="num">69.8%</span></td></tr>
-    <tr><td><strong>Spectrometer (both bases)</strong></td><td><span class="num">156</span></td><td class="sig"><strong>72.9%</strong></td><td class="sig"><strong>76.0%</strong></td></tr>
-    <tr><td>Raw 384-D centroid (upper bound)</td><td><span class="num">384</span></td><td><span class="num">78.1%</span></td><td><span class="num">89.6%</span></td></tr>
+    <tr><th>Feature space</th><th>Dim</th><th>Model-ID (8-way)</th></tr>
+    <tr><td>Original 7-D fingerprint card</td><td><span class="num">7</span></td><td><span class="num">11.6%</span> <span style="color:var(--text3)">(chance)</span></td></tr>
+    <tr><td>Gutenberg basis · 78-D readout</td><td><span class="num">78</span></td><td><span class="num">58.3%</span></td></tr>
+    <tr><td>LLM basis · 78-D readout</td><td><span class="num">78</span></td><td><span class="num">69.8%</span></td></tr>
+    <tr><td><strong>Spectrometer (both)</strong></td><td><span class="num">156</span></td><td class="sig"><strong>76.0%</strong></td></tr>
+    <tr><td>Raw 384-D centroid (upper bound)</td><td><span class="num">384</span></td><td><span class="num">89.6%</span></td></tr>
   </table>
 
-  <p>Permutation-null means hover at <span class="num">12%</span> (8-way) and <span class="num">27%</span> (4-way). Every row above is significantly above null at p&lt;0.01.</p>
+  <p>The 7-D fingerprint card (the human-readable summary that the public demo shows) discriminates at chance — that's why this analysis isn't visible in the live demo. The signal lives in the full 78-D readout of the basis, not in the 7-number summary.</p>
 </section>
 
 <section>
   <h2>Setup</h2>
-  <p>8 models × 12 prompts ≈ 500-word generations at temperature 0.7 via OpenRouter. ~$0.85 in spend. Reasoning models (gpt-5, gemini-2.5-pro) needed <code>max_tokens=4000</code> to leave room past their CoT.</p>
-  <p style="color:var(--text2);font-size:0.9rem">Models: claude-sonnet-4, claude-sonnet-4.5, claude-haiku-4.5, gpt-4-turbo, gpt-4o, gpt-5, gemini-2.5-pro, llama-3.3-70b-instruct.</p>
-</section>
-
-<section>
-  <h2>One — the basis matters more than the readout</h2>
-  <p>The original 7-D fingerprint discriminates models at <strong>chance</strong> (11.6% 8-way, p=0.43). But the full 78-D readout of the same Gutenberg basis (mean projection + |mean| projection + basin histogram across 26 attractors) gets <strong>58% model-ID</strong>. The basis carries the signal; the 7-number summary panel was throwing most of it away.</p>
-  <img class="diagram" src="/assets/model_distance_matrix.svg" alt="Pairwise distances in 7-D space — heavy overlap">
-  <p>In raw 7-D space, closest centroid pairs are <em>across</em> families (haiku-4.5 ↔ gemini at 0.49). Within-cluster spread is twice between-centroid distance. Models look fully overlapped. That picture lies — the basis sees the difference, the summary just hides it.</p>
-</section>
-
-<section>
-  <h2>Two — the bases are nearly perpendicular</h2>
-  <img class="diagram" src="/assets/model_basis_overlap.svg" alt="Gutenberg vs LLM-PCA basis overlap">
-  <p>We fit a 26-D PCA on every sentence from the 96 generations (3 084 sentences) → an LLM-corpus basis. Mean |cos| between each Gutenberg eigenvector and its best-matched LLM-PCA eigenvector: <strong>0.11</strong> (range 0.04–0.18). The two bases point in almost different directions in ℝ³⁸⁴.</p>
-  <p>That orthogonality is the load-bearing fact: it's why the two readouts <em>add</em> instead of overlap. Gutenberg basis alone → 58% model-ID. LLM basis alone → 70%. Both concatenated → 76%. Stacking, not redundancy.</p>
-</section>
-
-<section>
-  <h2>Three — the synth metaphor and the next moves</h2>
-  <p>The eigenbasis is the patch bay. The 7-number fingerprint is the dashboard speedometer. We were trying to read a tachometer signal off the speedometer. Adding a second basis is <strong>adding a module to the rack</strong> — same instrument, more cables, richer spectrum per text.</p>
-  <p>Build a third basis (technical prose, dialogue, poetry, code) and the spectrometer gets sharper. Replace the naive PCA fit with the original wavelet pipeline and the LLM basis gains structural meaning (it currently mixes topic and style). Per-model wavelet bases would let us probe training-process traces — pruning, curation, RLHF, synthetic supplementation — as nameable axes.</p>
-  <p>The new basis is at <code><a href="https://github.com/realityinspector/waivelets-v0.1/blob/main/web/assets/llm_basis.npz">web/assets/llm_basis.npz</a></code>. Drop-in compatible with <code>basis.npz</code>.</p>
+  <p>8 models × 12 prompts ≈ 500-word generations at temperature 0.7, via OpenRouter, ~$0.85 spend. Reasoning models (gpt-5, gemini-2.5-pro) needed <code>max_tokens=4000</code> to leave room past their CoT.</p>
+  <p style="color:var(--text2);font-size:0.9rem">Models tested: claude-sonnet-4, claude-sonnet-4.5, claude-haiku-4.5, gpt-4-turbo, gpt-4o, gpt-5, gemini-2.5-pro, llama-3.3-70b-instruct. The LLM-PCA basis was fit on all 3 084 sentences from the 96 generations and is saved at <code><a href="https://github.com/realityinspector/waivelets-v0.1/blob/main/web/assets/llm_basis.npz">web/assets/llm_basis.npz</a></code>.</p>
 </section>
 
 <section>
