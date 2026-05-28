@@ -85,97 +85,58 @@ footer a{color:var(--text2)}
 
 <div class="container">
 
+
+<div class="container">
+
 <section class="hero">
-  <div class="kicker">Experiment v0.3 · 8 models · 96 generations · 2026-05-27</div>
-  <h1>Can waivelets tell which model wrote this? <span style="color:var(--accent2)">Yes — 88.5% of the time.</span></h1>
-  <p class="lead">Up from 76% in the first writeup. Adding a label-aware basis trained with adversarial topic-debiasing (~48 dimensions, gradient-reversal head on prompt index) pushes the spectrometer to within 1pp of the raw-embedding upper bound (89.6%). Prompted by <a href="https://x.com/AndyAyrey/status/2059776837014987116">this question</a>.</p>
-  <div class="callout win" style="margin-top:14px;font-size:0.97rem">
-    <strong>Now shipped as a live tool:</strong> <a href="/identify">/identify</a> — paste any text and the cascade returns AI vs human (92.7% accuracy) and, if AI, the most likely of 8 frontier models. Built from the experiments described below.
-  </div>
+  <div class="kicker">v0.3 · cascade live · 2026-05-27</div>
+  <h1>Paste text. Get back: <span style="color:var(--accent2)">AI or human, and which model.</span></h1>
+  <p class="lead">A two-stage cascade. First stage flags AI vs human at <strong>~92.7%</strong> accuracy. If AI, second stage names the most likely of 8 frontier models at <strong>~88.5%</strong> leave-one-out accuracy. Combined: ~82% on AI text that gets correctly flagged AND named.</p>
+  <p style="margin-top:14px"><a href="/identify" class="btn btn-primary" style="display:inline-block;background:var(--accent);color:#fff;padding:12px 28px;border-radius:8px;font-weight:600;text-decoration:none">Try /identify →</a></p>
 </section>
 
 <section>
-  <h2>What we tried, ranked</h2>
-  <img class="diagram" src="/assets/model_ladder_final.svg" alt="All methods tried, sorted by accuracy">
-  <p>All leave-one-document-out, 8-way model identification, 50–100 permutation nulls. The blue/green chance and ceiling lines bracket the range. Every condition above 50% is significant at p&lt;0.02.</p>
+  <h2>How well it works</h2>
+  <img class="diagram" src="/assets/model_ladder_final.svg" alt="All methods we tried, sorted by accuracy">
+  <p>8-way model identification, leave-one-document-out across 96 generations from 8 LLMs (Claude Sonnet 4 / 4.5, Haiku 4.5, GPT-4-turbo / 4o / 5, Gemini 2.5 Pro, Llama 3.3 70B). Permutation null sits at 12% (8-way chance). The shipped cascade uses the green <strong>adversarial topic-debiased basis</strong> bar — 48 dimensions, within 1pp of the raw-embedding upper bound.</p>
 
-  <p>Five families of method, three of which beat the prior 76% spectrometer cleanly:</p>
-  <ul>
-    <li><strong>Adversarial topic-debiased basis (48-D) → 88.5%.</strong> Train a small linear projection W with two heads: predict model identity (maximize) AND predict prompt index (minimize via gradient reversal). Forces W to encode model voice without topic confound. Closest single feature space to the 89.6% ceiling, in 8× fewer dimensions.</li>
-    <li><strong>LDA basis alone (21-D) → 85.4%.</strong> Simplest label-aware move: directly find the 7 axes that maximize between-model vs within-model variance from per-sentence MiniLM embeddings. No PyTorch, no metric learning. +9.4pp over baseline for free.</li>
-    <li><strong>Wavelet-fit LLM basis stacked with Gutenberg (156-D) → 84.4%.</strong> Replaces the naive PCA-derived LLM basis with the original v0.1 wavelet methodology — continuous wavelet transform per dimension, cross-dimension correlation, null-subtracted eigendecomposition. The wavelet basis is also nearly perpendicular to the Gutenberg basis (mean |cos| 0.11) but captures multi-scale temporal coordination that PCA throws away.</li>
-    <li><strong>Contrastive triplet basis (48-D) → 83.3%.</strong> Train W with standard triplet loss so same-model sentences cluster. Worse than the adversarial cousin (no topic-debiasing head), better than pure LDA (non-linear in training, even though projection is linear).</li>
-    <li><strong>Per-sentence + majority vote → 53.1%.</strong> Each sentence gets independently classified; document prediction = majority vote. Informative — proves there IS per-sentence signal — but the document-level fingerprint is doing real work beyond averaging.</li>
-  </ul>
-
-  <div class="callout win">
-    <strong>Headline.</strong> The single best move was making the basis itself label-aware. Cross-validated supervised projection (LDA-derived) closes most of the gap; adding adversarial debiasing of the prompt confound closes the rest.
-  </div>
-</section>
-
-<section>
-  <h2>The lesson about stacking</h2>
-  <p>Concatenating bases <em>helps</em> when each basis sees something the others miss, AND we have enough samples to estimate the joint covariance. With 8 classes × 12 samples each (n=96), stacking past ~150 dimensions starts hurting — the LDA classifier's within-class covariance estimate gets ill-conditioned. We saw it three ways:</p>
-  <ul>
-    <li>Adversarial alone (48-D) → 88.5%. Adversarial + everything else (273-D) → 79.2%. The stack adds noise faster than signal.</li>
-    <li>Wavelet-spectrometer (Gut+Wavelet, 156-D) → 84.4%. Adding PCA-spectrometer too (234-D) → 82.3%. Same pattern.</li>
-    <li>Triple Gut+LLM-PCA+LDA (177-D) → 75.0%. The LDA basis is so concentrated (21-D) that the 156-D unsupervised features just dilute it.</li>
-  </ul>
-  <p>The right architectural reading: <strong>pick the best label-aware basis</strong> as the primary fingerprint, then add unsupervised bases as auxiliary "structural priors" only if dimensionality stays well under n. With more data (n=500+) the stacking story probably flips — that's a v0.4 experiment.</p>
-</section>
-
-<section>
-  <h2>How well it spots each model (the prior spectrometer's confusion matrix)</h2>
-  <p>Per-model recall from the prior 76% Gut+LLM-PCA spectrometer (we haven't yet re-run the confusion matrix for the new 88.5% adversarial result — the diagonal would be tighter and the off-diagonal smaller, but the family-confusion structure should be similar):</p>
   <img class="diagram" src="/assets/model_confusion.svg" alt="Confusion matrix from the prior 76% spectrometer">
-  <img class="diagram" src="/assets/model_per_model.svg" alt="Per-model recall from the prior spectrometer">
-  <p style="color:var(--text2);font-size:0.9rem">Easiest models to identify: claude-sonnet-4 and gpt-4-turbo (11/12). Hardest at this point: gpt-5, gemini-2.5-pro, llama-3.3 — all confused with each other. The adversarial basis closes about half of that residual confusion (overall 88.5% vs 76% with the same models).</p>
+  <p>Confusion matrix from the prior 76% spectrometer (haven't yet re-rendered for the 88.5% adversarial result — when we do, the diagonal will be tighter, but the family-confusion structure should stay roughly the same).</p>
+  <p style="color:var(--text2);font-size:0.9rem">Easiest to identify: claude-sonnet-4 and gpt-4-turbo (11/12 each). Hardest: gpt-5, gemini-2.5-pro, llama-3.3 — confused with each other (likely a "reasoning-trained + open-source" stylistic cluster).</p>
 </section>
 
 <section>
-  <h2>Where it gets things right and where it doesn't</h2>
-  <img class="diagram" src="/assets/model_confusion.svg" alt="Confusion matrix — diagonals are correct, off-diagonal cells show which models get mistaken for which">
-  <p>The diagonal is where it gets the model right. The off-diagonal cells show <em>which</em> model it mistook the text for. The pattern is informative:</p>
+  <h2>How it works — the spectrometer flashlight</h2>
+  <p>Each text gets shone on by a small zoo of bases. Each basis is a 384×K matrix that projects MiniLM sentence embeddings into K interpretable axes, then we aggregate per-document features (mean projection + |mean| projection + basin visit histogram across K attractors). Different bases see different structure:</p>
   <ul>
-    <li><strong>Anthropic models are easiest.</strong> sonnet-4 and gpt-4-turbo land 11/12 correct. Internal confusion within the Anthropic family is rare.</li>
-    <li><strong>Within-family confusions cluster.</strong> The 3 GPT models overlap somewhat; gpt-4o gets mistaken for gpt-4-turbo, gpt-5, and even llama-3.3 once each.</li>
-    <li><strong>Reasoning-trained models bleed into open-source.</strong> gpt-5, gemini-2.5-pro, and llama-3.3 confuse with each other — a likely "reasoning trace + post-training distillation" signature, or maybe just the high-temperature long-output regime.</li>
+    <li><strong>Gutenberg basis</strong> (v0.1) — 26 wavelet-derived axes from 100 human-literary texts. Sees structural categories of human writing.</li>
+    <li><strong>LLM-PCA basis</strong> (v0.2) — 26 PCA axes from 3 084 LLM-generated sentences. Sees variance directions of LLM output space.</li>
+    <li><strong>LLM-wavelet basis</strong> (v0.3) — 26 wavelet axes from the same corpus, capturing multi-scale sequential structure that PCA misses.</li>
+    <li><strong>Adversarial basis</strong> (v0.3, shipped) — 16 axes from a triplet-loss network with two heads: maximize model-discrimination, minimize prompt-discrimination via gradient reversal. Removes topic confound from the projection.</li>
   </ul>
-  <img class="diagram" src="/assets/model_per_model.svg" alt="Per-model recall bar chart">
+  <p>The bases are nearly perpendicular to each other (mean |cos| ≈ 0.11), so stacking them adds rather than overlaps. Adversarial alone wins because it's the only basis explicitly trained on the labels we care about.</p>
+  <img class="diagram" src="/assets/model_basis_overlap.svg" alt="The two basis directions are nearly perpendicular">
 </section>
 
 <section>
-  <h2>How it works — the two-light spectrometer</h2>
-  <p>The trick was to stop using one basis and use two. The Gutenberg basis (from human literary text) sees structural categories of human writing. A second basis fit on the LLM corpus sees the directions LLMs actually vary along. The two bases are nearly perpendicular — mean |cos| between best-matched eigenvectors is just <span class="num">0.11</span> — so they pick up complementary signal.</p>
-  <img class="diagram" src="/assets/model_basis_overlap.svg" alt="The two bases are nearly orthogonal">
-  <p>Stacked together (156 numbers per text instead of 78), the spectrometer lifts accuracy from 58% (Gutenberg alone) and 70% (LLM alone) to <strong>76% (both)</strong>. The bases stack instead of competing.</p>
-
-  <table>
-    <tr><th>Feature space</th><th>Dim</th><th>Model-ID (8-way)</th></tr>
-    <tr><td>Original 7-D fingerprint card</td><td><span class="num">7</span></td><td><span class="num">11.6%</span> <span style="color:var(--text3)">(chance)</span></td></tr>
-    <tr><td>Gutenberg basis · 78-D readout</td><td><span class="num">78</span></td><td><span class="num">58.3%</span></td></tr>
-    <tr><td>LLM basis · 78-D readout</td><td><span class="num">78</span></td><td><span class="num">69.8%</span></td></tr>
-    <tr><td><strong>Spectrometer (both)</strong></td><td><span class="num">156</span></td><td class="sig"><strong>76.0%</strong></td></tr>
-    <tr><td>Raw 384-D centroid (upper bound)</td><td><span class="num">384</span></td><td><span class="num">89.6%</span></td></tr>
-  </table>
-
-  <p>The 7-D fingerprint card (the human-readable summary that the public demo shows) discriminates at chance — that's why this analysis isn't visible in the live demo. The signal lives in the full 78-D readout of the basis, not in the 7-number summary.</p>
+  <h2>The stacking lesson</h2>
+  <p>Concatenating bases <em>helps</em> only when there's enough data to estimate the joint covariance. At n=96 (12 per class × 8 classes), stacking past ~150 dimensions starts hurting. Adversarial alone (48-D) → 88.5%. Adversarial + everything else (273-D) → 79.2%. Picking the right single label-aware basis beats piling on auxiliaries. With more data, the story probably flips — v0.4 hypothesis.</p>
 </section>
 
 <section>
-  <h2>Setup</h2>
-  <p>8 models × 12 prompts ≈ 500-word generations at temperature 0.7, via OpenRouter, ~$1.50 total spend. Reasoning models (gpt-5, gemini-2.5-pro) needed <code>max_tokens=4000</code> to leave room past their CoT. We also added a small subset of OpenRouter free models (glm-4.5-air, kimi-k2.6, qwen3-next, nvidia-nemotron-3-super, nvidia-nemotron-nano, deepseek-v4-flash) for a sanity-check expansion — 14 generations across 5 free models, not in the main 8-way comparison but available in the raw data.</p>
-  <p style="color:var(--text2);font-size:0.9rem">Main models tested: claude-sonnet-4, claude-sonnet-4.5, claude-haiku-4.5, gpt-4-turbo, gpt-4o, gpt-5, gemini-2.5-pro, llama-3.3-70b-instruct. Bases saved: <a href="https://github.com/realityinspector/waivelets-v0.1/blob/main/web/assets/llm_basis.npz">llm_basis.npz</a> (PCA), <a href="https://github.com/realityinspector/waivelets-v0.1/blob/main/web/assets/llm_wavelet_basis.npz">llm_wavelet_basis.npz</a> (wavelet).</p>
+  <h2>Calibration honesty</h2>
+  <p>The <a href="/identify">/identify</a> tool returns top-3 candidate models with probability percentages. Those percentages are <strong>rank-ordering</strong>, softened with a fixed temperature (T=30) so the runners-up are legible. They are <strong>not Platt-calibrated</strong>: a "78%" call isn't literally 78% likely to be right. Read the bars as a leaderboard — the spread between top and runner-up tells you how decisive the call was in the LDA's decision space.</p>
+  <p>Honest calibration on a proper held-out set is a v0.4 follow-up. Until then, trust the <em>rank</em> more than the <em>percentage</em>.</p>
 </section>
 
 <section>
   <h2>Caveats</h2>
   <ul>
-    <li><strong>n = 12 per model.</strong> Enough for family signal, not enough to separate close siblings (sonnet-4 vs sonnet-4.5 still confusable).</li>
-    <li><strong>Same prompts.</strong> Per-prompt content variance dominates per-model voice variance. <em>Unsupervised</em> clustering on the 384-D embeddings finds zero model structure — LDA only works because we hand it labels.</li>
-    <li><strong>Temperature 0.7.</strong> Varied temps widen intra-model spread.</li>
-    <li><strong>Reasoning traces invisible.</strong> Only final <code>message.content</code> is captured.</li>
-    <li><strong>MiniLM-conditioned.</strong> Different embedder → different separation. The signal is partly a fingerprint of MiniLM reading the models.</li>
+    <li><strong>n = 12 per model.</strong> Enough for family-level signal, marginal for sibling models (sonnet-4 vs sonnet-4.5 still confusable).</li>
+    <li><strong>Same 12 prompts per model.</strong> Per-prompt content variance still dominates per-model voice variance. <em>Unsupervised</em> clustering finds zero model structure; LDA only works because we hand it labels. The adversarial debiasing was specifically designed to fight this.</li>
+    <li><strong>Temperature 0.7</strong> at generation time. Varied temps widen intra-model spread.</li>
+    <li><strong>Reasoning traces invisible.</strong> Only final <code>message.content</code> is captured. CoT-heavy models lose part of their signature.</li>
+    <li><strong>MiniLM-conditioned.</strong> The discrimination is partly a fingerprint of <em>MiniLM reading the models</em>. Different embedder → different separation.</li>
   </ul>
 </section>
 
@@ -183,12 +144,14 @@ footer a{color:var(--text2)}
   <h2>Reproduce</h2>
   <p>Everything in <a href="https://github.com/realityinspector/waivelets-v0.1">github.com/realityinspector/waivelets-v0.1</a>:</p>
   <ul>
-    <li><code>exp/run.py</code>, <code>exp/retry.py</code> — generation</li>
-    <li><code>exp/extract_26d.py</code>, <code>exp/fit_llm_basis.py</code> — features + LLM basis</li>
-    <li><code>exp/analyze.py</code>, <code>exp/analyze2.py</code> — LDA, PCA, clustering, permutation null</li>
-    <li><code>exp/render_svgs.py</code>, <code>exp/render_spectrometer.py</code> — the visualizations on this page</li>
+    <li><code>exp/run.py</code>, <code>exp/retry.py</code>, <code>exp/more_free.py</code> — OpenRouter generation</li>
+    <li><code>exp/extract_26d.py</code>, <code>exp/fit_llm_basis.py</code> — PCA basis + features</li>
+    <li><code>exp/wavelet_basis.py</code>, <code>exp/wavelet_eval.py</code> — wavelet basis (v0.1 methodology applied to LLM corpus)</li>
+    <li><code>exp/lda_basis.py</code>, <code>exp/contrastive_basis.py</code>, <code>exp/adversarial_basis.py</code> — label-aware bases</li>
+    <li><code>exp/expansion_eval.py</code> — strict nested LOO across all conditions with 100-permutation null</li>
+    <li><code>exp/train_deploy.py</code> — trains the deployable adversarial artifacts (<code>web/assets/identify_artifacts.npz</code>)</li>
+    <li><code>exp/per_sent_vote_v2.py</code> — per-sentence classification + majority vote (the informative negative)</li>
   </ul>
-  <p>Got a labeled per-model corpus with n≥50 per model? <a href="https://github.com/realityinspector/waivelets-v0.1/issues">File an issue</a> — wavelet-fit LLM basis is the next experiment.</p>
 </section>
 
 </div>
