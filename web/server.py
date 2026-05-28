@@ -31,6 +31,11 @@ app = FastAPI(title="Waivelets", docs_url=None, redoc_url=None)
 
 WEB_DIR = Path(__file__).parent
 
+# Serve static assets (SVGs, npz files, etc.) from web/assets/
+_assets_dir = WEB_DIR / "assets"
+if _assets_dir.is_dir():
+    app.mount("/assets", StaticFiles(directory=str(_assets_dir)), name="assets")
+
 # Load AI detector params
 _DETECTOR = None
 _detector_path = WEB_DIR.parent / "ai_detector_params.json"
